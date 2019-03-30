@@ -1,5 +1,6 @@
 ﻿using Element.Data;
 using System;
+using System.Threading;
 
 namespace Element
 {
@@ -7,7 +8,20 @@ namespace Element
     {
         static void Main()
         {
-            Console.WriteLine("Hello World.");
+            for (var i = 0; i < 5; i++)
+            {
+                new Thread(() =>
+                {
+                    using (var ctx = ElementContextBuilder.CreateContext())
+                    {
+                        Console.WriteLine($"Context Created from Thread#{Thread.CurrentThread.ManagedThreadId}");
+                        Thread.Sleep(new Random().Next(1000, 10000));
+                        Console.WriteLine($"Disposing Context in Thread#{Thread.CurrentThread.ManagedThreadId}");
+                    }
+                }).Start();
+            }
+
+            Console.ReadLine();
         }
     }
 }

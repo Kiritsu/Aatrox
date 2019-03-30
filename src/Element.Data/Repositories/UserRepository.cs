@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Element.Data.Repositories
 {
-    public sealed class UserRepository : Repository<UserEntity>
+    public sealed class UserRepository : Repository<UserEntity>, IUserRepository
     {
         public UserRepository(DbSet<UserEntity> entities) : base(entities)
         {

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Element.Data.Repositories
 {
-    public class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity
+    public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity
     {
         private readonly DbSet<TEntity> _entities;
 

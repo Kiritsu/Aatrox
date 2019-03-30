@@ -1,5 +1,7 @@
 ﻿using Element.Data.Entities;
+using Element.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Threading;
 
 namespace Element.Data
 {
@@ -7,17 +9,9 @@ namespace Element.Data
     {
         public string ConnectionString { get; } = "Host=localhost;Database=elementdb;Username=element;Password=1234";
 
+        public IUserRepository UserRepository { get; }
+
         public DbSet<UserEntity> Users { get; set; }
-
-        public ElementContext()
-        {
-
-        }
-
-        public ElementContext(string cs)
-        {
-            ConnectionString = cs;
-        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
