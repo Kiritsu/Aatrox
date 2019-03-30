@@ -10,12 +10,12 @@ namespace Element.Data
         private readonly ElementContext _context;
         private bool _disposed;
 
-        public IRepository<UserEntity> UserRepository { get; }
+        public UserRepository UserRepository { get; }
 
         public UnitOfWork()
         {
             _context = new ElementContext();
-            UserRepository = new Repository<UserEntity>(_context.Users);
+            UserRepository = new UserRepository(_context.Users);
         }
 
         public Task SaveChangesAsync()

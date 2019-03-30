@@ -1,15 +1,10 @@
 ﻿using Element.Data.Entities;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Element.Data.Repositories
 {
-    public interface IRepository<TEntity> where TEntity : Entity
-    {
-        Task<IReadOnlyList<TEntity>> GetAllAsync();
-
-        Task<TEntity> GetAsync(ulong id);
-        
+    public interface IRepository<TEntity> : IImmutableRepository<TEntity> where TEntity : Entity
+    {        
         Task<TEntity> AddAsync(TEntity entity);
 
         Task DeleteAsync(TEntity entity);
