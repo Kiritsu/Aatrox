@@ -14,7 +14,7 @@ namespace Element.Data
 
         public UserRepository UserRepository { get; }
 
-        public UnitOfWork(SemaphoreSlim semaphore)
+        internal UnitOfWork(SemaphoreSlim semaphore)
         {
             _semaphore = semaphore;
             _context = new ElementContext();

@@ -1,7 +1,6 @@
 ﻿using Element.Data.Entities;
 using Element.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
-using System.Threading;
 
 namespace Element.Data
 {
@@ -12,6 +11,11 @@ namespace Element.Data
         public IUserRepository UserRepository { get; }
 
         public DbSet<UserEntity> Users { get; set; }
+
+        internal ElementContext()
+        {
+
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
