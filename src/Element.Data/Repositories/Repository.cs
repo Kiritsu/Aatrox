@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Element.Data.Repositories
 {
-    public sealed class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity
+    public class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity
     {
         private readonly DbSet<TEntity> _entities;
 
@@ -23,6 +23,11 @@ namespace Element.Data.Repositories
         public Task<TEntity> GetAsync(ulong id)
         {
             return _entities.FindAsync(id);
+        }
+
+        public async Task<TEntity> AddAsync(TEntity entity)
+        {
+            return (await _entities.AddAsync(entity)).Entity;
         }
 
         public Task DeleteAsync(TEntity id)

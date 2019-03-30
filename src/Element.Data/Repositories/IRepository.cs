@@ -9,8 +9,10 @@ namespace Element.Data.Repositories
         Task<IReadOnlyList<TEntity>> GetAllAsync();
 
         Task<TEntity> GetAsync(ulong id);
+        
+        Task<TEntity> AddAsync(TEntity entity);
 
-        Task DeleteAsync(TEntity id);
+        Task DeleteAsync(TEntity entity);
 
         Task UpdateAsync(TEntity entity);
     }
