@@ -14,7 +14,7 @@ namespace Element.Data
 
         public UnitOfWork()
         {
-            _context = new ElementContext("Host=localhost;Database=elementdb;Username=element;Password=1234");
+            _context = new ElementContext();
             UserRepository = new Repository<UserEntity>(_context.Users);
         }
 

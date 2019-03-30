@@ -9,6 +9,11 @@ namespace Element.Data
 
         public DbSet<UserEntity> Users { get; set; }
 
+        public ElementContext()
+        {
+
+        }
+
         public ElementContext(string cs)
         {
             ConnectionString = cs;
