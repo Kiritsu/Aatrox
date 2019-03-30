@@ -20,8 +20,6 @@ namespace Element
                     }
                 }).Start();
             }
-
-            Console.ReadLine();
         }
     }
 }
