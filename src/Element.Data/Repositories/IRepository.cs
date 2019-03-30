@@ -14,6 +14,8 @@ namespace Element.Data.Repositories
 
         Task DeleteAsync(TEntity entity);
 
+        Task DeleteAllAsync();
+
         Task UpdateAsync(TEntity entity);
     }
 }

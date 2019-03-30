@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Element.Data.Migrations
 {
     [DbContext(typeof(ElementContext))]
-    [Migration("20190330185132_add_user_entity")]
+    [Migration("20190330191820_add_user_entity")]
     partial class add_user_entity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,7 +23,6 @@ namespace Element.Data.Migrations
             modelBuilder.Entity("Element.Data.Entities.UserEntity", b =>
                 {
                     b.Property<decimal>("UserId")
-                        .ValueGeneratedOnAdd()
                         .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 20, scale: 0)))
                         .HasColumnName("user_id");
 

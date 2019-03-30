@@ -35,6 +35,11 @@ namespace Element.Data.Repositories
             _entities.Remove(id);
             return Task.CompletedTask;
         }
+
+        public async Task DeleteAllAsync()
+        {
+            _entities.RemoveRange(await GetAllAsync());
+        }
        
         public Task UpdateAsync(TEntity entity)
         {

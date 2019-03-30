@@ -20,5 +20,11 @@ namespace Element.Data
                 optionsBuilder.UseNpgsql(ConnectionString);
             }
         }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<UserEntity>()
+                .Property(x => x.UserId).ValueGeneratedNever();
+        }
     }
 }

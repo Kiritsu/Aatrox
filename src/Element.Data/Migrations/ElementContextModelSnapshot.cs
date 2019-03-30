@@ -21,7 +21,6 @@ namespace Element.Data.Migrations
             modelBuilder.Entity("Element.Data.Entities.UserEntity", b =>
                 {
                     b.Property<decimal>("UserId")
-                        .ValueGeneratedOnAdd()
                         .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 20, scale: 0)))
                         .HasColumnName("user_id");
 
