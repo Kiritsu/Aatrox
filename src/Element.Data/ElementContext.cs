@@ -8,11 +8,9 @@ namespace Element.Data
     {
         public string ConnectionString { get; } = "Host=localhost;Database=elementdb;Username=element;Password=1234";
 
-        public IUserRepository UserRepository { get; }
+        public DbSet<GuildEntity> Guilds { get; set; }
 
-        public DbSet<UserEntity> Users { get; set; }
-
-        internal ElementContext()
+        public ElementContext()
         {
 
         }
@@ -27,8 +25,11 @@ namespace Element.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<UserEntity>()
-                .Property(x => x.UserId).ValueGeneratedNever();
+            builder.Entity<GuildEntity>()
+                .Property(x => x.Id).ValueGeneratedNever();
+
+            builder.Entity<GuildEntity>()
+                .Property(x => x.CreatedAt).ValueGeneratedNever();
         }
     }
 }

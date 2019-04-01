@@ -12,14 +12,14 @@ namespace Element.Data
 
         private bool _disposed;
 
-        public UserRepository UserRepository { get; }
+        public IGuildRepository UserRepository { get; }
 
         internal UnitOfWork(SemaphoreSlim semaphore)
         {
             _semaphore = semaphore;
             _context = new ElementContext();
 
-            UserRepository = new UserRepository(_context.Users);
+            UserRepository = new GuildRepository(_context.Guilds);
         }
 
         public Task SaveChangesAsync()

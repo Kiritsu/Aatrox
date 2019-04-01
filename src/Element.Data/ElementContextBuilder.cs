@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 
 namespace Element.Data
 {
@@ -7,7 +6,7 @@ namespace Element.Data
     {
         private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
 
-        public static UnitOfWork CreateContext()
+        public static IUnitOfWork CreateContext()
         {
             _semaphore.Wait();
             return new UnitOfWork(_semaphore);
