@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Aatrox.Data\Aatrox.Data.csproj" />
+    <ProjectReference Include="..\..\Aatrox.Core\Aatrox.Core.csproj" />
   </ItemGroup>
 
 </Project>
