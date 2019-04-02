@@ -1,5 +1,4 @@
 ﻿using Aatrox.Data.Entities;
-using Aatrox.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aatrox.Data
