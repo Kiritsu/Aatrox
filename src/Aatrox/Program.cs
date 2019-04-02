@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Aatrox.Core.Logging;
+using System;
 using System.Threading.Tasks;
 
 namespace Aatrox
@@ -7,7 +8,7 @@ namespace Aatrox
     {
         static async Task Main()
         {
-            Console.WriteLine("...");
+            Logger.GetLogger("Aatrox.Test").Error("Unknown error happened.", new Exception("Test Exception !"));
         }
     }
 }

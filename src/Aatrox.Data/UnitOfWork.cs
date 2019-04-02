@@ -13,23 +13,24 @@ namespace Aatrox.Data
         private readonly SemaphoreSlim _semaphore;
         private readonly AatroxDbContext _context;
 
-        private bool _disposed;
+        private readonly Func<DatabaseActionEventArgs, Task> _databaseUpdated;
 
-        public Func<DatabaseActionEventArgs, Task> DatabaseUpdated;
+        private bool _disposed;
 
         public IGuildRepository UserRepository { get; }
 
-        internal UnitOfWork(SemaphoreSlim semaphore)
+        internal UnitOfWork(SemaphoreSlim semaphore, Func<DatabaseActionEventArgs, Task> databaseUpdated)
         {
             _semaphore = semaphore;
             _context = new AatroxDbContext();
+            _databaseUpdated = databaseUpdated;
 
             UserRepository = new GuildRepository(_context.Guilds, this);
         }
 
         internal void InvokeEvent(DatabaseActionEventArgs e)
         {
-            DatabaseUpdated?.Invoke(e);
+            _databaseUpdated?.Invoke(e);
         }
 
         public Task SaveChangesAsync()
