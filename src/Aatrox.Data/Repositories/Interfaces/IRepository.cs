@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Aatrox.Data.Repositories
+namespace Aatrox.Data.Repositories.Interfaces
 {
     public interface IRepository<TEntity> where TEntity : Entity
     {

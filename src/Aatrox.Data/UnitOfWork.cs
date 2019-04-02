@@ -1,4 +1,7 @@
-﻿using Aatrox.Data.Repositories;
+﻿using Aatrox.Data.Enums;
+using Aatrox.Data.EventArgs;
+using Aatrox.Data.Repositories;
+using Aatrox.Data.Repositories.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,6 +15,8 @@ namespace Aatrox.Data
 
         private bool _disposed;
 
+        public Func<DatabaseActionEventArgs, Task> DatabaseUpdated;
+
         public IGuildRepository UserRepository { get; }
 
         internal UnitOfWork(SemaphoreSlim semaphore)
@@ -19,11 +24,22 @@ namespace Aatrox.Data
             _semaphore = semaphore;
             _context = new AatroxDbContext();
 
-            UserRepository = new GuildRepository(_context.Guilds);
+            UserRepository = new GuildRepository(_context.Guilds, this);
+        }
+
+        internal void InvokeEvent(DatabaseActionEventArgs e)
+        {
+            DatabaseUpdated?.Invoke(e);
         }
 
         public Task SaveChangesAsync()
         {
+            InvokeEvent(new DatabaseActionEventArgs
+            {
+                Type = ActionType.Save,
+                Path = "://SAVE_CHANGES"
+            });
+
             return _context.SaveChangesAsync();
         }
 

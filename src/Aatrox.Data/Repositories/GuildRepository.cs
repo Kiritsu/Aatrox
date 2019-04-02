@@ -1,4 +1,5 @@
 ﻿using Aatrox.Data.Entities;
+using Aatrox.Data.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ namespace Aatrox.Data.Repositories
 {
     public sealed class GuildRepository : Repository<GuildEntity>, IGuildRepository
     {
-        internal GuildRepository(DbSet<GuildEntity> entities) : base(entities)
+        internal GuildRepository(DbSet<GuildEntity> entities, UnitOfWork uow) : base(entities, uow, "Guild")
         {
         }
 
