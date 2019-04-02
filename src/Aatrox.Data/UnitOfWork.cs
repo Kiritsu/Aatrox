@@ -1,14 +1,14 @@
-﻿using Element.Data.Repositories;
+﻿using Aatrox.Data.Repositories;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Element.Data
+namespace Aatrox.Data
 {
     public sealed class UnitOfWork : IUnitOfWork
     {
         private readonly SemaphoreSlim _semaphore;
-        private readonly ElementContext _context;
+        private readonly AatroxDbContext _context;
 
         private bool _disposed;
 
@@ -17,7 +17,7 @@ namespace Element.Data
         internal UnitOfWork(SemaphoreSlim semaphore)
         {
             _semaphore = semaphore;
-            _context = new ElementContext();
+            _context = new AatroxDbContext();
 
             UserRepository = new GuildRepository(_context.Guilds);
         }

@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Element.Data.Entities
+namespace Aatrox.Data.Entities
 {
 
     public abstract class Entity 

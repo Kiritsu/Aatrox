@@ -1,16 +1,16 @@
-﻿using Element.Data.Entities;
-using Element.Data.Repositories;
+﻿using Aatrox.Data.Entities;
+using Aatrox.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-namespace Element.Data
+namespace Aatrox.Data
 {
-    public sealed class ElementContext : DbContext
+    public sealed class AatroxDbContext : DbContext
     {
         public string ConnectionString { get; } = "Host=localhost;Database=elementdb;Username=element;Password=1234";
 
         public DbSet<GuildEntity> Guilds { get; set; }
 
-        public ElementContext()
+        public AatroxDbContext()
         {
 
         }

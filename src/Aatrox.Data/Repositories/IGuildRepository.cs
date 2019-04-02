@@ -1,7 +1,7 @@
-﻿using Element.Data.Entities;
+﻿using Aatrox.Data.Entities;
 using System.Threading.Tasks;
 
-namespace Element.Data.Repositories
+namespace Aatrox.Data.Repositories
 {
     public interface IGuildRepository : IRepository<GuildEntity>
     {

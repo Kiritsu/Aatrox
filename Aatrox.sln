@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28701.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Element", "src\Element\Element.csproj", "{DB987940-EAE9-4CB1-83AD-DFEE63C37A55}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aatrox", "src\Aatrox\Aatrox.csproj", "{DB987940-EAE9-4CB1-83AD-DFEE63C37A55}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Element.Data", "src\Element.Data\Element.Data.csproj", "{ED2AACD6-AA38-4577-8486-5F74B7DB73AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aatrox.Data", "src\Aatrox.Data\Aatrox.Data.csproj", "{ED2AACD6-AA38-4577-8486-5F74B7DB73AF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

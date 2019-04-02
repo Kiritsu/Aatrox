@@ -1,8 +1,8 @@
 ﻿using System.Threading;
 
-namespace Element.Data
+namespace Aatrox.Data
 {
-    public sealed class ElementContextBuilder
+    public sealed class AatroxDbContextBuilder
     {
         private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
 

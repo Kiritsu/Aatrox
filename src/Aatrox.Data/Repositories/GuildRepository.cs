@@ -1,10 +1,10 @@
-﻿using Element.Data.Entities;
+﻿using Aatrox.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Element.Data.Repositories
+namespace Aatrox.Data.Repositories
 {
     public sealed class GuildRepository : Repository<GuildEntity>, IGuildRepository
     {

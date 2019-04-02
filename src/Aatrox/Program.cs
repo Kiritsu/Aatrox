@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Element
+namespace Aatrox
 {
     class Program
     {

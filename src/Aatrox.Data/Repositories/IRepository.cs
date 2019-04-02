@@ -1,8 +1,8 @@
-﻿using Element.Data.Entities;
+﻿using Aatrox.Data.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Element.Data.Repositories
+namespace Aatrox.Data.Repositories
 {
     public interface IRepository<TEntity> where TEntity : Entity
     {
