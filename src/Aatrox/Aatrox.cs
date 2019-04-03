@@ -1,12 +1,12 @@
-﻿using Aatrox.Core.Logging;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using Aatrox.Core.Logging;
 
 namespace Aatrox
 {
-    class Program
+    public class Aatrox
     {
-        static async Task Main()
+        private static async Task Main()
         {
             Logger.GetLogger("Aatrox.Test").Error("Unknown error happened.", new Exception("Test Exception !"));
         }

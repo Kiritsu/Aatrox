@@ -1,5 +1,5 @@
-﻿using Aatrox.Data.Entities;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Aatrox.Data.Entities;
 
 namespace Aatrox.Data.Repositories.Interfaces
 {

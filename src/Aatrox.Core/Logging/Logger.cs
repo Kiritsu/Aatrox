@@ -1,5 +1,5 @@
-﻿using NLog;
-using System;
+﻿using System;
+using NLog;
 
 namespace Aatrox.Core.Logging
 {

@@ -1,10 +1,10 @@
-﻿using Aatrox.Data.Enums;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Aatrox.Data.Enums;
 using Aatrox.Data.EventArgs;
 using Aatrox.Data.Repositories;
 using Aatrox.Data.Repositories.Interfaces;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Aatrox.Data
 {

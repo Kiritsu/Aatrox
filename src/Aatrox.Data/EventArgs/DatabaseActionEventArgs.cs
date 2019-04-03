@@ -1,5 +1,5 @@
-﻿using Aatrox.Data.Enums;
-using System;
+﻿using System;
+using Aatrox.Data.Enums;
 
 namespace Aatrox.Data.EventArgs
 {

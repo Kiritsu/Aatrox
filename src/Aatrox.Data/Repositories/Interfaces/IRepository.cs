@@ -1,6 +1,6 @@
-﻿using Aatrox.Data.Entities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Aatrox.Data.Entities;
 
 namespace Aatrox.Data.Repositories.Interfaces
 {
