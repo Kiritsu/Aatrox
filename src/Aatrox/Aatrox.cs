@@ -1,6 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Aatrox.Core.Logging;
+using NLog;
 
 namespace Aatrox
 {
@@ -8,7 +8,11 @@ namespace Aatrox
     {
         private static async Task Main()
         {
-            Logger.GetLogger("Aatrox.Test").Error("Unknown error happened.", new Exception("Test Exception !"));
+            var logger = LogService.GetLogger("Aatrox.Test");
+            logger.Log(LogLevel.Debug, "Oui");
+            logger.Log(LogLevel.Info, "Oui");
+            logger.Log(LogLevel.Warn, "Oui");
+            logger.Log(LogLevel.Error, "Oui");
         }
     }
 }
