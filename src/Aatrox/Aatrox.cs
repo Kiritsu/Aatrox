@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Aatrox.Core.Logging;
 using Aatrox.Data;
 using Aatrox.Data.EventArgs;
+using Aatrox.Data.Repositories.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using NLog;
 
@@ -22,7 +23,8 @@ namespace Aatrox
 
             using (var db = AatroxDbContextManager.CreateContext())
             {
-                await db.UserRepository.GetAllAsync();
+                var repo = db.RequestRepository<IGuildRepository>();
+                await repo.GetAllAsync();
             }
         }
 

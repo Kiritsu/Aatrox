@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Aatrox.Data.Entities;
 using Aatrox.Data.Enums;
 using Aatrox.Data.EventArgs;
 using Aatrox.Data.Repositories;
-using Aatrox.Data.Repositories.Interfaces;
 
 namespace Aatrox.Data
 {
@@ -17,7 +19,7 @@ namespace Aatrox.Data
 
         private bool _disposed;
 
-        public IGuildRepository UserRepository { get; }
+        private readonly IReadOnlyList<object> _repositories;
 
         internal UnitOfWork(SemaphoreSlim semaphore, Func<DatabaseActionEventArgs, Task> databaseUpdated)
         {
@@ -25,7 +27,13 @@ namespace Aatrox.Data
             _context = new AatroxDbContext();
             _databaseUpdated = databaseUpdated;
 
-            UserRepository = new GuildRepository(_context.Guilds, this);
+            var repositories = new List<object>();
+
+            var guildRepository = new GuildRepository(_context.Guilds, this);
+
+            repositories.Add(guildRepository);
+
+            _repositories = repositories.AsReadOnly();
         }
 
         internal void InvokeEvent(DatabaseActionEventArgs e)
@@ -42,6 +50,11 @@ namespace Aatrox.Data
             });
 
             return _context.SaveChangesAsync();
+        }
+
+        public T RequestRepository<T>()
+        {
+            return (T)_repositories.FirstOrDefault(x => x is T);
         }
 
         public void Dispose()

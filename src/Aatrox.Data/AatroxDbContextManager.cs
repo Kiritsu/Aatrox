@@ -11,7 +11,7 @@ namespace Aatrox.Data
 
         public static Func<DatabaseActionEventArgs, Task> DatabaseUpdated;
 
-        public static UnitOfWork CreateContext()
+        public static IUnitOfWork CreateContext()
         {
             _semaphore.Wait();
             return new UnitOfWork(_semaphore, DatabaseUpdated);
