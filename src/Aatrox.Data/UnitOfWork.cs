@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Aatrox.Data.Entities;
 using Aatrox.Data.Enums;
 using Aatrox.Data.EventArgs;
 using Aatrox.Data.Repositories;
@@ -41,20 +40,20 @@ namespace Aatrox.Data
             _databaseUpdated?.Invoke(e);
         }
 
-        public Task SaveChangesAsync()
+        public async Task SaveChangesAsync()
         {
+            var amount = await _context.SaveChangesAsync();
+
             InvokeEvent(new DatabaseActionEventArgs
             {
                 Type = ActionType.Save,
-                Path = "://SAVE_CHANGES"
+                Path = $"://SAVE_CHANGES {amount}"
             });
-
-            return _context.SaveChangesAsync();
         }
 
         public T RequestRepository<T>()
         {
-            return (T)_repositories.FirstOrDefault(x => x is T);
+            return (T)_repositories.First(x => x is T);
         }
 
         public void Dispose()

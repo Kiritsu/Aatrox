@@ -22,7 +22,11 @@ namespace Aatrox.Data.Repositories
                 entity = await AddAsync(new GuildEntity
                 {
                     Id = id,
-                    Prefixes = new List<string>(),
+                    Prefixes = new List<string>
+                    {
+                        "Aatrox, ",
+                        "Aa!"
+                    },
                     CreatedAt = DateTimeOffset.UtcNow
                 });
             }

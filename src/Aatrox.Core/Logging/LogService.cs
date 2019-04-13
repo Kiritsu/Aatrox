@@ -47,17 +47,17 @@ namespace Aatrox.Core.Logging
             }
         }
 
-        private void Info(string message)
+        public void Info(string message)
         {
             _logger.Info(message);
         }
 
-        private void Debug(string message)
+        public void Debug(string message)
         {
             _logger.Debug(message);
         }
 
-        private void Error(string message, Exception ex)
+        public void Error(string message, Exception ex)
         {
             if (ex is null)
             {
@@ -69,7 +69,7 @@ namespace Aatrox.Core.Logging
             }
         }
 
-        private void Warn(string message)
+        public void Warn(string message)
         {
             _logger.Warn(message);
         }

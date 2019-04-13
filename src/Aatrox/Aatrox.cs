@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Aatrox.Core.Logging;
+using Aatrox.Core.Services;
 using Aatrox.Data;
 using Aatrox.Data.EventArgs;
-using Aatrox.Data.Repositories.Interfaces;
+using DSharpPlus;
 using Microsoft.Extensions.DependencyInjection;
-using NLog;
+using Qmmands;
 
 namespace Aatrox
 {
@@ -21,17 +24,27 @@ namespace Aatrox
 
             AatroxDbContextManager.DatabaseUpdated += DatabaseUpdated;
 
-            using (var db = AatroxDbContextManager.CreateContext())
-            {
-                var repo = db.RequestRepository<IGuildRepository>();
-                await repo.GetAllAsync();
-            }
+            var ds = Services.GetRequiredService<DiscordService>();
+            await ds.SetupAsync(Assembly.GetEntryAssembly());
+
+            await Task.Delay(Timeout.Infinite);
         }
 
         private IServiceProvider BuildServiceProvider()
         {
+            var cfg = ConfigurationService.Setup();
+
             return new ServiceCollection()
-                .AddSingleton(new LogService("Aatrox.Database"))
+                .AddSingleton(new LogService("Aatrox"))
+                .AddSingleton<CommandService>()
+                .AddSingleton<DiscordService>()
+                .AddSingleton<InternationalizationService>()
+                .AddSingleton(cfg)
+                .AddSingleton(InternationalizationService.Setup())
+                .AddSingleton(new DiscordClient(new DiscordConfiguration
+                {
+                    Token = cfg.Token
+                }))
                 .BuildServiceProvider();
         }
 
@@ -39,11 +52,11 @@ namespace Aatrox
         {
             if (arg.IsErrored)
             {
-                Logger.Log(LogLevel.Error, arg.Path, arg.Exception);
+                Logger.Error(arg.Path, arg.Exception);
             }
             else
             {
-                Logger.Log(LogLevel.Debug, arg.Path);
+                Logger.Debug(arg.Path);
             }
 
             return Task.CompletedTask;

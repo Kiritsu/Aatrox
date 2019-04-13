@@ -60,7 +60,7 @@ namespace Aatrox.Data.Repositories
 
                 if (entity is null)
                 {
-                    throw new InvalidOperationException("Use GetOrAddAsync in the repository that entity belongs to.");
+                    return null;
                 }
 
                 _uow.InvokeEvent(new DatabaseActionEventArgs
