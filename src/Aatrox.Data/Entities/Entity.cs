@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aatrox.Data.Entities
 {
-
     public abstract class Entity 
     {
         [Column("snowflake_id"), Key]

@@ -33,13 +33,13 @@ namespace Aatrox
         private IServiceProvider BuildServiceProvider()
         {
             var cfg = ConfigurationService.Setup();
+            var logger = new LogService("Aatrox");
 
             return new ServiceCollection()
-                .AddSingleton(new LogService("Aatrox"))
                 .AddSingleton<CommandService>()
                 .AddSingleton<DiscordService>()
-                .AddSingleton<InternationalizationService>()
                 .AddSingleton(cfg)
+                .AddSingleton(logger)
                 .AddSingleton(InternationalizationService.Setup())
                 .AddSingleton(new DiscordClient(new DiscordConfiguration
                 {
