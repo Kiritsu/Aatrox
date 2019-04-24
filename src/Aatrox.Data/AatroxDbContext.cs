@@ -9,17 +9,14 @@ namespace Aatrox.Data
 
         public DbSet<GuildEntity> Guilds { get; set; }
 
-        public AatroxDbContext()
-        {
-
-        }
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
                 optionsBuilder.UseNpgsql(ConnectionString);
             }
+
+            Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
