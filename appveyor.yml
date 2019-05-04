@@ -12,7 +12,7 @@ build_script:
   - cmd: 7z a aatrox_ubuntu_artifact.zip "%APPVEYOR_BUILD_FOLDER%\publish_ubuntu\*"
   - cmd: 7z a aatrox_windows_artifact.zip "%APPVEYOR_BUILD_FOLDER%\publish_windows\*"
   
-artifact:
+artifacts:
   - path: aatrox_ubuntu_artifact.zip
     name: Aatrox publish (Ubuntu 16.04 x64)
   - path: aatrox_windows_artifact.zip
