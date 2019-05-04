@@ -18,7 +18,7 @@ namespace Aatrox.Core.Entities
             return Context.Channel.SendMessageAsync(localization);
         }
 
-        public Task<DiscordMessage> RepondEmbedLocalizedAsync(string key, params object[] parameters)
+        public Task<DiscordMessage> RespondEmbedLocalizedAsync(string key, params object[] parameters)
         {
             var localization = I18n.GetLocalization(key, parameters: parameters);
             var embed = EmbedHelper.New(Context, localization);

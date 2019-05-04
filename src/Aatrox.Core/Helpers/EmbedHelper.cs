@@ -13,10 +13,10 @@ namespace Aatrox.Core.Helpers
                 Timestamp = DateTimeOffset.Now,
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {
-                    Text = $"Executed by: {ctx.Member.DisplayName}#{ctx.Member.Discriminator}",
+                    Text = $"Executed by {ctx.Member.DisplayName}#{ctx.Member.Discriminator}",
                     IconUrl = ctx.Aatrox.AvatarUrl
                 },
-                Color = DiscordColor.DarkButNotBlack
+                Color = DiscordColor.Goldenrod
             };
         }
 
@@ -28,10 +28,10 @@ namespace Aatrox.Core.Helpers
                 Timestamp = DateTimeOffset.Now,
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {
-                    Text = $"Executed by: {ctx.Member.DisplayName}#{ctx.Member.Discriminator}",
+                    Text = $"Executed by {ctx.Member.DisplayName}#{ctx.Member.Discriminator}",
                     IconUrl = ctx.Aatrox.AvatarUrl
                 },
-                Color = DiscordColor.DarkButNotBlack
+                Color = DiscordColor.Goldenrod
             };
         }
     }

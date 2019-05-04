@@ -1,0 +1,27 @@
+image: Visual Studio 2019
+
+branches:
+  only:
+    - master
+    
+build: off
+
+build_script:
+  - cmd: dotnet publish --framework netcoreapp2.2 --runtime ubuntu.16.04-x64 --output "..\..\publish_ubuntu\"
+  - cmd: dotnet publish --framework netcoreapp2.2 --runtime win10-x64 --output "..\..\publish_windows\"
+  - cmd: 7z a aatrox_ubuntu_artifact.zip "%APPVEYOR_BUILD_FOLDER%\publish_ubuntu\*"
+  - cmd: 7z a aatrox_windows_artifact.zip "%APPVEYOR_BUILD_FOLDER%\publish_windows\*"
+  
+artifact:
+  - path: aatrox_ubuntu_artifact.zip
+    name: Aatrox publish (Ubuntu 16.04 x64)
+  - path: aatrox_windows_artifact.zip
+    name: Aatrox publish (Windows 10 x64)
+    
+notifications:
+  - provider: Slack
+    on_build_success: true
+    on_build_failure: true
+    on_build_status_changed: true
+    incoming_webhook:
+      secure: ydCsQfnLSOC7f4rKgL/vECQsMFVDZ7zQ6gp/Jv+EyOR00zd7Rp3V/ARUB28lIPTXGn4mq3ejiW2eFpclP+9gx8Uq/jHd7xPBwan/+W6ZpyE2LX0fWotarYDCnvja9Liozjyy8eFnBpUd1bWD3zT9QA7AiOALKmz1ZVchDX8+UtaKEIbvGyrew+pw/QKWetfE
