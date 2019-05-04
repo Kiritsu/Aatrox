@@ -11,7 +11,7 @@ namespace Aatrox.Data
 
         public AatroxDbContext()
         {
-
+            Database.EnsureCreated();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

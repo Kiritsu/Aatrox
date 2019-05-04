@@ -2,7 +2,6 @@
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Aatrox.Core.Logging;
 using Aatrox.Core.Services;
 using Aatrox.Data;
 using Aatrox.Data.EventArgs;

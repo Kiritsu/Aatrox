@@ -2,7 +2,7 @@
 using System.Reflection;
 using NLog;
 
-namespace Aatrox.Core.Logging
+namespace Aatrox.Core.Services
 {
     public class LogService
     {
