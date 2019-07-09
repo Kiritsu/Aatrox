@@ -14,12 +14,12 @@ namespace Aatrox
     public class Aatrox
     {
         public IServiceProvider Services { get; private set; }
-        public LogService Logger { get; private set; }
+        public LogService DbLogger { get; private set; }
 
         private async Task InitializeAsync()
         {
             Services = BuildServiceProvider();
-            Logger = Services.GetRequiredService<LogService>();
+            DbLogger = LogService.GetLogger("Database");
 
             AatroxDbContextManager.DatabaseUpdated += DatabaseUpdated;
 
@@ -51,11 +51,11 @@ namespace Aatrox
         {
             if (arg.IsErrored)
             {
-                Logger.Error(arg.Path, arg.Exception);
+                DbLogger.Error(arg.Path, arg.Exception);
             }
             else
             {
-                Logger.Debug(arg.Path);
+                DbLogger.Debug(arg.Path);
             }
 
             return Task.CompletedTask;
