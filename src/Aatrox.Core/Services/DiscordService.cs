@@ -88,7 +88,12 @@ namespace Aatrox.Core.Services
         private Task OnReadyAsync(ReadyEventArgs e)
         {
             _logger.Info("Aatrox is ready.");
-            return Task.CompletedTask;
+
+            return e.Client.UpdateStatusAsync(new DiscordActivity
+            {
+                ActivityType = ActivityType.ListeningTo,
+                Name = "hate speeches"
+            }, UserStatus.DoNotDisturb);
         }
 
         private async Task HandleCommandAsync(DiscordCommandContext ctx)

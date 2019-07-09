@@ -1,6 +1,8 @@
 {
-	"ping": ":ping_pong: | **Pong! ({0} ms)**",
+  "ping": ":ping_pong: | **Pong! ({0} ms)**",
   "invite": "Invite URL: <https://discordapp.com/oauth2/authorize?client_id={0}&scope=bot&permissions={1}>",
   "help_description": "This embed contains a list of every available modules. If you want to see every command of a module, use `{0}help <module>`. Prefixes for this guild are: {1}.",
-  "help_footer": "{0} modules and {1} commands available in this context."
+  "help_footer": "{0} modules and {1} commands available in this context.",
+  "help_module_description": "This embed contains the list of every command in this module.",
+  "help_module_footer": "{0} commands available in this context."
 }
