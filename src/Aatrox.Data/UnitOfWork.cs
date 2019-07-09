@@ -29,8 +29,10 @@ namespace Aatrox.Data
             var repositories = new List<object>();
 
             var guildRepository = new GuildRepository(_context.Guilds, this);
+            var userRepository = new UserRepository(_context.Users, this);
 
             repositories.Add(guildRepository);
+            repositories.Add(userRepository);
 
             _repositories = repositories.AsReadOnly();
         }

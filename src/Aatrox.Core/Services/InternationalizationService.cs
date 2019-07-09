@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using Aatrox.Core.Services.Enums;
+using Aatrox.Data.Enums;
 using Newtonsoft.Json;
 
 namespace Aatrox.Core.Services

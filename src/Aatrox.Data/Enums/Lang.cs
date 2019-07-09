@@ -1,4 +1,4 @@
-﻿namespace Aatrox.Core.Services.Enums
+﻿namespace Aatrox.Data.Enums
 {
     public enum Lang
     {

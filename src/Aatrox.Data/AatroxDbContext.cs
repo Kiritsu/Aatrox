@@ -8,6 +8,7 @@ namespace Aatrox.Data
         public string ConnectionString { get; } = "Host=localhost;Database=elementdb;Username=element;Password=1234";
 
         public DbSet<GuildEntity> Guilds { get; set; }
+        public DbSet<UserEntity> Users { get; set; }
 
         public AatroxDbContext()
         {

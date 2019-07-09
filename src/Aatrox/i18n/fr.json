@@ -1,0 +1,4 @@
+{
+	"ping": ":ping_pong: | **Pong ! ({0} ms)**",
+	"invite": "Lien d'invitation : <https://discordapp.com/oauth2/authorize?client_id={0}&scope=bot&permissions={1}>"
+}
