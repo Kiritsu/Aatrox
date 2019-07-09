@@ -1,4 +1,6 @@
 {
-	"ping": ":ping_pong: | **Pong ! ({0} ms)**",
-	"invite": "Lien d'invitation : <https://discordapp.com/oauth2/authorize?client_id={0}&scope=bot&permissions={1}>"
+  "ping": ":ping_pong: | **Pong ! ({0} ms)**",
+  "invite": "Lien d'invitation : <https://discordapp.com/oauth2/authorize?client_id={0}&scope=bot&permissions={1}>",
+  "help_description": "Cet embed contient tous les modules disponibles et utilisables. Pour avoir plus d'information sur un module, utilisez `{0}help <module>`. Les préfixes de cette guilde sont : {1}.",
+  "help_footer": "{0} modules et {1} commandes sont disponibles dans ce contexte."
 }

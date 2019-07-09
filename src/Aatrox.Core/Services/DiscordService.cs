@@ -33,8 +33,15 @@ namespace Aatrox.Core.Services
             _client.GuildAvailable += OnGuildAvailable;
 
             _commands.AddModules(assembly);
+            _commands.CommandErrored += OnCommandErrored;
 
             await _client.ConnectAsync(status: UserStatus.DoNotDisturb);
+        }
+
+        private Task OnCommandErrored(CommandErroredEventArgs e)
+        {
+            _logger.Error($"Command errored: {e.Context.Command.Name} by {(e.Context as DiscordCommandContext).User.Id} in {(e.Context as DiscordCommandContext).Guild.Id}", e.Result.Exception);
+            return Task.CompletedTask;
         }
 
         private Task OnGuildAvailable(GuildCreateEventArgs e)
@@ -100,7 +107,11 @@ namespace Aatrox.Core.Services
 
             ctx.Prefix = prefix;
 
-            await _commands.ExecuteAsync(content, ctx, _services);
+            var result = await _commands.ExecuteAsync(content, ctx, _services);
+            if (result.IsSuccessful)
+            {
+                _logger.Info($"Command executed: {ctx.Command.Name} by {ctx.User.Id} in {ctx.Guild.Id}");
+            }
         }
     }
 }

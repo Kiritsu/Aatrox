@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using DSharpPlus.Entities;
 using Newtonsoft.Json;
 
 namespace Aatrox.Core.Services
@@ -6,6 +7,7 @@ namespace Aatrox.Core.Services
     public sealed class ConfigurationService
     {
         public string Token { get; set; }
+        public DiscordColor EmbedColor => DiscordColor.Goldenrod;
 
         public static ConfigurationService Setup()
         {
