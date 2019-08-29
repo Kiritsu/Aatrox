@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Aatrox.Core.Services;
 using Aatrox.Data;
 using Aatrox.Data.EventArgs;
+using Aatrox.TypeParsers;
 using DSharpPlus;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
@@ -25,6 +26,9 @@ namespace Aatrox
 
             var ds = Services.GetRequiredService<DiscordService>();
             await ds.SetupAsync(Assembly.GetEntryAssembly());
+
+            ds.AddTypeParser(new DiscordUserTypeParser());
+            ds.AddTypeParser(new DiscordMemberTypeParser());
 
             await Task.Delay(Timeout.Infinite);
         }

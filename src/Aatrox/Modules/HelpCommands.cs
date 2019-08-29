@@ -38,7 +38,7 @@ namespace Aatrox.Modules
             {
                 var result = await x.RunChecksAsync(Context, Context.Services);
                 return result.IsSuccessful ? x : null;
-            }).Where(x => x != null))).Where(x => x.Module.Parent is null).DistinctBy(x => x.Name).ToArray();
+            }))).Where(x => x != null && x.Module.Parent is null).DistinctBy(x => x.Name).ToArray();
 
             var prefixes = DbContext.Guild.Prefixes.Select(x => $"`{x}`").Append("`Aa!`");
             var embed = new DiscordEmbedBuilder
@@ -94,7 +94,7 @@ namespace Aatrox.Modules
 
                 if (matchingModule.Commands.Count > 0)
                 {
-                    embed.AddField("Commands", string.Join(", ", matchingModule.Commands.Select(x => $"`{x.Name}`")));
+                    embed.AddField("Commands", string.Join(", ", matchingModule.Commands.DistinctBy(x => x.Name).Select(x => $"`{x.Name}`")));
                 }
 
                 var moduleChecks = CommandUtilities.GetAllChecks(matchingModule).Cast<AatroxCheckBaseAttribute>().ToArray();

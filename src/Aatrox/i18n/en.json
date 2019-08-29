@@ -4,5 +4,7 @@
   "help_description": "This embed contains a list of every available modules. If you want to see every command of a module, use `{0}help <module>`. Prefixes for this guild are: {1}.",
   "help_footer": "{0} modules and {1} commands available in this context.",
   "help_module_description": "This embed contains the list of every command in this module.",
-  "help_module_footer": "{0} commands available in this context."
+  "help_module_footer": "{0} commands available in this context.",
+  "clean_no_messages": "Uh, I've found no messages to delete. Note that they must be newer than 2 weeks!",
+  "clean_done": "`{0}/{1}` messages have been deleted."
 }

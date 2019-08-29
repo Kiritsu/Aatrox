@@ -31,11 +31,23 @@ namespace Aatrox.Core.Services
             _client.MessageUpdated += OnMessageUpdatedAsync;
             _client.Ready += OnReadyAsync;
             _client.GuildAvailable += OnGuildAvailable;
+            _client.ClientErrored += OnClientErrored;
 
             _commands.AddModules(assembly);
             _commands.CommandErrored += OnCommandErrored;
 
             await _client.ConnectAsync(status: UserStatus.DoNotDisturb);
+        }
+
+        private Task OnClientErrored(ClientErrorEventArgs e)
+        {
+            _logger.Error("An error occured", e.Exception.GetBaseException());
+            return Task.CompletedTask;
+        }
+
+        public void AddTypeParser<T>(TypeParser<T> typeParser, bool replacePrimitive = false)
+        {
+            _commands.AddTypeParser(typeParser, replacePrimitive);
         }
 
         private Task OnCommandErrored(CommandErroredEventArgs e)

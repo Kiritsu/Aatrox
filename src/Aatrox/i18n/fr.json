@@ -4,5 +4,7 @@
   "help_description": "Cet embed contient tous les modules disponibles et utilisables. Pour avoir plus d'information sur un module, utilisez `{0}help <module>`. Les préfixes de cette guilde sont : {1}.",
   "help_footer": "{0} modules et {1} commandes sont disponibles dans ce contexte.",
   "help_module_description": "Cet embed contient la liste de toutes les commandes de ce module.",
-  "help_module_footer": "{0} commandes sont disponibles dans ce contexte."
+  "help_module_footer": "{0} commandes sont disponibles dans ce contexte.",
+  "clean_no_messages": "Mmh... Je n'ai trouvé aucun message à supprimer. Attention, ils ne doivent pas être vieux de deux semaines.",
+  "clean_done": "`{0}/{1}` messages ont pu être supprimés."
 }
