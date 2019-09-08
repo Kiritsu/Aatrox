@@ -30,13 +30,13 @@ namespace Aatrox.Modules
         {
             var modules = await Task.WhenAll(_commands.GetAllModules().Where(x => !x.Attributes.Any(y => y is HiddenAttribute)).Select(async x =>
             {
-                var result = await x.RunChecksAsync(Context, Context.Services);
+                var result = await x.RunChecksAsync(Context);
                 return result.IsSuccessful ? x : null;
             }).Where(x => x != null));
 
             var commands = (await Task.WhenAll(_commands.GetAllCommands().Where(x => !x.Attributes.Any(y => y is HiddenAttribute)).Select(async x =>
             {
-                var result = await x.RunChecksAsync(Context, Context.Services);
+                var result = await x.RunChecksAsync(Context);
                 return result.IsSuccessful ? x : null;
             }))).Where(x => x != null && x.Module.Parent is null).DistinctBy(x => x.Name).ToArray();
 
@@ -97,7 +97,7 @@ namespace Aatrox.Modules
                     embed.AddField("Commands", string.Join(", ", matchingModule.Commands.DistinctBy(x => x.Name).Select(x => $"`{x.Name}`")));
                 }
 
-                var moduleChecks = CommandUtilities.GetAllChecks(matchingModule).Cast<AatroxCheckBaseAttribute>().ToArray();
+                var moduleChecks = CommandUtilities.EnumerateAllChecks(matchingModule).Cast<AatroxCheckBaseAttribute>().ToArray();
                 if (moduleChecks.Length > 0)
                 {
                     embed.AddField("Requirements", string.Join("\n", moduleChecks.Select(x => $"`- {x.Name}`")));
@@ -128,7 +128,7 @@ namespace Aatrox.Modules
 
             var defaultCmd = matchingCommands.FirstOrDefault().Command;
 
-            var checks = CommandUtilities.GetAllChecks(defaultCmd.Module).Cast<AatroxCheckBaseAttribute>().ToArray();
+            var checks = CommandUtilities.EnumerateAllChecks(defaultCmd.Module).Cast<AatroxCheckBaseAttribute>().ToArray();
             if (checks.Length > 0)
             {
                 embed.AddField($"Module Requirements", string.Join("\n", checks.Select(x => $"- `{x.Name}`")));

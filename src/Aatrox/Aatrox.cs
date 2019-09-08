@@ -2,11 +2,13 @@
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Aatrox.Core.Entities;
 using Aatrox.Core.Services;
 using Aatrox.Data;
 using Aatrox.Data.EventArgs;
 using Aatrox.TypeParsers;
 using DSharpPlus;
+using DSharpPlus.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 
@@ -27,9 +29,6 @@ namespace Aatrox
             var ds = Services.GetRequiredService<DiscordService>();
             await ds.SetupAsync(Assembly.GetEntryAssembly());
 
-            ds.AddTypeParser(new DiscordUserTypeParser());
-            ds.AddTypeParser(new DiscordMemberTypeParser());
-
             await Task.Delay(Timeout.Infinite);
         }
 
@@ -48,6 +47,13 @@ namespace Aatrox
                 {
                     Token = cfg.Token
                 }))
+                .AddSingleton<TypeParser<DiscordGuild>, DiscordGuildTypeParser>()
+                .AddSingleton<TypeParser<DiscordRole>, DiscordRoleTypeParser>()
+                .AddSingleton<TypeParser<DiscordMember>, DiscordMemberTypeParser>()
+                .AddSingleton<TypeParser<DiscordUser>, DiscordUserTypeParser>()
+                .AddSingleton<TypeParser<SkeletonUser>, SkeletonUserTypeParser>()
+                .AddSingleton<TypeParser<TimeSpan>, TimeSpanTypeParser>()
+                .AddSingleton<TypeParser<Uri>, UriTypeParser>()
                 .BuildServiceProvider();
         }
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Aatrox.Core.Entities;
 using DSharpPlus;
 using Qmmands;
@@ -9,6 +8,7 @@ namespace Aatrox.Checks
     public sealed class RequireUserPermissionsAttribute : AatroxCheckBaseAttribute
     {
         public Permissions Permissions { get; }
+
         public override string Name { get; set; } = "User permissions";
 
         public RequireUserPermissionsAttribute(Permissions permissions)
@@ -16,7 +16,7 @@ namespace Aatrox.Checks
             Permissions = permissions;
         }
 
-        public override ValueTask<CheckResult> CheckAsync(CommandContext context, IServiceProvider provider)
+        public override ValueTask<CheckResult> CheckAsync(CommandContext context)
         {
             if (!(context is DiscordCommandContext ctx))
             {

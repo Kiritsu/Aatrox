@@ -6,6 +6,7 @@ using Aatrox.Core.Entities;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 
 namespace Aatrox.Core.Services
@@ -33,8 +34,16 @@ namespace Aatrox.Core.Services
             _client.GuildAvailable += OnGuildAvailable;
             _client.ClientErrored += OnClientErrored;
 
+            _commands.AddTypeParser(_services.GetService<TypeParser<DiscordRole>>());
+            _commands.AddTypeParser(_services.GetService<TypeParser<DiscordUser>>());
+            _commands.AddTypeParser(_services.GetService<TypeParser<DiscordMember>>());
+            _commands.AddTypeParser(_services.GetService<TypeParser<DiscordGuild>>());
+            _commands.AddTypeParser(_services.GetService<TypeParser<SkeletonUser>>());
+            _commands.AddTypeParser(_services.GetService<TypeParser<TimeSpan>>());
+            _commands.AddTypeParser(_services.GetService<TypeParser<Uri>>());
+
             _commands.AddModules(assembly);
-            _commands.CommandErrored += OnCommandErrored;
+            _commands.CommandExecutionFailed += OnCommandErrored;
 
             await _client.ConnectAsync(status: UserStatus.DoNotDisturb);
         }
@@ -50,7 +59,7 @@ namespace Aatrox.Core.Services
             _commands.AddTypeParser(typeParser, replacePrimitive);
         }
 
-        private Task OnCommandErrored(CommandErroredEventArgs e)
+        private Task OnCommandErrored(CommandExecutionFailedEventArgs e)
         {
             _logger.Error($"Command errored: {e.Context.Command.Name} by {(e.Context as DiscordCommandContext).User.Id} in {(e.Context as DiscordCommandContext).Guild.Id}", e.Result.Exception);
             return Task.CompletedTask;
@@ -124,7 +133,7 @@ namespace Aatrox.Core.Services
 
             ctx.Prefix = prefix;
 
-            var result = await _commands.ExecuteAsync(content, ctx, _services);
+            var result = await _commands.ExecuteAsync(content, ctx);
             if (result.IsSuccessful)
             {
                 _logger.Info($"Command executed: {ctx.Command.Name} by {ctx.User.Id} in {ctx.Guild.Id}");

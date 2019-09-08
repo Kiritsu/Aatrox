@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Aatrox.Core.Entities;
 using Aatrox.Core.Extensions;
@@ -13,7 +12,7 @@ namespace Aatrox.TypeParsers
 {
     public sealed class DiscordUserTypeParser : TypeParser<DiscordUser>
     {
-        public override ValueTask<TypeParserResult<DiscordUser>> ParseAsync(Parameter parameter, string value, CommandContext context, IServiceProvider provider)
+        public override ValueTask<TypeParserResult<DiscordUser>> ParseAsync(Parameter parameter, string value, CommandContext context)
         {
             if (!(context is DiscordCommandContext ctx))
             {

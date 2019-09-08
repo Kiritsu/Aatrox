@@ -4,6 +4,6 @@ namespace Aatrox.Checks
 {
     public abstract class AatroxCheckBaseAttribute : CheckAttribute
     {
-        public virtual string Name { get; set; } = "UnknownCheck";
+        public virtual string Name { get; set; } = "Unknown check.";
     }
 }
