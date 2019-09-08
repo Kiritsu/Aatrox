@@ -6,7 +6,7 @@ namespace Aatrox.Core.Extensions
     {
         public static string FormatUser(this DiscordUser user)
         {
-            return $"{(user is DiscordMember mbr ? mbr.DisplayName : user.Username)}#{user.Discriminator}";
+            return $"{user.Username}#{user.Discriminator}";
         }
     }
 }

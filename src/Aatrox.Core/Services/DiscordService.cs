@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using Aatrox.Core.Entities;
+using Aatrox.Core.Extensions;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using DSharpPlus.Exceptions;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 
@@ -54,15 +58,50 @@ namespace Aatrox.Core.Services
             return Task.CompletedTask;
         }
 
-        public void AddTypeParser<T>(TypeParser<T> typeParser, bool replacePrimitive = false)
-        {
-            _commands.AddTypeParser(typeParser, replacePrimitive);
-        }
-
-        private Task OnCommandErrored(CommandExecutionFailedEventArgs e)
+        private async Task OnCommandErrored(CommandExecutionFailedEventArgs e)
         {
             _logger.Error($"Command errored: {e.Context.Command.Name} by {(e.Context as DiscordCommandContext).User.Id} in {(e.Context as DiscordCommandContext).Guild.Id}", e.Result.Exception);
-            return Task.CompletedTask;
+
+            if (!(e.Context is DiscordCommandContext ctx))
+            {
+                return;
+            }
+
+            var str = new StringBuilder();
+            switch (e.Result.Exception)
+            {
+                case UnauthorizedException _:
+                    str.AppendLine("I don't have enough power to perform this action. (please check that the hierarchy of the bot is correct)");
+                    break;
+                case BadRequestException _:
+                    str.AppendLine("The requested action has been stopped by Discord.");
+                    break;
+                case ArgumentException ex:
+                    str.AppendLine($"{ex.Message}\n");
+                    str.AppendLine($"Are you sure you didn't fail when typing the command? Please do `{ctx.Prefix}help {e.Result.Command.FullAliases[0]}`");
+                    break;
+                default:
+                    _logger.Error($"{e.Result.Exception.GetType()} occured.", e.Result.Exception);
+                    break;
+            }
+
+            if (str.Length == 0)
+            {
+                return;
+            }
+
+            var embed = new DiscordEmbedBuilder
+            {
+                Color = DiscordColor.Goldenrod,
+                Title = "Something went wrong!"
+            };
+
+            embed.AddField(Formatter.Underline("Command"), e.Result.Command.Name, true);
+            embed.AddField(Formatter.Underline("Author"), ctx.User.FormatUser(), true);
+            embed.AddField(Formatter.Underline("Error(s)"), str.ToString());
+            embed.WithFooter($"Type '{ctx.Prefix}help {ctx.Command.FullAliases[0].ToLowerInvariant()}' for more information.");
+
+            await ctx.Channel.SendMessageAsync("", false, embed);
         }
 
         private Task OnGuildAvailable(GuildCreateEventArgs e)
@@ -126,7 +165,8 @@ namespace Aatrox.Core.Services
                 "Aa!"
             };
 
-            if (!CommandUtilities.HasAnyPrefix(ctx.Message.Content, prefixes, StringComparison.OrdinalIgnoreCase, out var prefix, out var content))
+            if (!CommandUtilities.HasAnyPrefix(ctx.Message.Content, prefixes, StringComparison.OrdinalIgnoreCase,
+                out var prefix, out var content))
             {
                 return;
             }
@@ -137,7 +177,112 @@ namespace Aatrox.Core.Services
             if (result.IsSuccessful)
             {
                 _logger.Info($"Command executed: {ctx.Command.Name} by {ctx.User.Id} in {ctx.Guild.Id}");
+                return;
             }
+
+            await HandleCommandErroredAsync(result, ctx);
+        }
+
+        private async Task HandleCommandErroredAsync(IResult result, DiscordCommandContext ctx)
+        {
+            if (result is CommandNotFoundResult)
+            {
+                string cmdName;
+                var toLev = "";
+                var index = 0;
+                var split = ctx.Message.Content.Substring(ctx.Prefix.Length).Split(_commands.Separator, StringSplitOptions.RemoveEmptyEntries);
+
+                do
+                {
+                    toLev += (index == 0 ? "" : _commands.Separator) + split[index];
+
+                    cmdName = toLev.Levenshtein(_commands);
+                    index++;
+                } while (string.IsNullOrWhiteSpace(cmdName) && index < split.Length);
+
+                if (string.IsNullOrWhiteSpace(cmdName))
+                {
+                    return;
+                }
+
+                string cmdParams = null;
+                while (index < split.Length)
+                {
+                    cmdParams += " " + split[index++];
+                }
+
+                var tryResult = await _commands.ExecuteAsync(cmdName + cmdParams, ctx);
+
+                if (tryResult.IsSuccessful)
+                {
+                    return;
+                }
+
+                await HandleCommandErroredAsync(tryResult, ctx);
+            }
+
+            var str = new StringBuilder();
+
+            switch (result)
+            {
+                case ChecksFailedResult err:
+                    str.AppendLine("The following check(s) failed:");
+                    foreach ((var check, var error) in err.FailedChecks)
+                    {
+                        str.AppendLine($"[`{((AatroxCheckBaseAttribute)check).Name}`]: `{error}`");
+                    }
+                    break;
+                case TypeParseFailedResult err:
+                    str.AppendLine(err.Reason);
+                    break;
+                case ArgumentParseFailedResult err:
+                    str.AppendLine($"The syntax of the command `{ctx.Command.FullAliases[0]}` was wrong.");
+                    break;
+                case OverloadsFailedResult err:
+                    str.AppendLine($"I can't find any valid overload for the command `{ctx.Command.Name}`.");
+                    foreach (var overload in err.FailedOverloads)
+                    {
+                        str.AppendLine($" -> `{overload.Value.Reason}`");
+                    }
+                    break;
+                case ParameterChecksFailedResult err:
+                    str.AppendLine("The following parameter check(s) failed:");
+                    foreach ((var check, var error) in err.FailedChecks)
+                    {
+                        str.AppendLine($"[`{check.Parameter.Name}`]: `{error}`");
+                    }
+                    break;
+                case ExecutionFailedResult _: //this should be handled in the CommandErrored event or in the FoxResult case.
+                case CommandNotFoundResult _: //this is handled at the beginning of this method with levenshtein thing.
+                    break;
+                case CommandOnCooldownResult err:
+                    var remainingTime = err.Cooldowns.OrderByDescending(x => x.RetryAfter).FirstOrDefault();
+                    str.AppendLine($"You're being rate limited! Please retry after {remainingTime.RetryAfter.Humanize()}.");
+                    break;
+                default:
+                    str.AppendLine($"Unknown error: {result}");
+                    break;
+            }
+
+            if (str.Length == 0)
+            {
+                return;
+            }
+
+            var embed = new DiscordEmbedBuilder
+            {
+                Color = DiscordColor.Goldenrod,
+                Title = "Something went wrong!"
+            };
+
+            embed.WithFooter($"Type '{ctx.Prefix}help {ctx.Command?.FullAliases[0] ?? ctx.Command?.FullAliases[0] ?? ""}' for more information.");
+
+            embed.AddField(Formatter.Underline("Command/Module"), ctx.Command?.Name ?? ctx.Command?.Name ?? ctx.Command.Module?.Name ?? "Unknown command...", true);
+            embed.AddField(Formatter.Underline("Author"), ctx.User.FormatUser(), true);
+            embed.AddField(Formatter.Underline("Error(s)"), str.ToString());
+
+            _logger.Warn($"{ctx.User.Id} - {ctx.Guild.Id} ::> Command errored: {ctx.Command?.Name ?? "-unknown command-"}");
+            await ctx.Channel.SendMessageAsync("", false, embed.Build());
         }
     }
 }

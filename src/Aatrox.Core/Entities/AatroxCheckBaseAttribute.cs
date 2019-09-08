@@ -1,6 +1,6 @@
 ﻿using Qmmands;
 
-namespace Aatrox.Checks
+namespace Aatrox.Core.Entities
 {
     public abstract class AatroxCheckBaseAttribute : CheckAttribute
     {
