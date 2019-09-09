@@ -18,7 +18,9 @@ steps:
 
 - task: NuGetCommand@2
   inputs:
+    command: 'restore'
     restoreSolution: '$(solution)'
+    feedsToUse: 'config'
 
 - task: DotNetCoreCLI@2
   inputs:
