@@ -25,6 +25,7 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'publish'
+    publishWebProjects: false
     arguments: '--framework netcoreapp2.2 --configuration $(buildConfiguration) --runtime ubuntu.16.04-x64 --output $(Build.ArtifactStagingDirectory)'
     zipAfterPublish: false
 
