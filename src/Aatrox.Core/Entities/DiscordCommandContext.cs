@@ -13,7 +13,6 @@ namespace Aatrox.Core.Entities
     public sealed class DiscordCommandContext : CommandContext, IDisposable
     {
         public CommandService Commands { get; }
-        public InternationalizationService I18n { get; }
 
         public DiscordClient Client { get; }
         public DiscordGuild Guild { get; }
@@ -46,7 +45,6 @@ namespace Aatrox.Core.Entities
         public DiscordCommandContext(MessageCreateEventArgs e, IServiceProvider services) : base(services)
         {
             Commands = services.GetRequiredService<CommandService>();
-            I18n = services.GetRequiredService<InternationalizationService>();
 
             Client = e.Client;
             Guild = e.Guild;
@@ -63,7 +61,6 @@ namespace Aatrox.Core.Entities
         public DiscordCommandContext(MessageUpdateEventArgs e, IServiceProvider services) : base(services)
         {
             Commands = services.GetRequiredService<CommandService>();
-            I18n = services.GetRequiredService<InternationalizationService>();
 
             Client = e.Client;
             Guild = e.Guild;

@@ -16,9 +16,9 @@ namespace Aatrox.Modules
     public sealed class HelpCommands : DiscordModuleBase
     {
         private readonly CommandService _commands;
-        private readonly ConfigurationService _configuration;
+        private readonly AatroxConfiguration _configuration;
 
-        public HelpCommands(CommandService commands, ConfigurationService configuration)
+        public HelpCommands(CommandService commands, AatroxConfiguration configuration)
         {
             _commands = commands;
             _configuration = configuration;
@@ -45,10 +45,10 @@ namespace Aatrox.Modules
             {
                 Color = _configuration.EmbedColor,
                 Title = "Help",
-                Description = Context.I18n.GetLocalization("help_description", DbContext.User.Language, Context.Prefix, string.Join(", ", prefixes)),
+                Description = InternationalizationService.GetLocalization("help_description", DbContext.User.Language, Context.Prefix, string.Join(", ", prefixes)),
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {
-                    Text = Context.I18n.GetLocalization("help_footer", DbContext.User.Language, modules.Length, commands.Length)
+                    Text = InternationalizationService.GetLocalization("help_footer", DbContext.User.Language, modules.Length, commands.Length)
                 }
             };
 
@@ -85,10 +85,10 @@ namespace Aatrox.Modules
                 {
                     Color = _configuration.EmbedColor,
                     Title = "Help",
-                    Description = Context.I18n.GetLocalization("help_module_description"),
+                    Description = InternationalizationService.GetLocalization("help_module_description"),
                     Footer = new DiscordEmbedBuilder.EmbedFooter
                     {
-                        Text = Context.I18n.GetLocalization("help_module_footer", DbContext.User.Language, matchingModule.Commands.Count)
+                        Text = InternationalizationService.GetLocalization("help_module_footer", DbContext.User.Language, matchingModule.Commands.Count)
                     }
                 };
 

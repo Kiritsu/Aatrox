@@ -9,9 +9,14 @@ namespace Aatrox.Core.Services
 {
     public sealed class InternationalizationService
     {
-        public ReadOnlyDictionary<Lang, ReadOnlyDictionary<string, string>> Strings { get; private set; }
+        public static ReadOnlyDictionary<Lang, ReadOnlyDictionary<string, string>> Strings { get; private set; }
 
-        public static InternationalizationService Setup()
+        static InternationalizationService()
+        {
+            Setup();
+        }
+
+        public static void Setup()
         {
             var strings = new Dictionary<Lang, ReadOnlyDictionary<string, string>>();
 
@@ -25,13 +30,10 @@ namespace Aatrox.Core.Services
                 strings.Add((Lang)lang, new ReadOnlyDictionary<string, string>(elements));
             }
 
-            return new InternationalizationService
-            {
-                Strings = new ReadOnlyDictionary<Lang, ReadOnlyDictionary<string, string>>(strings)
-            };
+            Strings = new ReadOnlyDictionary<Lang, ReadOnlyDictionary<string, string>>(strings);
         }
 
-        public string GetLocalization(string key, Lang lang = Lang.En, params object[] parameters)
+        public static string GetLocalization(string key, Lang lang = Lang.En, params object[] parameters)
         {
             if (!Strings.ContainsKey(lang))
             {

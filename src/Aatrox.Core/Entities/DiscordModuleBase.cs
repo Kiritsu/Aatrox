@@ -9,18 +9,17 @@ namespace Aatrox.Core.Entities
     public class DiscordModuleBase : ModuleBase<DiscordCommandContext>
     {
         public DatabaseContext DbContext => Context.DatabaseContext;
-        public InternationalizationService I18n => Context.I18n;
 
         public Task<DiscordMessage> RespondLocalizedAsync(string key, params object[] parameters)
         {
-            var localization = I18n.GetLocalization(key, DbContext.User.Language, parameters);
+            var localization = InternationalizationService.GetLocalization(key, DbContext.User.Language, parameters);
 
             return Context.Channel.SendMessageAsync(localization);
         }
 
         public Task<DiscordMessage> RespondEmbedLocalizedAsync(string key, params object[] parameters)
         {
-            var localization = I18n.GetLocalization(key, DbContext.User.Language, parameters);
+            var localization = InternationalizationService.GetLocalization(key, DbContext.User.Language, parameters);
             var embed = EmbedHelper.New(Context, localization);
 
             return Context.Channel.SendMessageAsync(embed: embed);
