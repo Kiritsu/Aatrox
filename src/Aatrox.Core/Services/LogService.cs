@@ -44,6 +44,9 @@ namespace Aatrox.Core.Services
                 case "Warn":
                     Warn(message);
                     break;
+                default:
+                    Info(message);
+                    break;
             }
         }
 

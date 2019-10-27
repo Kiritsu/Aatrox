@@ -118,6 +118,11 @@ namespace Aatrox.Core.Services
                 return;
             }
 
+            if (e.Channel.Id != 566751794148016148)
+            {
+                return;
+            }
+
             using (var ctx = new DiscordCommandContext(e, _services))
             {
                 await ctx.PrepareAsync();
@@ -227,7 +232,7 @@ namespace Aatrox.Core.Services
             {
                 case ChecksFailedResult err:
                     str.AppendLine("The following check(s) failed:");
-                    foreach ((var check, var error) in err.FailedChecks)
+                    foreach (var (check, error) in err.FailedChecks)
                     {
                         str.AppendLine($"[`{((AatroxCheckBaseAttribute)check).Name}`]: `{error}`");
                     }
@@ -235,7 +240,7 @@ namespace Aatrox.Core.Services
                 case TypeParseFailedResult err:
                     str.AppendLine(err.Reason);
                     break;
-                case ArgumentParseFailedResult err:
+                case ArgumentParseFailedResult _:
                     str.AppendLine($"The syntax of the command `{ctx.Command.FullAliases[0]}` was wrong.");
                     break;
                 case OverloadsFailedResult err:
@@ -247,12 +252,12 @@ namespace Aatrox.Core.Services
                     break;
                 case ParameterChecksFailedResult err:
                     str.AppendLine("The following parameter check(s) failed:");
-                    foreach ((var check, var error) in err.FailedChecks)
+                    foreach (var (check, error) in err.FailedChecks)
                     {
                         str.AppendLine($"[`{check.Parameter.Name}`]: `{error}`");
                     }
                     break;
-                case ExecutionFailedResult _: //this should be handled in the CommandErrored event or in the FoxResult case.
+                case ExecutionFailedResult _: //this should be handled in the CommandErrored event or in the Custom Result case.
                 case CommandNotFoundResult _: //this is handled at the beginning of this method with levenshtein thing.
                     break;
                 case CommandOnCooldownResult err:
@@ -277,7 +282,7 @@ namespace Aatrox.Core.Services
 
             embed.WithFooter($"Type '{ctx.Prefix}help {ctx.Command?.FullAliases[0] ?? ctx.Command?.FullAliases[0] ?? ""}' for more information.");
 
-            embed.AddField(Formatter.Underline("Command/Module"), ctx.Command?.Name ?? ctx.Command?.Name ?? ctx.Command.Module?.Name ?? "Unknown command...", true);
+            embed.AddField(Formatter.Underline("Command/Module"), ctx.Command?.Name ?? ctx.Command?.Name ?? ctx.Command?.Module?.Name ?? "Unknown command...", true);
             embed.AddField(Formatter.Underline("Author"), ctx.User.FormatUser(), true);
             embed.AddField(Formatter.Underline("Error(s)"), str.ToString());
 

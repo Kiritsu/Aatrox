@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Aatrox.Core.Entities;
 using Qmmands;
 
-namespace Aatrox.Checks
+namespace Aatrox.Core.Checks
 {
     public sealed class RequireOwnerAttribute : AatroxCheckBaseAttribute
     {

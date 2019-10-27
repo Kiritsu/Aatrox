@@ -4,7 +4,7 @@ using Aatrox.Core.Extensions;
 using DSharpPlus.Entities;
 using Qmmands;
 
-namespace Aatrox.Checks
+namespace Aatrox.Core.Checks
 {
     public sealed class RequireHierarchyAttribute : ParameterCheckAttribute
     {

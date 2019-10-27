@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Qmmands;
 
-namespace Aatrox.TypeParsers
+namespace Aatrox.Core.TypeParsers
 {
     public sealed class UriTypeParser : TypeParser<Uri>
     {

@@ -13,7 +13,6 @@ namespace Aatrox.Core.Entities
     public sealed class DiscordCommandContext : CommandContext, IDisposable
     {
         public CommandService Commands { get; }
-
         public DiscordClient Client { get; }
         public DiscordGuild Guild { get; }
         public DiscordChannel Channel { get; }

@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Threading.Tasks;
 using Qmmands;
 
-namespace Aatrox.TypeParsers
+namespace Aatrox.Core.TypeParsers
 {
     public sealed class TimeSpanTypeParser : TypeParser<TimeSpan>
     {

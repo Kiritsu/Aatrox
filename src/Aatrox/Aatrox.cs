@@ -4,9 +4,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Aatrox.Core.Entities;
 using Aatrox.Core.Services;
+using Aatrox.Core.Services.Interfaces;
+using Aatrox.Core.TypeParsers;
 using Aatrox.Data;
 using Aatrox.Data.EventArgs;
-using Aatrox.TypeParsers;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using Microsoft.Extensions.Configuration;
@@ -17,26 +18,25 @@ namespace Aatrox
 {
     public class Aatrox
     {
-        public IConfiguration Configuration { get; private set; }
-        public IServiceProvider Services { get; private set; }
-        public LogService DbLogger { get; private set; }
+        private IConfiguration _configuration;
+        private IServiceProvider _services;
+        private LogService _dbLogger;
 
         private async Task InitializeAsync()
         {
-            var configPath = "credentials.json";
+            const string configPath = "credentials.json";
 
             var cfg = new ConfigurationBuilder()
                 .AddJsonFile(configPath, false)
                 .Build();
 
-            Configuration = cfg;
-
-            Services = BuildServiceProvider();
-            DbLogger = LogService.GetLogger("Database");
+            _configuration = cfg;
+            _services = BuildServiceProvider();
+            _dbLogger = LogService.GetLogger("Database");
 
             AatroxDbContextManager.DatabaseUpdated += DatabaseUpdated;
 
-            var ds = Services.GetRequiredService<DiscordService>();
+            var ds = _services.GetRequiredService<DiscordService>();
             await ds.SetupAsync(Assembly.GetEntryAssembly());
 
             await Task.Delay(Timeout.Infinite);
@@ -48,7 +48,7 @@ namespace Aatrox
 
             return new ServiceCollection()
                 .AddSingleton(logger)
-                .Configure<AatroxConfiguration>(x => Configuration.GetSection("Aatrox").Bind(x))
+                .Configure<AatroxConfiguration>(x => _configuration.GetSection("Aatrox").Bind(x))
                 .AddSingleton<IAatroxConfigurationProvider, AatroxConfigurationProvider>()
                 .AddSingleton(x =>
                 {
@@ -75,11 +75,11 @@ namespace Aatrox
         {
             if (arg.IsErrored)
             {
-                DbLogger.Error(arg.Path, arg.Exception);
+                _dbLogger.Error(arg.Path, arg.Exception);
             }
             else
             {
-                DbLogger.Debug(arg.Path);
+                _dbLogger.Debug(arg.Path);
             }
 
             return Task.CompletedTask;

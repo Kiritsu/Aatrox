@@ -9,7 +9,7 @@ namespace Aatrox.Core.Services
 {
     public sealed class InternationalizationService
     {
-        public static ReadOnlyDictionary<Lang, ReadOnlyDictionary<string, string>> Strings { get; private set; }
+        private static ReadOnlyDictionary<Lang, ReadOnlyDictionary<string, string>> Strings { get; set; }
 
         static InternationalizationService()
         {

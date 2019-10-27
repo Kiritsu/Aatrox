@@ -3,7 +3,7 @@ using Aatrox.Core.Entities;
 using DSharpPlus;
 using Qmmands;
 
-namespace Aatrox.Checks
+namespace Aatrox.Core.Checks
 {
     public sealed class RequireUserPermissionsAttribute : AatroxCheckBaseAttribute
     {

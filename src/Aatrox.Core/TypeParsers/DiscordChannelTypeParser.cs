@@ -5,7 +5,7 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using Qmmands;
 
-namespace Aatrox.TypeParsers
+namespace Aatrox.Core.TypeParsers
 {
     public sealed class DiscordChannelTypeParser : TypeParser<DiscordChannel>
     {

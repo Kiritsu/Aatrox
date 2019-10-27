@@ -6,7 +6,7 @@ using Aatrox.Core.Extensions;
 using DSharpPlus.Entities;
 using Qmmands;
 
-namespace Aatrox.TypeParsers
+namespace Aatrox.Core.TypeParsers
 {
     public sealed class DiscordMemberTypeParser : TypeParser<DiscordMember>
     {

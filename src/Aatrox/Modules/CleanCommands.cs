@@ -2,7 +2,7 @@
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
-using Aatrox.Checks;
+using Aatrox.Core.Checks;
 using Aatrox.Core.Entities;
 using DSharpPlus;
 using DSharpPlus.Entities;

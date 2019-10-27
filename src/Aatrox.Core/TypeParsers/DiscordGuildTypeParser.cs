@@ -4,7 +4,7 @@ using Aatrox.Core.Entities;
 using DSharpPlus.Entities;
 using Qmmands;
 
-namespace Aatrox.TypeParsers
+namespace Aatrox.Core.TypeParsers
 {
     public sealed class DiscordGuildTypeParser : TypeParser<DiscordGuild>
     {

@@ -8,7 +8,6 @@ namespace Aatrox.Core.Entities
     public class DatabaseContext
     {
         private readonly DiscordCommandContext _ctx;
-        private readonly IUnitOfWork _uow;
 
         private readonly IGuildRepository _guilds;
         private readonly IUserRepository _users;
@@ -21,9 +20,8 @@ namespace Aatrox.Core.Entities
         public DatabaseContext(DiscordCommandContext ctx, IUnitOfWork uow)
         {
             _ctx = ctx;
-            _uow = uow;
-            _guilds = _uow.RequestRepository<IGuildRepository>();
-            _users = _uow.RequestRepository<IUserRepository>();
+            _guilds = uow.RequestRepository<IGuildRepository>();
+            _users = uow.RequestRepository<IUserRepository>();
         }
 
         public async Task PrepareAsync()
