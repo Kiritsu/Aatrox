@@ -70,7 +70,11 @@ namespace Aatrox.Modules
             var matchingCommands = _commands.FindCommands(command);
             if (matchingCommands.Count == 0)
             {
-                matchingCommands = _commands.FindCommands(command.Levenshtein(_commands));
+                var typoFix = command.Levenshtein(_commands);
+                if (!string.IsNullOrWhiteSpace(typoFix))
+                {
+                    matchingCommands = _commands.FindCommands(typoFix);
+                }
             }
 
             LocalEmbedBuilder embed;
@@ -109,7 +113,7 @@ namespace Aatrox.Modules
                 var moduleChecks = CommandUtilities.EnumerateAllChecks(matchingModule).Cast<AatroxCheckBaseAttribute>().ToArray();
                 if (moduleChecks.Length > 0)
                 {
-                    embed.AddField("Requirements", string.Join("\n", moduleChecks.Select(x => $"`- {x.Name}`")));
+                    embed.AddField("Requirements", string.Join("\n", moduleChecks.Select(x => $"`- {x.Name}{x.Details}`")));
                 }
 
                 return RespondAsync(embed.Build());
@@ -140,12 +144,12 @@ namespace Aatrox.Modules
             var checks = CommandUtilities.EnumerateAllChecks(defaultCmd.Module).Cast<AatroxCheckBaseAttribute>().ToArray();
             if (checks.Length > 0)
             {
-                embed.AddField($"Module Requirements", string.Join("\n", checks.Select(x => $"- `{x.Name}`")));
+                embed.AddField($"Module Requirements", string.Join("\n", checks.Select(x => $"- `{x.Name}{x.Details}`")));
             }
 
             if (defaultCmd.Checks.Count > 0)
             {
-                embed.AddField($"Command Requirements", string.Join("\n", defaultCmd.Checks.Cast<AatroxCheckBaseAttribute>().Select(x => $"- `{x.Name}`")));
+                embed.AddField($"Command Requirements", string.Join("\n", defaultCmd.Checks.Cast<AatroxCheckBaseAttribute>().Select(x => $"- `{x.Name}{x.Details}`")));
             }
 
             return RespondAsync(embed: embed.Build());

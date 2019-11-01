@@ -14,6 +14,7 @@ namespace Aatrox.Checks
         public RequireBotPermissionsAttribute(Permission permissions)
         {
             Permissions = permissions;
+            Details += Permissions.ToString();
         }
 
         public override ValueTask<CheckResult> CheckAsync(CommandContext context)
