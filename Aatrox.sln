@@ -1,13 +1,29 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-VisualStudioVersion = 16.0.28701.123
+VisualStudioVersion = 16.0.29215.179
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aatrox", "src\Aatrox\Aatrox.csproj", "{DB987940-EAE9-4CB1-83AD-DFEE63C37A55}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aatrox.Data", "src\Aatrox.Data\Aatrox.Data.csproj", "{ED2AACD6-AA38-4577-8486-5F74B7DB73AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aatrox.Core", "src\Aatrox.Core\Aatrox.Core.csproj", "{8298FF0D-7CE7-4F0E-8166-3C81ECC71B59}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aatrox.Core", "src\Aatrox.Core\Aatrox.Core.csproj", "{8298FF0D-7CE7-4F0E-8166-3C81ECC71B59}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "submodules", "submodules", "{BA2C3550-3B50-432E-A4E0-6DC2AA3763C2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Disqord", "submodules\Disqord\src\Disqord\Disqord.csproj", "{B22F7009-D3D8-484C-A5FC-E8AE0268FD07}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Disqord.Rest", "submodules\Disqord\src\Disqord.Rest\Disqord.Rest.csproj", "{396B5F4E-8E7B-4531-AAE3-812E2962D760}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Disqord.Bot", "submodules\Disqord\src\Disqord.Bot\Disqord.Bot.csproj", "{8E9B63EA-AD4F-442D-9CD0-A8C65C3A34B9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Disqord.Audio", "submodules\Disqord\src\Disqord.Audio\Disqord.Audio.csproj", "{2CE2445F-ED2E-483E-958C-61D8A2119C0D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Disqord.Interactivity", "submodules\Disqord\src\Disqord.Interactivity\Disqord.Interactivity.csproj", "{32A7BAE5-C5C4-4413-97AF-E6A810CCABC3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Disqord.Core", "submodules\Disqord\src\Disqord.Core\Disqord.Core.csproj", "{8854D6D7-DE00-4297-9DB4-E0A2D3A73587}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Disqord.Serialization.Json.Newtonsoft", "submodules\Disqord\src\Disqord.Serialization.Newtonsoft\Disqord.Serialization.Json.Newtonsoft.csproj", "{EB5B5FFC-F02F-438F-8DD5-2578ADFBB8B7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,11 +43,48 @@ Global
 		{8298FF0D-7CE7-4F0E-8166-3C81ECC71B59}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8298FF0D-7CE7-4F0E-8166-3C81ECC71B59}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8298FF0D-7CE7-4F0E-8166-3C81ECC71B59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B22F7009-D3D8-484C-A5FC-E8AE0268FD07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B22F7009-D3D8-484C-A5FC-E8AE0268FD07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B22F7009-D3D8-484C-A5FC-E8AE0268FD07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B22F7009-D3D8-484C-A5FC-E8AE0268FD07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{396B5F4E-8E7B-4531-AAE3-812E2962D760}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{396B5F4E-8E7B-4531-AAE3-812E2962D760}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{396B5F4E-8E7B-4531-AAE3-812E2962D760}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{396B5F4E-8E7B-4531-AAE3-812E2962D760}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E9B63EA-AD4F-442D-9CD0-A8C65C3A34B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E9B63EA-AD4F-442D-9CD0-A8C65C3A34B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E9B63EA-AD4F-442D-9CD0-A8C65C3A34B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E9B63EA-AD4F-442D-9CD0-A8C65C3A34B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CE2445F-ED2E-483E-958C-61D8A2119C0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CE2445F-ED2E-483E-958C-61D8A2119C0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CE2445F-ED2E-483E-958C-61D8A2119C0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CE2445F-ED2E-483E-958C-61D8A2119C0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32A7BAE5-C5C4-4413-97AF-E6A810CCABC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32A7BAE5-C5C4-4413-97AF-E6A810CCABC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32A7BAE5-C5C4-4413-97AF-E6A810CCABC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32A7BAE5-C5C4-4413-97AF-E6A810CCABC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8854D6D7-DE00-4297-9DB4-E0A2D3A73587}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8854D6D7-DE00-4297-9DB4-E0A2D3A73587}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8854D6D7-DE00-4297-9DB4-E0A2D3A73587}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8854D6D7-DE00-4297-9DB4-E0A2D3A73587}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB5B5FFC-F02F-438F-8DD5-2578ADFBB8B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB5B5FFC-F02F-438F-8DD5-2578ADFBB8B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB5B5FFC-F02F-438F-8DD5-2578ADFBB8B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB5B5FFC-F02F-438F-8DD5-2578ADFBB8B7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B22F7009-D3D8-484C-A5FC-E8AE0268FD07} = {BA2C3550-3B50-432E-A4E0-6DC2AA3763C2}
+		{396B5F4E-8E7B-4531-AAE3-812E2962D760} = {BA2C3550-3B50-432E-A4E0-6DC2AA3763C2}
+		{8E9B63EA-AD4F-442D-9CD0-A8C65C3A34B9} = {BA2C3550-3B50-432E-A4E0-6DC2AA3763C2}
+		{2CE2445F-ED2E-483E-958C-61D8A2119C0D} = {BA2C3550-3B50-432E-A4E0-6DC2AA3763C2}
+		{32A7BAE5-C5C4-4413-97AF-E6A810CCABC3} = {BA2C3550-3B50-432E-A4E0-6DC2AA3763C2}
+		{8854D6D7-DE00-4297-9DB4-E0A2D3A73587} = {BA2C3550-3B50-432E-A4E0-6DC2AA3763C2}
+		{EB5B5FFC-F02F-438F-8DD5-2578ADFBB8B7} = {BA2C3550-3B50-432E-A4E0-6DC2AA3763C2}
+	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {8499790F-5242-4352-8388-55F7CDA35531}
+		SolutionGuid = {EFD09C91-3B86-4BB5-ABCD-4E8DD454F224}
 	EndGlobalSection
 EndGlobal

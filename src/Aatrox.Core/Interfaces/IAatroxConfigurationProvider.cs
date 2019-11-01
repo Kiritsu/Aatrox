@@ -1,6 +1,6 @@
 ﻿using Aatrox.Core.Entities;
 
-namespace Aatrox.Core.Services.Interfaces
+namespace Aatrox.Core.Interfaces
 {
     public interface IAatroxConfigurationProvider
     {

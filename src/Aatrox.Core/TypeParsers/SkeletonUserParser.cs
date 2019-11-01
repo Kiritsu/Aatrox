@@ -1,16 +1,16 @@
 ﻿using System.Threading.Tasks;
 using Aatrox.Core.Entities;
-using DSharpPlus.Entities;
+using Disqord;
 using Qmmands;
 
 namespace Aatrox.Core.TypeParsers
 {
-    public sealed class SkeletonUserTypeParser : TypeParser<SkeletonUser>
+    public sealed class SkeletonUserParser : TypeParser<SkeletonUser>
     {
-        private readonly TypeParser<DiscordUser> _dutp;
-        private readonly TypeParser<DiscordMember> _dmtp;
+        private readonly TypeParser<CachedUser> _dutp;
+        private readonly TypeParser<CachedMember> _dmtp;
 
-        public SkeletonUserTypeParser(TypeParser<DiscordUser> dutp, TypeParser<DiscordMember> dmtp)
+        public SkeletonUserParser(TypeParser<CachedUser> dutp, TypeParser<CachedMember> dmtp)
         {
             _dutp = dutp;
             _dmtp = dmtp;
@@ -18,7 +18,7 @@ namespace Aatrox.Core.TypeParsers
 
         public override async ValueTask<TypeParserResult<SkeletonUser>> ParseAsync(Parameter parameter, string value, CommandContext context)
         {
-            if (!(context is DiscordCommandContext ctx))
+            if (!(context is AatroxDiscordCommandContext ctx))
             {
                 return new TypeParserResult<SkeletonUser>("A skeleton user cannot exist in that context.");
             }

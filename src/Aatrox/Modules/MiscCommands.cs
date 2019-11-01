@@ -5,13 +5,13 @@ using Qmmands;
 namespace Aatrox.Modules
 {
     [Name("Misc")]
-    public sealed class MiscCommands : DiscordModuleBase
+    public sealed class MiscCommands : AatroxDiscordModuleBase
     {
         [Command("Ping")]
         [Description("Shows the current websocket's latency.")]
         public Task PingAsync()
         {
-            return RespondLocalizedAsync("ping", Context.Client.Ping);
+            return RespondLocalizedAsync("ping", -42);
         }
 
         [Command("Invite")]

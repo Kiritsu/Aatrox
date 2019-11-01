@@ -1,10 +1,10 @@
-﻿using DSharpPlus.Entities;
+﻿using Disqord;
 
 namespace Aatrox.Core.Entities
 {
     public sealed class AatroxConfiguration
     {
         public string Token { get; set; }
-        public DiscordColor EmbedColor => DiscordColor.Goldenrod;
+        public Color EmbedColor => Color.Goldenrod;
     }
 }

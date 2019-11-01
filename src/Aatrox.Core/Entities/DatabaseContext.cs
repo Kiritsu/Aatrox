@@ -7,7 +7,7 @@ namespace Aatrox.Core.Entities
 {
     public class DatabaseContext
     {
-        private readonly DiscordCommandContext _ctx;
+        private readonly AatroxDiscordCommandContext _ctx;
 
         private readonly IGuildRepository _guilds;
         private readonly IUserRepository _users;
@@ -17,7 +17,7 @@ namespace Aatrox.Core.Entities
         public GuildEntity Guild { get; private set; }
         public UserEntity User { get; private set; }
 
-        public DatabaseContext(DiscordCommandContext ctx, IUnitOfWork uow)
+        public DatabaseContext(AatroxDiscordCommandContext ctx, IUnitOfWork uow)
         {
             _ctx = ctx;
             _guilds = uow.RequestRepository<IGuildRepository>();
