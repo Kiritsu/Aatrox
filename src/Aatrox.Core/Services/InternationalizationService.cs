@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace Aatrox.Core.Services
 {
-    public sealed class InternationalizationService
+    public static class InternationalizationService
     {
         private static ReadOnlyDictionary<Lang, ReadOnlyDictionary<string, string>> Strings { get; set; }
 

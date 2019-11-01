@@ -68,11 +68,20 @@ namespace Aatrox.Modules
             }
 
             var matchingCommands = _commands.FindCommands(command);
+            if (matchingCommands.Count == 0)
+            {
+                matchingCommands = _commands.FindCommands(command.Levenshtein(_commands));
+            }
 
             LocalEmbedBuilder embed;
             if (matchingCommands.Count == 0) //Could be a module.
             {
                 var matchingModule = _commands.TopLevelModules.FirstOrDefault(x => x.Name.Equals(command, StringComparison.OrdinalIgnoreCase));
+                if (matchingModule is null)
+                {
+                    matchingModule = _commands.TopLevelModules.FirstOrDefault(x => x.Name.Equals(command.Levenshtein(_commands), StringComparison.OrdinalIgnoreCase));   
+                }
+
                 if (matchingModule is null)
                 {
                     var cmdArgs = command.Split(' ').ToList();

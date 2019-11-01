@@ -11,12 +11,11 @@ using Aatrox.Core.Interfaces;
 using Disqord;
 using Disqord.Events;
 using Disqord.Rest;
-using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 
 namespace Aatrox.Core.Services
 {
-    public sealed class DiscordService
+    public sealed class DiscordService : IDiscordService
     {
         private readonly CommandService _commands;
         private readonly DiscordClient _client;
@@ -55,7 +54,7 @@ namespace Aatrox.Core.Services
         }
 
         //https://github.com/k-boyle/Kommon/blob/master/src/Kommon/Qmmands/Extensions.cs#L18-L65
-        public IEnumerable<object> PullTypeParsersFromContainer(Assembly assembly)
+        private IEnumerable<object> PullTypeParsersFromContainer(Assembly assembly)
         {
             var itf = _commands.GetType().Assembly.GetTypes()
                 .First(x => x.Name == "ITypeParser").GetTypeInfo();
@@ -218,7 +217,7 @@ namespace Aatrox.Core.Services
                     return;
                 }
 
-                await HandleCommandErroredAsync(tryResult, ctx);
+                result = tryResult;
             }
 
             var str = new StringBuilder();
@@ -229,7 +228,7 @@ namespace Aatrox.Core.Services
                     str.AppendLine("The following check(s) failed:");
                     foreach (var (check, error) in err.FailedChecks)
                     {
-                        str.AppendLine($"[`{((AatroxCheckBaseAttribute)check).Name}`]: `{error}`");
+                        str.AppendLine($"[`{(check as AatroxCheckBaseAttribute)?.Name ?? check.GetType().Name}`]: `{error}`");
                     }
                     break;
                 case TypeParseFailedResult err:

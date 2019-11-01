@@ -5,7 +5,7 @@ using Aatrox.Data.Repositories.Interfaces;
 
 namespace Aatrox.Core.Entities
 {
-    public class DatabaseCommandContext
+    public sealed class DatabaseCommandContext
     {
         private readonly AatroxCommandContext _ctx;
 
