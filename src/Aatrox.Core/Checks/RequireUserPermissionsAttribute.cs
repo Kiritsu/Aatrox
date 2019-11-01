@@ -1,24 +1,24 @@
 ﻿using System.Threading.Tasks;
 using Aatrox.Core.Entities;
-using DSharpPlus;
+using Disqord;
 using Qmmands;
 
 namespace Aatrox.Core.Checks
 {
     public sealed class RequireUserPermissionsAttribute : AatroxCheckBaseAttribute
     {
-        public Permissions Permissions { get; }
+        public Permission Permissions { get; }
 
         public override string Name { get; set; } = "User permissions";
 
-        public RequireUserPermissionsAttribute(Permissions permissions)
+        public RequireUserPermissionsAttribute(Permission permissions)
         {
             Permissions = permissions;
         }
 
         public override ValueTask<CheckResult> CheckAsync(CommandContext context)
         {
-            if (!(context is DiscordCommandContext ctx))
+            if (!(context is AatroxDiscordCommandContext ctx))
             {
                 return new CheckResult("Invalid command context.");
             }
@@ -28,24 +28,24 @@ namespace Aatrox.Core.Checks
                 return CheckResult.Successful;
             }
 
-            if (ctx.Member.IsOwner)
+            if (ctx.Guild.OwnerId == ctx.Member.Id)
             {
                 return CheckResult.Successful;
             }
 
-            var perms = ctx.Member.PermissionsIn(ctx.Channel);
+            var perms = ctx.Member.GetPermissionsFor(ctx.Channel as CachedTextChannel);
 
-            if (perms.HasPermission(Permissions.Administrator))
+            if (perms.Has(Permission.Administrator))
             {
                 return CheckResult.Successful;
             }
 
-            if (perms.HasPermission(Permissions))
+            if (perms.Has(Permissions))
             {
                 return CheckResult.Successful;
             }
 
-            return new CheckResult($"I need the following permissions: {Permissions.ToPermissionString()}");
+            return new CheckResult($"I need the following permissions: {Permissions.ToString()}");
         }
     }
 }

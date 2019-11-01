@@ -5,7 +5,7 @@ using Qmmands;
 
 namespace Aatrox.Core.TypeParsers
 {
-    public sealed class TimeSpanTypeParser : TypeParser<TimeSpan>
+    public sealed class TimeSpanParser : TypeParser<TimeSpan>
     {
         private static readonly string[] Formats = {
             "%d'd'%h'h'%m'm'%s's'",

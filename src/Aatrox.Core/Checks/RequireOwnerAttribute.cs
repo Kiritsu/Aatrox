@@ -11,13 +11,13 @@ namespace Aatrox.Core.Checks
 
         public override async ValueTask<CheckResult> CheckAsync(CommandContext context)
         {
-            if (!(context is DiscordCommandContext ctx))
+            if (!(context is AatroxDiscordCommandContext ctx))
             {
                 return CheckResult.Unsuccessful("Invalid command context.");
             }
 
             var application = await ctx.Client.GetCurrentApplicationAsync();
-            return application.Owners.Any(x => x == ctx.User)
+            return application.Owner.Id == ctx.User.Id
                 ? CheckResult.Successful
                 : CheckResult.Unsuccessful("You need to be owner of the bot for this.");
         }

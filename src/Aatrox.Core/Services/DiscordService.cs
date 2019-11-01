@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Aatrox.Core.Entities;
 using Aatrox.Core.Extensions;
-using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
-using DSharpPlus.Exceptions;
+using Aatrox.Core.Interfaces;
+using Disqord;
+using Disqord.Events;
+using Disqord.Rest;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 
@@ -21,27 +22,29 @@ namespace Aatrox.Core.Services
         private readonly DiscordClient _client;
         private readonly LogService _logger;
         private readonly IServiceProvider _services;
+        private readonly AatroxConfiguration _configuration;
 
-        public DiscordService(CommandService commands, DiscordClient client, IServiceProvider services)
+        public DiscordService(CommandService commands, DiscordClient client, 
+            IAatroxConfigurationProvider configuration, IServiceProvider services)
         {
             _commands = commands;
             _client = client;
             _logger = LogService.GetLogger("Discord");
+            _configuration = configuration.GetConfiguration();
             _services = services;
         }
 
         public async Task SetupAsync(Assembly assembly)
         {
-            _client.MessageCreated += OnMessageCreatedAsync;
+            _client.MessageReceived += OnMessageCreatedAsync;
             _client.MessageUpdated += OnMessageUpdatedAsync;
             _client.Ready += OnReadyAsync;
             _client.GuildAvailable += OnGuildAvailable;
-            _client.ClientErrored += OnClientErrored;
 
-            _commands.AddTypeParser(_services.GetService<TypeParser<DiscordRole>>());
-            _commands.AddTypeParser(_services.GetService<TypeParser<DiscordUser>>());
-            _commands.AddTypeParser(_services.GetService<TypeParser<DiscordMember>>());
-            _commands.AddTypeParser(_services.GetService<TypeParser<DiscordGuild>>());
+            _commands.AddTypeParser(_services.GetService<TypeParser<CachedGuildChannel>>());
+            _commands.AddTypeParser(_services.GetService<TypeParser<CachedUser>>());
+            _commands.AddTypeParser(_services.GetService<TypeParser<CachedMember>>());
+            _commands.AddTypeParser(_services.GetService<TypeParser<CachedGuild>>());
             _commands.AddTypeParser(_services.GetService<TypeParser<SkeletonUser>>());
             _commands.AddTypeParser(_services.GetService<TypeParser<TimeSpan>>());
             _commands.AddTypeParser(_services.GetService<TypeParser<Uri>>());
@@ -49,20 +52,14 @@ namespace Aatrox.Core.Services
             _commands.AddModules(assembly);
             _commands.CommandExecutionFailed += OnCommandErrored;
 
-            await _client.ConnectAsync(status: UserStatus.DoNotDisturb);
-        }
-
-        private Task OnClientErrored(ClientErrorEventArgs e)
-        {
-            _logger.Error("An error occured", e.Exception.GetBaseException());
-            return Task.CompletedTask;
+            await _client.ConnectAsync();
         }
 
         private async Task OnCommandErrored(CommandExecutionFailedEventArgs e)
         {
-            _logger.Error($"Command errored: {e.Context.Command.Name} by {(e.Context as DiscordCommandContext).User.Id} in {(e.Context as DiscordCommandContext).Guild.Id}", e.Result.Exception);
+            _logger.Error($"Command errored: {e.Context.Command.Name} by {(e.Context as AatroxDiscordCommandContext).User.Id} in {(e.Context as AatroxDiscordCommandContext).Guild.Id}", e.Result.Exception);
 
-            if (!(e.Context is DiscordCommandContext ctx))
+            if (!(e.Context is AatroxDiscordCommandContext ctx))
             {
                 return;
             }
@@ -70,10 +67,10 @@ namespace Aatrox.Core.Services
             var str = new StringBuilder();
             switch (e.Result.Exception)
             {
-                case UnauthorizedException _:
+                case DiscordHttpException ex when ex.HttpStatusCode == HttpStatusCode.Unauthorized:
                     str.AppendLine("I don't have enough power to perform this action. (please check that the hierarchy of the bot is correct)");
                     break;
-                case BadRequestException _:
+                case DiscordHttpException ex when ex.HttpStatusCode == HttpStatusCode.BadRequest:
                     str.AppendLine("The requested action has been stopped by Discord.");
                     break;
                 case ArgumentException ex:
@@ -90,78 +87,64 @@ namespace Aatrox.Core.Services
                 return;
             }
 
-            var embed = new DiscordEmbedBuilder
+            var embed = new LocalEmbedBuilder
             {
-                Color = DiscordColor.Goldenrod,
+                Color = _configuration.EmbedColor,
                 Title = "Something went wrong!"
             };
 
-            embed.AddField(Formatter.Underline("Command"), e.Result.Command.Name, true);
-            embed.AddField(Formatter.Underline("Author"), ctx.User.FormatUser(), true);
-            embed.AddField(Formatter.Underline("Error(s)"), str.ToString());
+            embed.AddField("__Command__", e.Result.Command.Name, true);
+            embed.AddField("__Author__", ctx.User.FormatUser(), true);
+            embed.AddField("__Error(s)__", str.ToString());
             embed.WithFooter($"Type '{ctx.Prefix}help {ctx.Command.FullAliases[0].ToLowerInvariant()}' for more information.");
 
-            await ctx.Channel.SendMessageAsync("", false, embed);
+            await (ctx.Channel as IMessageChannel).SendMessageAsync("", false, embed.Build());
         }
 
-        private Task OnGuildAvailable(GuildCreateEventArgs e)
+        private Task OnGuildAvailable(GuildAvailableEventArgs e)
         {
             _logger.Info($"Guild available: {e.Guild.Name} ({e.Guild.Id})");
 
             return Task.CompletedTask;
         }
 
-        private async Task OnMessageCreatedAsync(MessageCreateEventArgs e)
+        private async Task OnMessageCreatedAsync(MessageReceivedEventArgs e)
         {
-            if (e.Author.IsBot)
+            if (e.Message.Author.IsBot)
             {
                 return;
             }
 
-            if (e.Channel.Id != 566751794148016148)
-            {
-                return;
-            }
+            using var ctx = new AatroxDiscordCommandContext(e, _services);
 
-            using (var ctx = new DiscordCommandContext(e, _services))
-            {
-                await ctx.PrepareAsync();
-
-                await HandleCommandAsync(ctx);
-
-                await ctx.EndAsync();
-            }
+            await ctx.PrepareAsync();
+            await HandleCommandAsync(ctx);
+            await ctx.EndAsync();
         }
 
-        private async Task OnMessageUpdatedAsync(MessageUpdateEventArgs e)
+        private async Task OnMessageUpdatedAsync(MessageUpdatedEventArgs e)
         {
-            if (e.Author.IsBot)
+            if (e.NewMessage.Author.IsBot)
             {
                 return;
             }
 
-            using (var ctx = new DiscordCommandContext(e, _services))
-            {
-                await ctx.PrepareAsync();
+            using var ctx = new AatroxDiscordCommandContext(e, _services);
 
-                await HandleCommandAsync(ctx);
-
-                await ctx.EndAsync();
-            }
+            await ctx.PrepareAsync();
+            await HandleCommandAsync(ctx);
+            await ctx.EndAsync();
         }
 
         private Task OnReadyAsync(ReadyEventArgs e)
         {
             _logger.Info("Aatrox is ready.");
 
-            return e.Client.UpdateStatusAsync(new DiscordActivity
-            {
-                ActivityType = ActivityType.ListeningTo,
-                Name = "hate speeches"
-            }, UserStatus.DoNotDisturb);
+            return (e.Client as DiscordClient).SetPresenceAsync(UserStatus.DoNotDisturb, 
+                new LocalActivity("hate speeches", ActivityType.Listening));
         }
 
-        private async Task HandleCommandAsync(DiscordCommandContext ctx)
+        private async Task HandleCommandAsync(AatroxDiscordCommandContext ctx)
         {
             var prefixes = new List<string>(ctx.DatabaseContext.Guild.Prefixes)
             {
@@ -188,7 +171,7 @@ namespace Aatrox.Core.Services
             await HandleCommandErroredAsync(result, ctx);
         }
 
-        private async Task HandleCommandErroredAsync(IResult result, DiscordCommandContext ctx)
+        private async Task HandleCommandErroredAsync(IResult result, AatroxDiscordCommandContext ctx)
         {
             if (result is CommandNotFoundResult)
             {
@@ -274,20 +257,20 @@ namespace Aatrox.Core.Services
                 return;
             }
 
-            var embed = new DiscordEmbedBuilder
+            var embed = new LocalEmbedBuilder
             {
-                Color = DiscordColor.Goldenrod,
+                Color = _configuration.EmbedColor,
                 Title = "Something went wrong!"
             };
 
             embed.WithFooter($"Type '{ctx.Prefix}help {ctx.Command?.FullAliases[0] ?? ctx.Command?.FullAliases[0] ?? ""}' for more information.");
 
-            embed.AddField(Formatter.Underline("Command/Module"), ctx.Command?.Name ?? ctx.Command?.Name ?? ctx.Command?.Module?.Name ?? "Unknown command...", true);
-            embed.AddField(Formatter.Underline("Author"), ctx.User.FormatUser(), true);
-            embed.AddField(Formatter.Underline("Error(s)"), str.ToString());
+            embed.AddField("__Command/Module__", ctx.Command?.Name ?? ctx.Command?.Name ?? ctx.Command?.Module?.Name ?? "Unknown command...", true);
+            embed.AddField("__Author__", ctx.User.FormatUser(), true);
+            embed.AddField("__Error(s)__", str.ToString());
 
             _logger.Warn($"{ctx.User.Id} - {ctx.Guild.Id} ::> Command errored: {ctx.Command?.Name ?? "-unknown command-"}");
-            await ctx.Channel.SendMessageAsync("", false, embed.Build());
+            await (ctx.Channel as IMessageChannel).SendMessageAsync("", false, embed.Build());
         }
     }
 }

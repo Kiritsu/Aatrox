@@ -1,37 +1,37 @@
 ﻿using System;
 using Aatrox.Core.Entities;
-using DSharpPlus.Entities;
+using Disqord;
 
 namespace Aatrox.Core.Helpers
 {
     public static class EmbedHelper
     {
-        public static DiscordEmbedBuilder New(DiscordCommandContext ctx)
+        public static LocalEmbedBuilder New(AatroxDiscordCommandContext ctx)
         {
-            return new DiscordEmbedBuilder
+            return new LocalEmbedBuilder
             {
                 Timestamp = DateTimeOffset.Now,
-                Footer = new DiscordEmbedBuilder.EmbedFooter
+                Footer = new LocalEmbedFooterBuilder
                 {
                     Text = $"Executed by {ctx.Member.DisplayName}#{ctx.Member.Discriminator}",
-                    IconUrl = ctx.Aatrox.AvatarUrl
+                    IconUrl = ctx.Aatrox.GetAvatarUrl()
                 },
-                Color = DiscordColor.Goldenrod
+                Color = Color.Goldenrod
             };
         }
 
-        public static DiscordEmbedBuilder New(DiscordCommandContext ctx, string description)
+        public static LocalEmbedBuilder New(AatroxDiscordCommandContext ctx, string description)
         {
-            return new DiscordEmbedBuilder
+            return new LocalEmbedBuilder
             {
                 Description = description,
                 Timestamp = DateTimeOffset.Now,
-                Footer = new DiscordEmbedBuilder.EmbedFooter
+                Footer = new LocalEmbedFooterBuilder
                 {
                     Text = $"Executed by {ctx.Member.DisplayName}#{ctx.Member.Discriminator}",
-                    IconUrl = ctx.Aatrox.AvatarUrl
+                    IconUrl = ctx.Aatrox.GetAvatarUrl()
                 },
-                Color = DiscordColor.Goldenrod
+                Color = Color.Goldenrod
             };
         }
     }

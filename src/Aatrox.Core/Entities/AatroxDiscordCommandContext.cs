@@ -1,25 +1,23 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Aatrox.Core.Services;
 using Aatrox.Data;
-using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
+using Disqord;
+using Disqord.Events;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 
 namespace Aatrox.Core.Entities
 {
-    public sealed class DiscordCommandContext : CommandContext, IDisposable
+    public sealed class AatroxDiscordCommandContext : CommandContext, IDisposable
     {
         public CommandService Commands { get; }
         public DiscordClient Client { get; }
-        public DiscordGuild Guild { get; }
-        public DiscordChannel Channel { get; }
-        public DiscordUser User { get; }
-        public DiscordMember Member { get; }
-        public DiscordMessage Message { get; }
-        public DiscordUser Aatrox => Client.CurrentUser;
+        public CachedGuild Guild { get; }
+        public IMessageChannel Channel { get; }
+        public CachedUser User { get; }
+        public CachedMember Member { get; }
+        public CachedMessage Message { get; }
+        public CachedUser Aatrox => Client.CurrentUser;
 
         public string Prefix { get; set; }
 
@@ -41,15 +39,15 @@ namespace Aatrox.Core.Entities
 
         public EventArgs EventArgs { get; }
 
-        public DiscordCommandContext(MessageCreateEventArgs e, IServiceProvider services) : base(services)
+        public AatroxDiscordCommandContext(MessageReceivedEventArgs e, IServiceProvider services) : base(services)
         {
             Commands = services.GetRequiredService<CommandService>();
 
-            Client = e.Client;
-            Guild = e.Guild;
-            Channel = e.Channel;
-            User = e.Author;
-            Member = e.Author as DiscordMember;
+            Client = e.Client as DiscordClient;
+            Guild = (e.Message.Channel as CachedGuildChannel).Guild;
+            Channel = e.Message.Channel;
+            User = e.Message.Author;
+            Member = e.Message.Author as CachedMember;
             Message = e.Message;
 
             EventArgs = e;
@@ -57,16 +55,16 @@ namespace Aatrox.Core.Entities
             _database = AatroxDbContextManager.CreateContext();
         }
 
-        public DiscordCommandContext(MessageUpdateEventArgs e, IServiceProvider services) : base(services)
+        public AatroxDiscordCommandContext(MessageUpdatedEventArgs e, IServiceProvider services) : base(services)
         {
             Commands = services.GetRequiredService<CommandService>();
 
-            Client = e.Client;
-            Guild = e.Guild;
-            Channel = e.Channel;
-            User = e.Author;
-            Member = e.Author as DiscordMember;
-            Message = e.Message;
+            Client = e.Client as DiscordClient;
+            Guild = (e.NewMessage.Channel as CachedGuildChannel).Guild;
+            Channel = e.NewMessage.Channel;
+            User = e.NewMessage.Author;
+            Member = e.NewMessage.Author as CachedMember;
+            Message = e.NewMessage;
 
             EventArgs = e;
 

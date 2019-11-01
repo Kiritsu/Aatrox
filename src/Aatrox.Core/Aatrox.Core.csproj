@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
 	<LangVersion>latest</LangVersion>
   </PropertyGroup>
 
@@ -10,9 +10,12 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
     <PackageReference Include="NLog" Version="4.6.7" />
     <PackageReference Include="NLog.Config" Version="4.6.7" />
-    <PackageReference Include="Qmmands" Version="3.0.0-nightly-00208" />
-    <PackageReference Include="DSharpPlus" Version="4.0.0-nightly-00624" />
+    <PackageReference Include="Qmmands" Version="3.0.0" />
 	<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
+	<ProjectReference Include="..\..\submodules\Disqord\src\Disqord.Core\Disqord.Core.csproj" />
+	<ProjectReference Include="..\..\submodules\Disqord\src\Disqord.Rest\Disqord.Rest.csproj" />
+	<ProjectReference Include="..\..\submodules\Disqord\src\Disqord.Serialization.Newtonsoft\Disqord.Serialization.Json.Newtonsoft.csproj" />
+	<ProjectReference Include="..\..\submodules\Disqord\src\Disqord\Disqord.csproj" />
 	<ProjectReference Include="..\Aatrox.Data\Aatrox.Data.csproj" />
   </ItemGroup>
 

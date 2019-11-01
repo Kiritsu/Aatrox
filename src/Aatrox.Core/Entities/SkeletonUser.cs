@@ -1,5 +1,6 @@
 ﻿using System;
-using DSharpPlus.Entities;
+using Disqord;
+using Disqord.Rest;
 
 namespace Aatrox.Core.Entities
 {
@@ -21,18 +22,26 @@ namespace Aatrox.Core.Entities
 
         public string Username { get; }
 
-        public bool? Verified { get; }
-
-        public SkeletonUser(DiscordUser user)
+        public SkeletonUser(CachedUser user)
         {
             AvatarHash = user.AvatarHash;
-            AvatarUrl = user.AvatarUrl;
-            CreatedAt = user.CreationTimestamp;
+            AvatarUrl = user.GetAvatarUrl();
+            CreatedAt = user.Id.CreatedAt;
             Discriminator = user.Discriminator;
             Id = user.Id;
             IsBot = user.IsBot;
-            Username = user.Username;
-            Verified = user.Verified;
+            Username = user.Name;
+        }
+
+        public SkeletonUser(RestUser user)
+        {
+            AvatarHash = user.AvatarHash;
+            AvatarUrl = user.GetAvatarUrl();
+            CreatedAt = user.Id.CreatedAt;
+            Discriminator = user.Discriminator;
+            Id = user.Id;
+            IsBot = user.IsBot;
+            Username = user.Name;
         }
     }
 }

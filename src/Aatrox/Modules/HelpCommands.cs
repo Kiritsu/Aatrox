@@ -5,23 +5,23 @@ using System.Threading.Tasks;
 using Aatrox.Core.Checks;
 using Aatrox.Core.Entities;
 using Aatrox.Core.Extensions;
+using Aatrox.Core.Interfaces;
 using Aatrox.Core.Services;
-using DSharpPlus;
-using DSharpPlus.Entities;
+using Disqord;
 using Qmmands;
 
 namespace Aatrox.Modules
 {
     [Name("Help"), Hidden]
-    public sealed class HelpCommands : DiscordModuleBase
+    public sealed class HelpCommands : AatroxDiscordModuleBase
     {
         private readonly CommandService _commands;
         private readonly AatroxConfiguration _configuration;
 
-        public HelpCommands(CommandService commands, AatroxConfiguration configuration)
+        public HelpCommands(CommandService commands, IAatroxConfigurationProvider configuration)
         {
             _commands = commands;
-            _configuration = configuration;
+            _configuration = configuration.GetConfiguration();
         }
 
         [Command("Help"), Hidden]
@@ -41,12 +41,12 @@ namespace Aatrox.Modules
             }))).Where(x => x != null && x.Module.Parent is null).DistinctBy(x => x.Name).ToArray();
 
             var prefixes = DbContext.Guild.Prefixes.Select(x => $"`{x}`").Append("`Aa!`");
-            var embed = new DiscordEmbedBuilder
+            var embed = new LocalEmbedBuilder
             {
                 Color = _configuration.EmbedColor,
                 Title = "Help",
                 Description = InternationalizationService.GetLocalization("help_description", DbContext.User.Language, Context.Prefix, string.Join(", ", prefixes)),
-                Footer = new DiscordEmbedBuilder.EmbedFooter
+                Footer = new LocalEmbedFooterBuilder
                 {
                     Text = InternationalizationService.GetLocalization("help_footer", DbContext.User.Language, modules.Length, commands.Length)
                 }
@@ -55,7 +55,7 @@ namespace Aatrox.Modules
             embed.AddField("Modules", string.Join(", ", modules.Select(x => $"`{x.Name}`")));
             embed.AddField("Commands", string.Join(", ", commands.Select(x => $"`{x.Name}`")));
 
-            await RespondAsync(embed);
+            await RespondAsync(embed.Build());
         }
 
         [Command("Help"), Hidden]
@@ -69,7 +69,7 @@ namespace Aatrox.Modules
 
             var matchingCommands = _commands.FindCommands(command);
 
-            DiscordEmbedBuilder embed;
+            LocalEmbedBuilder embed;
             if (matchingCommands.Count == 0) //Could be a module.
             {
                 var matchingModule = _commands.TopLevelModules.FirstOrDefault(x => x.Name.Equals(command, StringComparison.OrdinalIgnoreCase));
@@ -81,12 +81,12 @@ namespace Aatrox.Modules
                     return HelpAsync(string.Join(' ', cmdArgs));
                 }
 
-                embed = new DiscordEmbedBuilder
+                embed = new LocalEmbedBuilder
                 {
                     Color = _configuration.EmbedColor,
                     Title = "Help",
                     Description = InternationalizationService.GetLocalization("help_module_description"),
-                    Footer = new DiscordEmbedBuilder.EmbedFooter
+                    Footer = new LocalEmbedFooterBuilder
                     {
                         Text = InternationalizationService.GetLocalization("help_module_footer", DbContext.User.Language, matchingModule.Commands.Count)
                     }
@@ -103,10 +103,10 @@ namespace Aatrox.Modules
                     embed.AddField("Requirements", string.Join("\n", moduleChecks.Select(x => $"`- {x.Name}`")));
                 }
 
-                return RespondAsync(embed);
+                return RespondAsync(embed.Build());
             }
 
-            embed = new DiscordEmbedBuilder
+            embed = new LocalEmbedBuilder
             {
                 Color = _configuration.EmbedColor,
                 Title = "Help"
@@ -115,7 +115,7 @@ namespace Aatrox.Modules
             var builder = new StringBuilder();
             foreach (var cmd in matchingCommands)
             {
-                builder.AppendLine(Formatter.Bold(cmd.Command.Description ?? "Undocumented yet."));
+                builder.AppendLine($"**{cmd.Command.Description ?? "Undocumented yet."}**");
                 builder.AppendLine($"`{Context.Prefix}{cmd.Command.Name} {string.Join(" ", cmd.Command.Parameters.Select(x => $"[{x.Name}]"))}`".ToLowerInvariant());
                 foreach (var param in cmd.Command.Parameters)
                 {
@@ -139,7 +139,7 @@ namespace Aatrox.Modules
                 embed.AddField($"Command Requirements", string.Join("\n", defaultCmd.Checks.Cast<AatroxCheckBaseAttribute>().Select(x => $"- `{x.Name}`")));
             }
 
-            return RespondAsync(embed: embed);
+            return RespondAsync(embed: embed.Build());
         }
     }
 }

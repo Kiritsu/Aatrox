@@ -3,13 +3,13 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Aatrox.Core.Entities;
+using Aatrox.Core.Interfaces;
 using Aatrox.Core.Services;
-using Aatrox.Core.Services.Interfaces;
 using Aatrox.Core.TypeParsers;
 using Aatrox.Data;
 using Aatrox.Data.EventArgs;
-using DSharpPlus;
-using DSharpPlus.Entities;
+using Disqord;
+using Disqord.Rest;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
@@ -53,20 +53,16 @@ namespace Aatrox
                 .AddSingleton(x =>
                 {
                     var token = x.GetService<IAatroxConfigurationProvider>().GetConfiguration().Token;
-                    return new DiscordConfiguration
-                    {
-                        Token = token
-                    };
+                    return new DiscordClient(new RestDiscordClient(TokenType.Bot, token));
                 })
-                .AddSingleton<DiscordClient>()
                 .AddSingleton<CommandService>()
                 .AddSingleton<DiscordService>()
-                .AddSingleton<TypeParser<DiscordGuild>, DiscordGuildTypeParser>()
-                .AddSingleton<TypeParser<DiscordRole>, DiscordRoleTypeParser>()
-                .AddSingleton<TypeParser<DiscordMember>, DiscordMemberTypeParser>()
-                .AddSingleton<TypeParser<DiscordUser>, DiscordUserTypeParser>()
-                .AddSingleton<TypeParser<SkeletonUser>, SkeletonUserTypeParser>()
-                .AddSingleton<TypeParser<TimeSpan>, TimeSpanTypeParser>()
+                .AddSingleton<TypeParser<CachedGuild>, CachedGuildParser>()
+                .AddSingleton<TypeParser<CachedGuildChannel>, CachedChannelParser>()
+                .AddSingleton<TypeParser<CachedUser>, CachedUserParser>()
+                .AddSingleton<TypeParser<CachedMember>, CachedMemberParser>()
+                .AddSingleton<TypeParser<SkeletonUser>, SkeletonUserParser>()
+                .AddSingleton<TypeParser<TimeSpan>, TimeSpanParser>()
                 .AddSingleton<TypeParser<Uri>, UriTypeParser>()
                 .BuildServiceProvider();
         }
