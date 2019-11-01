@@ -3,7 +3,7 @@ using Aatrox.Core.Entities;
 using Disqord;
 using Qmmands;
 
-namespace Aatrox.Core.Checks
+namespace Aatrox.Checks
 {
     public sealed class RequireUserPermissionsAttribute : AatroxCheckBaseAttribute
     {
@@ -18,7 +18,7 @@ namespace Aatrox.Core.Checks
 
         public override ValueTask<CheckResult> CheckAsync(CommandContext context)
         {
-            if (!(context is AatroxDiscordCommandContext ctx))
+            if (!(context is AatroxCommandContext ctx))
             {
                 return new CheckResult("Invalid command context.");
             }
@@ -45,7 +45,7 @@ namespace Aatrox.Core.Checks
                 return CheckResult.Successful;
             }
 
-            return new CheckResult($"I need the following permissions: {Permissions.ToString()}");
+            return new CheckResult($"You need the following permissions: {Permissions.ToString()}");
         }
     }
 }

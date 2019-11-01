@@ -24,7 +24,7 @@ namespace Aatrox.Core.Services
         private readonly IServiceProvider _services;
         private readonly AatroxConfiguration _configuration;
 
-        public DiscordService(CommandService commands, DiscordClient client, 
+        public DiscordService(CommandService commands, DiscordClient client,
             IAatroxConfigurationProvider configuration, IServiceProvider services)
         {
             _commands = commands;
@@ -41,13 +41,12 @@ namespace Aatrox.Core.Services
             _client.Ready += OnReadyAsync;
             _client.GuildAvailable += OnGuildAvailable;
 
-            _commands.AddTypeParser(_services.GetService<TypeParser<CachedGuildChannel>>());
-            _commands.AddTypeParser(_services.GetService<TypeParser<CachedUser>>());
-            _commands.AddTypeParser(_services.GetService<TypeParser<CachedMember>>());
-            _commands.AddTypeParser(_services.GetService<TypeParser<CachedGuild>>());
-            _commands.AddTypeParser(_services.GetService<TypeParser<SkeletonUser>>());
-            _commands.AddTypeParser(_services.GetService<TypeParser<TimeSpan>>());
-            _commands.AddTypeParser(_services.GetService<TypeParser<Uri>>());
+            var parsers = PullTypeParsersFromContainer(assembly).Where(x => x != null);
+            var method = _commands.GetType().GetMethod("AddTypeParserInternal", BindingFlags.NonPublic | BindingFlags.Instance);
+            foreach (var parser in parsers)
+            {
+                method.Invoke(_commands, new[] { parser.GetType(), parser, false });
+            }
 
             _commands.AddModules(assembly);
             _commands.CommandExecutionFailed += OnCommandErrored;
@@ -55,11 +54,24 @@ namespace Aatrox.Core.Services
             await _client.ConnectAsync();
         }
 
+        //https://github.com/k-boyle/Kommon/blob/master/src/Kommon/Qmmands/Extensions.cs#L18-L65
+        public IEnumerable<object> PullTypeParsersFromContainer(Assembly assembly)
+        {
+            var itf = _commands.GetType().Assembly.GetTypes()
+                .First(x => x.Name == "ITypeParser").GetTypeInfo();
+
+            var parsers = assembly.GetTypes().Where(x => itf.IsAssignableFrom(x) && !x.IsAbstract);
+            foreach (var parser in parsers)
+            {
+                yield return _services.GetService(parser.GetType());
+            }
+        }
+
         private async Task OnCommandErrored(CommandExecutionFailedEventArgs e)
         {
-            _logger.Error($"Command errored: {e.Context.Command.Name} by {(e.Context as AatroxDiscordCommandContext).User.Id} in {(e.Context as AatroxDiscordCommandContext).Guild.Id}", e.Result.Exception);
+            _logger.Error($"Command errored: {e.Context.Command.Name} by {(e.Context as AatroxCommandContext).User.Id} in {(e.Context as AatroxCommandContext).Guild.Id}", e.Result.Exception);
 
-            if (!(e.Context is AatroxDiscordCommandContext ctx))
+            if (!(e.Context is AatroxCommandContext ctx))
             {
                 return;
             }
@@ -115,7 +127,7 @@ namespace Aatrox.Core.Services
                 return;
             }
 
-            using var ctx = new AatroxDiscordCommandContext(e, _services);
+            using var ctx = new AatroxCommandContext(e, _services);
 
             await ctx.PrepareAsync();
             await HandleCommandAsync(ctx);
@@ -129,7 +141,7 @@ namespace Aatrox.Core.Services
                 return;
             }
 
-            using var ctx = new AatroxDiscordCommandContext(e, _services);
+            using var ctx = new AatroxCommandContext(e, _services);
 
             await ctx.PrepareAsync();
             await HandleCommandAsync(ctx);
@@ -140,11 +152,11 @@ namespace Aatrox.Core.Services
         {
             _logger.Info("Aatrox is ready.");
 
-            return (e.Client as DiscordClient).SetPresenceAsync(UserStatus.DoNotDisturb, 
+            return (e.Client as DiscordClient).SetPresenceAsync(UserStatus.DoNotDisturb,
                 new LocalActivity("hate speeches", ActivityType.Listening));
         }
 
-        private async Task HandleCommandAsync(AatroxDiscordCommandContext ctx)
+        private async Task HandleCommandAsync(AatroxCommandContext ctx)
         {
             var prefixes = new List<string>(ctx.DatabaseContext.Guild.Prefixes)
             {
@@ -171,7 +183,7 @@ namespace Aatrox.Core.Services
             await HandleCommandErroredAsync(result, ctx);
         }
 
-        private async Task HandleCommandErroredAsync(IResult result, AatroxDiscordCommandContext ctx)
+        private async Task HandleCommandErroredAsync(IResult result, AatroxCommandContext ctx)
         {
             if (result is CommandNotFoundResult)
             {

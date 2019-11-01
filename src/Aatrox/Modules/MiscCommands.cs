@@ -5,7 +5,7 @@ using Qmmands;
 namespace Aatrox.Modules
 {
     [Name("Misc")]
-    public sealed class MiscCommands : AatroxDiscordModuleBase
+    public sealed class MiscCommands : AatroxModuleBase
     {
         [Command("Ping")]
         [Description("Shows the current websocket's latency.")]

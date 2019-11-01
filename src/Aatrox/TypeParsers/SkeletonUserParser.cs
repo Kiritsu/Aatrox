@@ -3,7 +3,7 @@ using Aatrox.Core.Entities;
 using Disqord;
 using Qmmands;
 
-namespace Aatrox.Core.TypeParsers
+namespace Aatrox.TypeParsers
 {
     public sealed class SkeletonUserParser : TypeParser<SkeletonUser>
     {
@@ -18,7 +18,7 @@ namespace Aatrox.Core.TypeParsers
 
         public override async ValueTask<TypeParserResult<SkeletonUser>> ParseAsync(Parameter parameter, string value, CommandContext context)
         {
-            if (!(context is AatroxDiscordCommandContext ctx))
+            if (!(context is AatroxCommandContext ctx))
             {
                 return new TypeParserResult<SkeletonUser>("A skeleton user cannot exist in that context.");
             }

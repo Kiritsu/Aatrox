@@ -7,9 +7,9 @@ using Qmmands;
 
 namespace Aatrox.Core.Entities
 {
-    public class AatroxDiscordModuleBase : ModuleBase<AatroxDiscordCommandContext>
+    public class AatroxModuleBase : ModuleBase<AatroxCommandContext>
     {
-        public DatabaseContext DbContext => Context.DatabaseContext;
+        public DatabaseCommandContext DbContext => Context.DatabaseContext;
 
         public Task<RestUserMessage> RespondLocalizedAsync(string key, params object[] parameters)
         {

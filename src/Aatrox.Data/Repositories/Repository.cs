@@ -52,11 +52,11 @@ namespace Aatrox.Data.Repositories
             }
         }
 
-        public Task<TEntity> GetAsync(ulong id)
+        public async Task<TEntity> GetAsync(ulong id)
         {
             try
             {
-                var entity = _entities.FindAsync(id);
+                var entity = await _entities.FindAsync(id);
 
                 if (entity is null)
                 {

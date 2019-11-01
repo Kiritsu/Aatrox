@@ -5,9 +5,9 @@ using Aatrox.Data.Repositories.Interfaces;
 
 namespace Aatrox.Core.Entities
 {
-    public class DatabaseContext
+    public class DatabaseCommandContext
     {
-        private readonly AatroxDiscordCommandContext _ctx;
+        private readonly AatroxCommandContext _ctx;
 
         private readonly IGuildRepository _guilds;
         private readonly IUserRepository _users;
@@ -17,7 +17,7 @@ namespace Aatrox.Core.Entities
         public GuildEntity Guild { get; private set; }
         public UserEntity User { get; private set; }
 
-        public DatabaseContext(AatroxDiscordCommandContext ctx, IUnitOfWork uow)
+        public DatabaseCommandContext(AatroxCommandContext ctx, IUnitOfWork uow)
         {
             _ctx = ctx;
             _guilds = uow.RequestRepository<IGuildRepository>();

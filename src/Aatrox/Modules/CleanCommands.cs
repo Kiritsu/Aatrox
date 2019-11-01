@@ -2,7 +2,7 @@
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
-using Aatrox.Core.Checks;
+using Aatrox.Checks;
 using Aatrox.Core.Entities;
 using Disqord;
 using Disqord.Rest;
@@ -13,7 +13,7 @@ namespace Aatrox.Modules
     [Name("Cleaner"), Hidden]
     [RequireUserPermissions(Permission.ManageMessages)]
     [RequireBotPermissions(Permission.ManageMessages)]
-    public sealed class CleanCommands : AatroxDiscordModuleBase
+    public sealed class CleanCommands : AatroxModuleBase
     {
         private static TimeSpan TwoWeeks => TimeSpan.FromDays(14);
 

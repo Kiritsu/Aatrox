@@ -6,13 +6,13 @@ using Aatrox.Core.Extensions;
 using Disqord;
 using Qmmands;
 
-namespace Aatrox.Core.TypeParsers
+namespace Aatrox.TypeParsers
 {
     public sealed class CachedMemberParser : TypeParser<CachedMember>
     {
         public override async ValueTask<TypeParserResult<CachedMember>> ParseAsync(Parameter parameter, string value, CommandContext context)
         {
-            if (!(context is AatroxDiscordCommandContext ctx))
+            if (!(context is AatroxCommandContext ctx))
             {
                 return new TypeParserResult<CachedMember>("A guild cannot exist in that context.");
             }

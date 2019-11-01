@@ -6,7 +6,7 @@ namespace Aatrox.Core.Helpers
 {
     public static class EmbedHelper
     {
-        public static LocalEmbedBuilder New(AatroxDiscordCommandContext ctx)
+        public static LocalEmbedBuilder New(AatroxCommandContext ctx)
         {
             return new LocalEmbedBuilder
             {
@@ -20,7 +20,7 @@ namespace Aatrox.Core.Helpers
             };
         }
 
-        public static LocalEmbedBuilder New(AatroxDiscordCommandContext ctx, string description)
+        public static LocalEmbedBuilder New(AatroxCommandContext ctx, string description)
         {
             return new LocalEmbedBuilder
             {

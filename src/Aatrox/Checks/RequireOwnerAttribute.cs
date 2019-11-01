@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Aatrox.Core.Entities;
 using Qmmands;
 
-namespace Aatrox.Core.Checks
+namespace Aatrox.Checks
 {
     public sealed class RequireOwnerAttribute : AatroxCheckBaseAttribute
     {
@@ -11,7 +11,7 @@ namespace Aatrox.Core.Checks
 
         public override async ValueTask<CheckResult> CheckAsync(CommandContext context)
         {
-            if (!(context is AatroxDiscordCommandContext ctx))
+            if (!(context is AatroxCommandContext ctx))
             {
                 return CheckResult.Unsuccessful("Invalid command context.");
             }

@@ -8,7 +8,7 @@ using Qmmands;
 
 namespace Aatrox.Core.Entities
 {
-    public sealed class AatroxDiscordCommandContext : CommandContext, IDisposable
+    public sealed class AatroxCommandContext : CommandContext, IDisposable
     {
         public CommandService Commands { get; }
         public DiscordClient Client { get; }
@@ -22,9 +22,9 @@ namespace Aatrox.Core.Entities
         public string Prefix { get; set; }
 
         private readonly IUnitOfWork _database;
-        private DatabaseContext _databaseContext;
+        private DatabaseCommandContext _databaseContext;
 
-        public DatabaseContext DatabaseContext
+        public DatabaseCommandContext DatabaseContext
         { 
             get
             {
@@ -39,7 +39,7 @@ namespace Aatrox.Core.Entities
 
         public EventArgs EventArgs { get; }
 
-        public AatroxDiscordCommandContext(MessageReceivedEventArgs e, IServiceProvider services) : base(services)
+        public AatroxCommandContext(MessageReceivedEventArgs e, IServiceProvider services) : base(services)
         {
             Commands = services.GetRequiredService<CommandService>();
 
@@ -55,7 +55,7 @@ namespace Aatrox.Core.Entities
             _database = AatroxDbContextManager.CreateContext();
         }
 
-        public AatroxDiscordCommandContext(MessageUpdatedEventArgs e, IServiceProvider services) : base(services)
+        public AatroxCommandContext(MessageUpdatedEventArgs e, IServiceProvider services) : base(services)
         {
             Commands = services.GetRequiredService<CommandService>();
 
@@ -73,7 +73,7 @@ namespace Aatrox.Core.Entities
 
         public Task PrepareAsync()
         {
-            _databaseContext = new DatabaseContext(this, _database);
+            _databaseContext = new DatabaseCommandContext(this, _database);
             return _databaseContext.PrepareAsync();
         }
         

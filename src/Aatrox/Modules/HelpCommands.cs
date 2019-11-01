@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Aatrox.Core.Checks;
+using Aatrox.Checks;
 using Aatrox.Core.Entities;
 using Aatrox.Core.Extensions;
 using Aatrox.Core.Interfaces;
@@ -13,7 +13,7 @@ using Qmmands;
 namespace Aatrox.Modules
 {
     [Name("Help"), Hidden]
-    public sealed class HelpCommands : AatroxDiscordModuleBase
+    public sealed class HelpCommands : AatroxModuleBase
     {
         private readonly CommandService _commands;
         private readonly AatroxConfiguration _configuration;
