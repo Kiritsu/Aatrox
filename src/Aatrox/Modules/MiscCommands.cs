@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Aatrox.Core.Entities;
 using Qmmands;
 
@@ -11,7 +12,9 @@ namespace Aatrox.Modules
         [Description("Shows the current websocket's latency.")]
         public Task PingAsync()
         {
-            return RespondLocalizedAsync("ping", -42);
+            return RespondLocalizedAsync("ping", Context.Client.Latency.HasValue 
+                ? Math.Round(Context.Client.Latency.Value.TotalMilliseconds, 2) 
+                : -42);
         }
 
         [Command("Invite")]
