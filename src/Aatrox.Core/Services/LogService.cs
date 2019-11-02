@@ -28,10 +28,43 @@ namespace Aatrox.Core.Services
             return new LogService(name);
         }
 
+        public void Log(string level, string message, Exception e = null)
+        {
+            switch (level)
+            {
+                case "Trace":
+                    Trace(message);
+                    break;
+                case "Info":
+                case "Information":
+                    Info(message);
+                    break;
+                case "Debug":
+                    Debug(message);
+                    break;
+                case "Error":
+                    Error(message, e);
+                    break;
+                case "Warn":
+                case "Warning":
+                    Warn(message);
+                    break;
+                case "Critical":
+                    Fatal(message);
+                    break;
+                default:
+                    Info(message);
+                    break;
+            }
+        }
+
         public void Log(LogLevel level, string message, Exception e = null)
         {
             switch (level.Name)
             {
+                case "Trace":
+                    Trace(message);
+                    break;
                 case "Info":
                     Info(message);
                     break;
@@ -44,10 +77,23 @@ namespace Aatrox.Core.Services
                 case "Warn":
                     Warn(message);
                     break;
+                case "Critical":
+                    Fatal(message);
+                    break;
                 default:
                     Info(message);
                     break;
             }
+        }
+
+        public void Trace(string message)
+        {
+            _logger.Trace(message);
+        }
+
+        public void Fatal(string message)
+        {
+            _logger.Fatal(message);
         }
 
         public void Info(string message)

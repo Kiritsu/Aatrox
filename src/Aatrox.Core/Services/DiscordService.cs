@@ -10,6 +10,7 @@ using Aatrox.Core.Extensions;
 using Aatrox.Core.Interfaces;
 using Disqord;
 using Disqord.Events;
+using Disqord.Logging;
 using Disqord.Rest;
 using Qmmands;
 
@@ -38,7 +39,7 @@ namespace Aatrox.Core.Services
             _client.MessageReceived += OnMessageCreatedAsync;
             _client.MessageUpdated += OnMessageUpdatedAsync;
             _client.Ready += OnReadyAsync;
-            _client.GuildAvailable += OnGuildAvailable;
+            _client.Logger.MessageLogged += OnMessageLogged;
 
             var parsers = PullTypeParsersFromContainer(assembly).Where(x => x != null);
             var method = _commands.GetType().GetMethod("AddTypeParserInternal", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -51,6 +52,11 @@ namespace Aatrox.Core.Services
             _commands.CommandExecutionFailed += OnCommandErrored;
 
             await _client.ConnectAsync();
+        }
+
+        private void OnMessageLogged(object sender, MessageLoggedEventArgs e)
+        {
+            _logger.Log(e.Severity.ToString(), e.Message, e.Exception);
         }
 
         //https://github.com/k-boyle/Kommon/blob/master/src/Kommon/Qmmands/Extensions.cs#L18-L65
@@ -110,13 +116,6 @@ namespace Aatrox.Core.Services
             embed.WithFooter($"Type '{ctx.Prefix}help {ctx.Command.FullAliases[0].ToLowerInvariant()}' for more information.");
 
             await (ctx.Channel as IMessageChannel).SendMessageAsync("", false, embed.Build());
-        }
-
-        private Task OnGuildAvailable(GuildAvailableEventArgs e)
-        {
-            _logger.Info($"Guild available: {e.Guild.Name} ({e.Guild.Id})");
-
-            return Task.CompletedTask;
         }
 
         private async Task OnMessageCreatedAsync(MessageReceivedEventArgs e)
