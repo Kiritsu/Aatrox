@@ -44,10 +44,8 @@ namespace Aatrox
 
         private IServiceProvider BuildServiceProvider()
         {
-            var logger = new LogService("Aatrox");
-
             return new ServiceCollection()
-                .AddSingleton(logger)
+                .AddSingleton(x => new LogService("Aatrox"))
                 .Configure<AatroxConfiguration>(x => _configuration.GetSection("Aatrox").Bind(x))
                 .AddSingleton<IAatroxConfigurationProvider, AatroxConfigurationProvider>()
                 .AddSingleton(x =>
