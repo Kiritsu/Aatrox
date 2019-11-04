@@ -37,7 +37,7 @@ namespace Aatrox.Modules
 
             var emb = new LocalEmbedBuilder()
                 .WithColor(_configuration.EmbedColor)
-                .WithDescription($":heart:  |  {(Context.Client.Latency.HasValue ? Math.Round(Context.Client.Latency.Value.TotalMilliseconds, 2): -42)}ms " +
+                .WithDescription($":heart:  |  {(Context.Client.Latency.HasValue ? Math.Round(Context.Client.Latency.Value.TotalMilliseconds, 2) : -42)}ms " +
                     $"\n:earth_americas:  |  {distant}ms ({host})")
                 .WithTitle("Current latency : (websocket, host, messages)");
 

@@ -88,7 +88,10 @@ namespace Aatrox.Core.Services
                     str.AppendLine("I don't have enough power to perform this action. (please check that the hierarchy of the bot is correct)");
                     break;
                 case DiscordHttpException ex when ex.HttpStatusCode == HttpStatusCode.BadRequest:
-                    str.AppendLine("The requested action has been stopped by Discord.");
+                    str.AppendLine($"The requested action has been stopped by Discord: `{ex.Message}`");
+                    break;
+                case DiscordHttpException ex:
+                    str.AppendLine($":angry: | Something bad happened: [{ex.HttpStatusCode}] {ex.Message}");
                     break;
                 case ArgumentException ex:
                     str.AppendLine($"{ex.Message}\n");
