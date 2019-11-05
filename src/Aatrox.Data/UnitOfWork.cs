@@ -11,8 +11,9 @@ namespace Aatrox.Data
 {
     public sealed class UnitOfWork : IUnitOfWork
     {
+        public AatroxDbContext Context { get; set; }
+
         private readonly SemaphoreSlim _semaphore;
-        private readonly AatroxDbContext _context;
 
         private readonly Func<DatabaseActionEventArgs, Task> _databaseUpdated;
 
@@ -23,13 +24,13 @@ namespace Aatrox.Data
         internal UnitOfWork(SemaphoreSlim semaphore, Func<DatabaseActionEventArgs, Task> databaseUpdated)
         {
             _semaphore = semaphore;
-            _context = new AatroxDbContext();
+            Context = new AatroxDbContext();
             _databaseUpdated = databaseUpdated;
 
             var repositories = new List<object>();
 
-            var guildRepository = new GuildRepository(_context.Guilds, this);
-            var userRepository = new UserRepository(_context.Users, this);
+            var guildRepository = new GuildRepository(Context.Guilds, this);
+            var userRepository = new UserRepository(Context.Users, this);
 
             repositories.Add(guildRepository);
             repositories.Add(userRepository);
@@ -44,7 +45,7 @@ namespace Aatrox.Data
 
         public async Task SaveChangesAsync()
         {
-            var amount = await _context.SaveChangesAsync();
+            var amount = await Context.SaveChangesAsync();
 
             InvokeEvent(new DatabaseActionEventArgs
             {
@@ -70,7 +71,7 @@ namespace Aatrox.Data
             {
                 if (disposing)
                 {
-                    _context.Dispose();
+                    Context.Dispose();
                     _semaphore.Release();
                 }
             }

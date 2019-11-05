@@ -10,6 +10,7 @@ using Aatrox.Data.EventArgs;
 using Aatrox.TypeParsers;
 using Disqord;
 using Disqord.Rest;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
@@ -38,6 +39,11 @@ namespace Aatrox
 
             var ds = _services.GetRequiredService<DiscordService>();
             await ds.SetupAsync(Assembly.GetEntryAssembly());
+
+            using (var db = AatroxDbContextManager.CreateContext())
+            {
+                db.Context.Database.Migrate();
+            }
 
             await Task.Delay(Timeout.Infinite);
         }
