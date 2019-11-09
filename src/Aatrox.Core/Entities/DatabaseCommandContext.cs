@@ -11,17 +11,19 @@ namespace Aatrox.Core.Entities
 
         private readonly IGuildRepository _guilds;
         private readonly IUserRepository _users;
-        
+
         public bool IsReady { get; private set; }
 
         public GuildEntity Guild { get; private set; }
         public UserEntity User { get; private set; }
+        public AatroxDbContext Database { get; }
 
-        public DatabaseCommandContext(AatroxCommandContext ctx, IUnitOfWork uow)
+        public DatabaseCommandContext(AatroxCommandContext ctx, AatroxDbContext context)
         {
             _ctx = ctx;
-            _guilds = uow.RequestRepository<IGuildRepository>();
-            _users = uow.RequestRepository<IUserRepository>();
+            _guilds = context.RequestRepository<IGuildRepository>();
+            _users = context.RequestRepository<IUserRepository>();
+            Database = context;
         }
 
         public async Task PrepareAsync()

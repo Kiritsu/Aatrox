@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Aatrox.Core.Configurations;
 using Aatrox.Core.Entities;
 using Aatrox.Core.Interfaces;
 using Aatrox.Core.Services;
@@ -35,15 +36,14 @@ namespace Aatrox
             _services = BuildServiceProvider();
             _dbLogger = LogService.GetLogger("Database");
 
-            AatroxDbContextManager.DatabaseUpdated += DatabaseUpdated;
+            AatroxDbContext.DatabaseUpdated += DatabaseUpdated;
+            using (var db = _services.GetRequiredService<AatroxDbContext>())
+            {
+                db.Database.Migrate();
+            }
 
             var ds = _services.GetRequiredService<DiscordService>();
             await ds.SetupAsync(Assembly.GetEntryAssembly());
-
-            using (var db = AatroxDbContextManager.CreateContext())
-            {
-                db.Context.Database.Migrate();
-            }
 
             await Task.Delay(Timeout.Infinite);
         }
@@ -54,6 +54,10 @@ namespace Aatrox
                 .AddSingleton(x => new LogService("Aatrox"))
                 .Configure<AatroxConfiguration>(x => _configuration.GetSection("Aatrox").Bind(x))
                 .AddSingleton<IAatroxConfigurationProvider, AatroxConfigurationProvider>()
+                .Configure<DatabaseConfiguration>(x => _configuration.GetSection("Database").Bind(x))
+                .AddSingleton<IDatabaseConfigurationProvider, DatabaseConfigurationProvider>()
+                .AddSingleton<ConnectionStringProvider>()
+                .AddDbContext<AatroxDbContext>(ServiceLifetime.Transient)
                 .AddSingleton(x =>
                 {
                     var token = x.GetService<IAatroxConfigurationProvider>().GetConfiguration().Token;

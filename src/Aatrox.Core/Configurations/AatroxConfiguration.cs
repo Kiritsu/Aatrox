@@ -1,6 +1,6 @@
 ﻿using Disqord;
 
-namespace Aatrox.Core.Entities
+namespace Aatrox.Core.Configurations
 {
     public sealed class AatroxConfiguration
     {

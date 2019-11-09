@@ -1,25 +1,49 @@
-﻿using Aatrox.Data.Entities;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Aatrox.Data.Entities;
+using Aatrox.Data.EventArgs;
+using Aatrox.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aatrox.Data
 {
     public sealed class AatroxDbContext : DbContext
     {
-        public string ConnectionString { get; } = "Host=localhost;Database=elementdb;Username=element;Password=1234";
+        private readonly IReadOnlyList<object> _repositories;
+        private readonly ConnectionStringProvider _connectionString;
 
         public DbSet<GuildEntity> Guilds { get; set; }
         public DbSet<UserEntity> Users { get; set; }
 
-        public AatroxDbContext()
+        public static Func<DatabaseActionEventArgs, Task> DatabaseUpdated;
+
+        public AatroxDbContext(ConnectionStringProvider connectionString)
         {
-            Database.EnsureCreated();
+            _connectionString = connectionString;
+
+            var repositories = new List<object>();
+
+            var guildRepository = new GuildRepository(Guilds, this);
+            var userRepository = new UserRepository(Users, this);
+
+            repositories.Add(guildRepository);
+            repositories.Add(userRepository);
+
+            _repositories = repositories.AsReadOnly();
+        }
+
+        public T RequestRepository<T>()
+        {
+            return (T)_repositories.First(x => x is T);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseNpgsql(ConnectionString);
+                optionsBuilder.UseNpgsql(_connectionString.ConnectionString);
             }
         }
 
@@ -30,6 +54,11 @@ namespace Aatrox.Data
 
             builder.Entity<GuildEntity>()
                 .Property(x => x.CreatedAt).ValueGeneratedNever();
+        }
+
+        internal void InvokeEvent(DatabaseActionEventArgs e)
+        {
+            DatabaseUpdated?.Invoke(e);
         }
     }
 }

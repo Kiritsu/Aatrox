@@ -9,7 +9,7 @@ namespace Aatrox.Data.Repositories
 {
     public sealed class GuildRepository : Repository<GuildEntity>, IGuildRepository
     {
-        internal GuildRepository(DbSet<GuildEntity> entities, UnitOfWork uow) : base(entities, uow, "Guild")
+        internal GuildRepository(DbSet<GuildEntity> entities, AatroxDbContext context) : base(entities, context, "Guild")
         {
         }
 

@@ -18,11 +18,9 @@ namespace Aatrox.Core.Entities
         public CachedMember Member { get; }
         public CachedMessage Message { get; }
         public CachedUser Aatrox => Client.CurrentUser;
-
         public string Prefix { get; set; }
 
-        private readonly IUnitOfWork _database;
-        private DatabaseCommandContext _databaseContext;
+        private readonly DatabaseCommandContext _databaseContext;
 
         public DatabaseCommandContext DatabaseContext
         { 
@@ -52,7 +50,7 @@ namespace Aatrox.Core.Entities
 
             EventArgs = e;
 
-            _database = AatroxDbContextManager.CreateContext();
+            _databaseContext = new DatabaseCommandContext(this, services.GetRequiredService<AatroxDbContext>());
         }
 
         public AatroxCommandContext(MessageUpdatedEventArgs e, IServiceProvider services) : base(services)
@@ -68,23 +66,22 @@ namespace Aatrox.Core.Entities
 
             EventArgs = e;
 
-            _database = AatroxDbContextManager.CreateContext();
+            _databaseContext = new DatabaseCommandContext(this, services.GetRequiredService<AatroxDbContext>());
         }
 
         public Task PrepareAsync()
         {
-            _databaseContext = new DatabaseCommandContext(this, _database);
             return _databaseContext.PrepareAsync();
         }
         
         public Task EndAsync()
         {
-            return _database.SaveChangesAsync();
+            return _databaseContext.Database.SaveChangesAsync();
         }
 
         public void Dispose()
         {
-            _database.Dispose();
+            _databaseContext.Database.Dispose();
         }
     }
 }

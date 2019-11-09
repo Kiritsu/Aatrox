@@ -1,4 +1,4 @@
-﻿using Aatrox.Core.Entities;
+﻿using Aatrox.Core.Configurations;
 using Aatrox.Core.Interfaces;
 using Microsoft.Extensions.Options;
 

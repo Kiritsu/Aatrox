@@ -1,4 +1,4 @@
-﻿using Aatrox.Core.Entities;
+﻿using Aatrox.Core.Configurations;
 
 namespace Aatrox.Core.Interfaces
 {

@@ -12,14 +12,14 @@ namespace Aatrox.Data.Repositories
     public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity
     {
         private readonly DbSet<TEntity> _entities;
-        private readonly UnitOfWork _uow;
+        private readonly AatroxDbContext _context;
 
         private readonly string _name;
 
-        public Repository(DbSet<TEntity> entities, UnitOfWork uow, string name)
+        public Repository(DbSet<TEntity> entities, AatroxDbContext context, string name)
         {
             _entities = entities;
-            _uow = uow;
+            _context = context;
 
             _name = name;
         }
@@ -30,7 +30,7 @@ namespace Aatrox.Data.Repositories
             {
                 var entities = await _entities.ToListAsync();
 
-                _uow.InvokeEvent(new DatabaseActionEventArgs
+                _context.InvokeEvent(new DatabaseActionEventArgs
                 {
                     Type = ActionType.GetAll,
                     Path = $"::/{_name}Repository/{ActionType.GetAll}"
@@ -40,7 +40,7 @@ namespace Aatrox.Data.Repositories
             }
             catch (Exception ex)
             {
-                _uow.InvokeEvent(new DatabaseActionEventArgs
+                _context.InvokeEvent(new DatabaseActionEventArgs
                 {
                     Type = ActionType.GetAll,
                     Path = $"::/{_name}Repository/{ActionType.GetAll}",
@@ -63,7 +63,7 @@ namespace Aatrox.Data.Repositories
                     return null;
                 }
 
-                _uow.InvokeEvent(new DatabaseActionEventArgs
+                _context.InvokeEvent(new DatabaseActionEventArgs
                 {
                     Type = ActionType.Get,
                     Path = $"::/{_name}Repository/{ActionType.Get}/{id}"
@@ -73,7 +73,7 @@ namespace Aatrox.Data.Repositories
             }
             catch (Exception ex)
             {
-                _uow.InvokeEvent(new DatabaseActionEventArgs
+                _context.InvokeEvent(new DatabaseActionEventArgs
                 {
                     Type = ActionType.Get,
                     Path = $"::/{_name}Repository/{ActionType.Get}/{id}",
@@ -91,7 +91,7 @@ namespace Aatrox.Data.Repositories
             {
                 var data = (await _entities.AddAsync(entity)).Entity;
 
-                _uow.InvokeEvent(new DatabaseActionEventArgs
+                _context.InvokeEvent(new DatabaseActionEventArgs
                 {
                     Type = ActionType.Add,
                     Path = $"::/{_name}Repository/{ActionType.Add}/{entity.Id}"
@@ -101,7 +101,7 @@ namespace Aatrox.Data.Repositories
             }
             catch (Exception ex)
             {
-                _uow.InvokeEvent(new DatabaseActionEventArgs
+                _context.InvokeEvent(new DatabaseActionEventArgs
                 {
                     Type = ActionType.Add,
                     Path = $"::/{_name}Repository/{ActionType.Add}/{entity.Id}",
@@ -119,7 +119,7 @@ namespace Aatrox.Data.Repositories
             {
                 _entities.Remove(entity);
 
-                _uow.InvokeEvent(new DatabaseActionEventArgs
+                _context.InvokeEvent(new DatabaseActionEventArgs
                 {
                     Type = ActionType.Delete,
                     Path = $"::/{_name}Repository/{ActionType.Delete}/{entity.Id}"
@@ -127,7 +127,7 @@ namespace Aatrox.Data.Repositories
             }
             catch (Exception ex)
             {
-                _uow.InvokeEvent(new DatabaseActionEventArgs
+                _context.InvokeEvent(new DatabaseActionEventArgs
                 {
                     Type = ActionType.Delete,
                     Path = $"::/{_name}Repository/{ActionType.Delete}/{entity.Id}",
@@ -145,7 +145,7 @@ namespace Aatrox.Data.Repositories
             {
                 _entities.RemoveRange(await GetAllAsync());
 
-                _uow.InvokeEvent(new DatabaseActionEventArgs
+                _context.InvokeEvent(new DatabaseActionEventArgs
                 {
                     Type = ActionType.DeleteAll,
                     Path = $"::/{_name}Repository/{ActionType.DeleteAll}"
@@ -153,7 +153,7 @@ namespace Aatrox.Data.Repositories
             }
             catch (Exception ex)
             {
-                _uow.InvokeEvent(new DatabaseActionEventArgs
+                _context.InvokeEvent(new DatabaseActionEventArgs
                 {
                     Type = ActionType.DeleteAll,
                     Path = $"::/{_name}Repository/{ActionType.DeleteAll}",
@@ -169,7 +169,7 @@ namespace Aatrox.Data.Repositories
             {
                 _entities.Update(entity);
 
-                _uow.InvokeEvent(new DatabaseActionEventArgs
+                _context.InvokeEvent(new DatabaseActionEventArgs
                 {
                     Type = ActionType.Update,
                     Path = $"::/{_name}Repository/{ActionType.Update}/{entity.Id}"
@@ -177,7 +177,7 @@ namespace Aatrox.Data.Repositories
             }
             catch (Exception ex)
             {
-                _uow.InvokeEvent(new DatabaseActionEventArgs
+                _context.InvokeEvent(new DatabaseActionEventArgs
                 {
                     Type = ActionType.Update,
                     Path = $"::/{_name}Repository/{ActionType.Update}/{entity.Id}",

@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Net.NetworkInformation;
 using System.Threading.Tasks;
+using Aatrox.Core.Configurations;
 using Aatrox.Core.Entities;
 using Aatrox.Core.Interfaces;
 using Disqord;

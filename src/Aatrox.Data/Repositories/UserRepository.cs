@@ -9,7 +9,7 @@ namespace Aatrox.Data.Repositories
 {
     public sealed class UserRepository : Repository<UserEntity>, IUserRepository
     {
-        public UserRepository(DbSet<UserEntity> entities, UnitOfWork uow) : base(entities, uow, "User")
+        public UserRepository(DbSet<UserEntity> entities, AatroxDbContext context) : base(entities, context, "User")
         {
         }
 

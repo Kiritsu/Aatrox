@@ -5,6 +5,7 @@ using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Aatrox.Core.Configurations;
 using Aatrox.Core.Entities;
 using Aatrox.Core.Extensions;
 using Aatrox.Core.Interfaces;
