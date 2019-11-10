@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Immutable;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Aatrox.Checks;
@@ -15,16 +15,14 @@ namespace Aatrox.Modules
     [RequireBotPermissions(Permission.ManageMessages)]
     public sealed class CleanCommands : AatroxModuleBase
     {
-        private static TimeSpan TwoWeeks => TimeSpan.FromDays(14);
+        private static readonly TimeSpan TwoWeeks = TimeSpan.FromDays(14);
 
         [Command("Clean")]
         [Description("Removes the last 100 messages sent by the bot.")]
         public async Task CleanAsync()
         {
             var messages = await Context.Channel.GetMessagesAsync();
-            var filteredMessages = messages.Where(x => DateTime.UtcNow - x.Id.CreatedAt < TwoWeeks && x.Author.Id == Context.Guild.CurrentMember.Id).ToImmutableArray();
-
-            await PruneAsync(filteredMessages, Context.Channel, 100);
+            await PurgeAsync(messages, 100, x => x.Author.Id == Context.Guild.CurrentMember.Id);
         }
 
         [Command("Clean")]
@@ -32,9 +30,7 @@ namespace Aatrox.Modules
         public async Task CleanAsync([Description("Amount of messages to remove")] int count)
         {
             var messages = await Context.Channel.GetMessagesAsync(count);
-            var filteredMessages = messages.Where(x => DateTime.UtcNow - x.Id.CreatedAt < TwoWeeks).ToImmutableArray();
-
-            await PruneAsync(filteredMessages, Context.Channel, count);
+            await PurgeAsync(messages, count);
         }
 
         [Command("Clean")]
@@ -42,9 +38,7 @@ namespace Aatrox.Modules
         public async Task CleanAsync([Description("Amount of messages to remove")] int count, [Description("User affected by the filter.")] CachedUser user)
         {
             var messages = await Context.Channel.GetMessagesAsync(count);
-            var filteredMessages = messages.Where(x => DateTime.UtcNow - x.Id.CreatedAt < TwoWeeks && x.Author.Id == user.Id).ToImmutableArray();
-
-            await PruneAsync(filteredMessages, Context.Channel, count);
+            await PurgeAsync(messages, count, x => x.Author.Id == user.Id);
         }
 
         [Command("Clean")]
@@ -52,35 +46,41 @@ namespace Aatrox.Modules
         public async Task CleanAsync([Description("Amount of messages to remove")] int count, [Description("Type of message. Bot File or Embed.")] CleanMessageType type)
         {
             var messages = await Context.Channel.GetMessagesAsync(count);
-            var filteredMessages = messages.Where(x => DateTime.UtcNow - x.Id.CreatedAt < TwoWeeks).ToImmutableArray();
 
             switch (type)
             {
                 case CleanMessageType.Bot:
-                    filteredMessages = messages.Where(x => x.Author.IsBot).ToImmutableArray();
+                    await PurgeAsync(messages, count, x => x.Author.IsBot);
                     break;
                 case CleanMessageType.File:
-                    filteredMessages = messages.Where(x => (x as RestUserMessage).Attachments.Count > 0).ToImmutableArray();
+                    await PurgeAsync(messages, count, x => (x as RestUserMessage).Attachments.Count > 0);
                     break;
                 case CleanMessageType.Embed:
-                    filteredMessages = messages.Where(x => (x as RestUserMessage).Embeds.Count > 0).ToImmutableArray();
+                    await PurgeAsync(messages, count, x => (x as RestUserMessage).Embeds.Count > 0);
+                    break;
+                default:
+                    await PurgeAsync(messages, count);
                     break;
             }
-
-            await PruneAsync(filteredMessages, Context.Channel, count);
         }
 
-        public async Task PruneAsync(ImmutableArray<RestMessage> messages, IMessageChannel channel, int baseAmount)
+        public async Task PurgeAsync(IEnumerable<RestMessage> messages, int baseAmount, Func<RestMessage, bool> predicate = null)
         {
-            if (messages.Length <= 0)
+            messages = messages.Where(x => DateTime.UtcNow - x.Id.CreatedAt < TwoWeeks);
+            if (predicate != null)
+            {
+                messages = messages.Where(predicate);
+            }
+
+            var count = messages.Count();
+            if (count <= 0)
             {
                 await RespondLocalizedAsync("clean_no_messages");
                 return;
             }
 
-            await (channel as CachedTextChannel).DeleteMessagesAsync(messages.Select(x => x.Id));
-            
-            await RespondLocalizedAsync("clean_done", messages.Length, baseAmount);
+            await (Context.Channel as CachedTextChannel).DeleteMessagesAsync(messages.Select(x => x.Id));
+            await RespondLocalizedAsync("clean_done", count, baseAmount);
         }
 
         public enum CleanMessageType

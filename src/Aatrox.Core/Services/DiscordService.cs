@@ -293,7 +293,7 @@ namespace Aatrox.Core.Services
 
             embed.WithFooter($"Type '{ctx.Prefix}help {ctx.Command?.FullAliases[0] ?? ctx.Command?.FullAliases[0] ?? ""}' for more information.");
 
-            embed.AddField("__Command/Module__", ctx.Command?.Name ?? ctx.Command?.Name ?? ctx.Command?.Module?.Name ?? "Unknown command...", true);
+            embed.AddField("__Command/Module__", ctx.Command?.Name ?? ctx.Command?.Module?.Name ?? "Unknown command...", true);
             embed.AddField("__Author__", ctx.User.FormatUser(), true);
             embed.AddField("__Error(s)__", str.ToString());
 
