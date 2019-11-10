@@ -7,6 +7,8 @@ namespace Aatrox.TypeParsers
 {
     public sealed class CachedGuildParser : TypeParser<CachedGuild>
     {
+        public static readonly CachedGuildParser Instance = new CachedGuildParser();
+
         public override ValueTask<TypeParserResult<CachedGuild>> ParseAsync(Parameter parameter, string value, CommandContext context)
         {
             if (!(context is AatroxCommandContext ctx))

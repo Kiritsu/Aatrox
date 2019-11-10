@@ -65,13 +65,6 @@ namespace Aatrox
                 })
                 .AddSingleton<CommandService>()
                 .AddSingleton<DiscordService>()
-                .AddSingleton<TypeParser<CachedGuild>, CachedGuildParser>()
-                .AddSingleton<TypeParser<CachedGuildChannel>, CachedChannelParser>()
-                .AddSingleton<TypeParser<CachedUser>, CachedUserParser>()
-                .AddSingleton<TypeParser<CachedMember>, CachedMemberParser>()
-                .AddSingleton<TypeParser<SkeletonUser>, SkeletonUserParser>()
-                .AddSingleton<TypeParser<TimeSpan>, TimeSpanParser>()
-                .AddSingleton<TypeParser<Uri>, UriTypeParser>()
                 .BuildServiceProvider();
         }
 

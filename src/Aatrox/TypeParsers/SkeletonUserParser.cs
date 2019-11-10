@@ -7,14 +7,7 @@ namespace Aatrox.TypeParsers
 {
     public sealed class SkeletonUserParser : TypeParser<SkeletonUser>
     {
-        private readonly TypeParser<CachedUser> _dutp;
-        private readonly TypeParser<CachedMember> _dmtp;
-
-        public SkeletonUserParser(TypeParser<CachedUser> dutp, TypeParser<CachedMember> dmtp)
-        {
-            _dutp = dutp;
-            _dmtp = dmtp;
-        }
+        public static readonly SkeletonUserParser Instance = new SkeletonUserParser();
 
         public override async ValueTask<TypeParserResult<SkeletonUser>> ParseAsync(Parameter parameter, string value, CommandContext context)
         {
@@ -25,13 +18,13 @@ namespace Aatrox.TypeParsers
 
             if (!ulong.TryParse(value, out var id))
             {
-                var result = await _dutp.ParseAsync(parameter, value, context);
+                var result = await CachedUserParser.Instance.ParseAsync(parameter, value, context);
                 if (result.IsSuccessful)
                 {
                     return new TypeParserResult<SkeletonUser>(new SkeletonUser(result.Value));
                 }
 
-                var memberResult = await _dmtp.ParseAsync(parameter, value, context);
+                var memberResult = await CachedMemberParser.Instance.ParseAsync(parameter, value, context);
                 if (memberResult.IsSuccessful)
                 {
                     return new TypeParserResult<SkeletonUser>(new SkeletonUser(memberResult.Value));

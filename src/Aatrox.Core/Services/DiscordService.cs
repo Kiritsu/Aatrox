@@ -46,7 +46,7 @@ namespace Aatrox.Core.Services
             var method = _commands.GetType().GetMethod("AddTypeParserInternal", BindingFlags.NonPublic | BindingFlags.Instance);
             foreach (var parser in parsers)
             {
-                method.Invoke(_commands, new[] { parser.GetType(), parser, false });
+                method.Invoke(_commands, new[] { parser.GetType().BaseType.GetGenericArguments().First(), parser, false });
             }
 
             _commands.AddModules(assembly);
@@ -69,7 +69,7 @@ namespace Aatrox.Core.Services
             var parsers = assembly.GetTypes().Where(x => itf.IsAssignableFrom(x) && !x.IsAbstract);
             foreach (var parser in parsers)
             {
-                yield return _services.GetService(parser.GetType());
+                yield return parser.GetField("Instance").GetValue(null);
             }
         }
 

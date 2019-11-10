@@ -12,6 +12,8 @@ namespace Aatrox.TypeParsers
 {
     public sealed class CachedUserParser : TypeParser<CachedUser>
     {
+        public static readonly CachedUserParser Instance = new CachedUserParser();
+
         public override ValueTask<TypeParserResult<CachedUser>> ParseAsync(Parameter parameter, string value, CommandContext context)
         {
             if (!(context is AatroxCommandContext ctx))

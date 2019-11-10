@@ -10,7 +10,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.0" />
     <PackageReference Include="NLog" Version="4.6.7" />
     <PackageReference Include="NLog.Config" Version="4.6.7" />
-    <PackageReference Include="Qmmands" Version="3.0.0" />
+    <PackageReference Include="Qmmands" Version="3.0.0-nightly-00221" />
 	<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.0" />
 	<ProjectReference Include="..\..\submodules\Disqord\src\Disqord.Core\Disqord.Core.csproj" />
 	<ProjectReference Include="..\..\submodules\Disqord\src\Disqord.Rest\Disqord.Rest.csproj" />

@@ -6,6 +6,8 @@ namespace Aatrox.TypeParsers
 {
     public sealed class UriTypeParser : TypeParser<Uri>
     {
+        public static readonly UriTypeParser Instance = new UriTypeParser();
+
         public override ValueTask<TypeParserResult<Uri>> ParseAsync(Parameter parameter, string value, CommandContext context)
         {
             if (Uri.TryCreate(value, UriKind.Absolute, out var uri))

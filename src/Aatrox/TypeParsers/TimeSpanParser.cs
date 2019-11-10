@@ -7,6 +7,8 @@ namespace Aatrox.TypeParsers
 {
     public sealed class TimeSpanParser : TypeParser<TimeSpan>
     {
+        public static readonly TimeSpanParser Instance = new TimeSpanParser();
+
         private static readonly string[] Formats = {
             "%d'd'%h'h'%m'm'%s's'",
             "%d'd'%h'h'%m'm'",

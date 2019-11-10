@@ -9,6 +9,8 @@ namespace Aatrox.TypeParsers
 {
     public sealed class CachedChannelParser : TypeParser<CachedGuildChannel>
     {
+        public static readonly CachedChannelParser Instance = new CachedChannelParser();
+
         public override ValueTask<TypeParserResult<CachedGuildChannel>> ParseAsync(Parameter parameter, string value, CommandContext context)
         {
             if (!(context is AatroxCommandContext ctx))
