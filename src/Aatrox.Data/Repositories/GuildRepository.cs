@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aatrox.Data.Repositories
 {
-    public sealed class GuildRepository : Repository<GuildEntity>, IGuildRepository
+    public sealed class GuildRepository : Repository<GuildEntity>, IGetOrAddRepository<GuildEntity>
     {
         internal GuildRepository(DbSet<GuildEntity> entities, AatroxDbContext context) : base(entities, context, "Guild")
         {

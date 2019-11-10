@@ -8,5 +8,7 @@ namespace Aatrox.Data.Entities
     {
         [Column("language")]
         public Lang Language { get; set; }
+
+        public LeagueUserEntity LeagueProfile { get; set; }
     }
 }

@@ -16,6 +16,7 @@ namespace Aatrox.Data
 
         public DbSet<GuildEntity> Guilds { get; set; }
         public DbSet<UserEntity> Users { get; set; }
+        public DbSet<LeagueUserEntity> LeagueUsers { get; set; }
 
         public static Func<DatabaseActionEventArgs, Task> DatabaseUpdated;
 
@@ -27,9 +28,11 @@ namespace Aatrox.Data
 
             var guildRepository = new GuildRepository(Guilds, this);
             var userRepository = new UserRepository(Users, this);
+            var leagueUserRepository = new LeagueUserRepository(LeagueUsers, this);
 
             repositories.Add(guildRepository);
             repositories.Add(userRepository);
+            repositories.Add(leagueUserRepository);
 
             _repositories = repositories.AsReadOnly();
         }
@@ -54,6 +57,25 @@ namespace Aatrox.Data
 
             builder.Entity<GuildEntity>()
                 .Property(x => x.CreatedAt).ValueGeneratedNever();
+
+            builder.Entity<UserEntity>()
+                .Property(x => x.Id).ValueGeneratedNever();
+
+            builder.Entity<UserEntity>()
+                .Property(x => x.CreatedAt).ValueGeneratedNever();
+
+            builder.Entity<LeagueUserEntity>()
+                .Property(x => x.Id).ValueGeneratedNever();
+
+            builder.Entity<LeagueUserEntity>()
+                .Property(x => x.CreatedAt).ValueGeneratedNever();
+
+            builder.Entity<LeagueUserEntity>()
+                .HasOne(x => x.User)
+                .WithOne(x => x.LeagueProfile)
+                .HasForeignKey<LeagueUserEntity>(x => x.Id)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fkey_league_user_entity_user_id");
         }
 
         internal void InvokeEvent(DatabaseActionEventArgs e)

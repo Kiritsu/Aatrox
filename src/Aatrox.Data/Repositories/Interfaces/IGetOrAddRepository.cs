@@ -3,8 +3,8 @@ using Aatrox.Data.Entities;
 
 namespace Aatrox.Data.Repositories.Interfaces
 {
-    public interface IUserRepository : IRepository<UserEntity>
+    public interface IGetOrAddRepository<T> : IRepository<T> where T : Entity
     {
-        Task<UserEntity> GetOrAddAsync(ulong id);
+        Task<T> GetOrAddAsync(ulong id);
     }
 }

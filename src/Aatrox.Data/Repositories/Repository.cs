@@ -11,10 +11,10 @@ namespace Aatrox.Data.Repositories
 {
     public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity
     {
-        private readonly DbSet<TEntity> _entities;
-        private readonly AatroxDbContext _context;
+        protected readonly DbSet<TEntity> _entities;
+        protected readonly AatroxDbContext _context;
 
-        private readonly string _name;
+        protected readonly string _name;
 
         public Repository(DbSet<TEntity> entities, AatroxDbContext context, string name)
         {
@@ -24,7 +24,7 @@ namespace Aatrox.Data.Repositories
             _name = name;
         }
 
-        public async Task<IReadOnlyList<TEntity>> GetAllAsync()
+        public virtual async Task<IReadOnlyList<TEntity>> GetAllAsync()
         {
             try
             {
@@ -52,7 +52,7 @@ namespace Aatrox.Data.Repositories
             }
         }
 
-        public async Task<TEntity> GetAsync(ulong id)
+        public virtual async Task<TEntity> GetAsync(ulong id)
         {
             try
             {
@@ -85,7 +85,7 @@ namespace Aatrox.Data.Repositories
             }
         }
 
-        public async Task<TEntity> AddAsync(TEntity entity)
+        public virtual async Task<TEntity> AddAsync(TEntity entity)
         {
             try
             {
@@ -113,7 +113,7 @@ namespace Aatrox.Data.Repositories
             }
         }
 
-        public Task DeleteAsync(TEntity entity)
+        public virtual Task DeleteAsync(TEntity entity)
         {
             try
             {
@@ -139,7 +139,7 @@ namespace Aatrox.Data.Repositories
             return Task.CompletedTask;
         }
 
-        public async Task DeleteAllAsync()
+        public virtual async Task DeleteAllAsync()
         {
             try
             {
@@ -163,7 +163,7 @@ namespace Aatrox.Data.Repositories
             }
         }
        
-        public Task UpdateAsync(TEntity entity)
+        public virtual Task UpdateAsync(TEntity entity)
         {
             try
             {

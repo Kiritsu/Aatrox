@@ -37,7 +37,7 @@ namespace Aatrox.Core.Services
 
         public async Task SetupAsync(Assembly assembly)
         {
-            _client.MessageReceived += OnMessageCreatedAsync;
+            _client.MessageReceived += OnMessageReceivedAsync;
             _client.MessageUpdated += OnMessageUpdatedAsync;
             _client.Ready += OnReadyAsync;
             _client.Logger.MessageLogged += OnMessageLogged;
@@ -122,18 +122,25 @@ namespace Aatrox.Core.Services
             await (ctx.Channel as IMessageChannel).SendMessageAsync("", false, embed.Build());
         }
 
-        private async Task OnMessageCreatedAsync(MessageReceivedEventArgs e)
+        private async Task OnMessageReceivedAsync(MessageReceivedEventArgs e)
         {
             if (e.Message.Author.IsBot)
             {
                 return;
             }
 
-            using var ctx = new AatroxCommandContext(e, _services);
+            try
+            {
+                using var ctx = new AatroxCommandContext(e, _services);
 
-            await ctx.PrepareAsync();
-            await HandleCommandAsync(ctx);
-            await ctx.EndAsync();
+                await ctx.PrepareAsync();
+                await HandleCommandAsync(ctx);
+                await ctx.EndAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("MessageReceived", ex);
+            }
         }
 
         private async Task OnMessageUpdatedAsync(MessageUpdatedEventArgs e)
@@ -143,11 +150,18 @@ namespace Aatrox.Core.Services
                 return;
             }
 
-            using var ctx = new AatroxCommandContext(e, _services);
+            try
+            {
+                using var ctx = new AatroxCommandContext(e, _services);
 
-            await ctx.PrepareAsync();
-            await HandleCommandAsync(ctx);
-            await ctx.EndAsync();
+                await ctx.PrepareAsync();
+                await HandleCommandAsync(ctx);
+                await ctx.EndAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("MessageUpdated", ex);
+            }
         }
 
         private Task OnReadyAsync(ReadyEventArgs e)
