@@ -155,11 +155,11 @@ namespace Aatrox.Modules
             var builder = new StringBuilder();
             foreach (var cmd in matchingCommands)
             {
-                builder.AppendLine($"**{cmd.Command.Description ?? "Undocumented yet."}**");
+                builder.AppendLine($"**{cmd.Command.Description ?? "Undocumented."}**");
                 builder.AppendLine($"`{Context.Prefix}{cmd.Command.Name} {string.Join(" ", cmd.Command.Parameters.Select(x => $"[{x.Name}]"))}`".ToLowerInvariant());
                 foreach (var param in cmd.Command.Parameters)
                 {
-                    builder.AppendLine($"`[{param.Name}]`: {param.Description ?? "Undocumented yet."}");
+                    builder.AppendLine($"`[{param.Name}]`: {param.Description ?? "Undocumented."}");
                 }
                 builder.AppendLine();
             }
