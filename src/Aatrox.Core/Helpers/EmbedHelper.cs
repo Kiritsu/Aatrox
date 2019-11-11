@@ -13,7 +13,7 @@ namespace Aatrox.Core.Helpers
                 Timestamp = DateTimeOffset.Now,
                 Footer = new LocalEmbedFooterBuilder
                 {
-                    Text = $"Executed by {ctx.Member.DisplayName}#{ctx.Member.Discriminator}",
+                    Text = $"Executed by {ctx.Member.Name}#{ctx.Member.Discriminator}",
                     IconUrl = ctx.Aatrox.GetAvatarUrl()
                 },
                 Color = Color.Goldenrod
@@ -28,7 +28,7 @@ namespace Aatrox.Core.Helpers
                 Timestamp = DateTimeOffset.Now,
                 Footer = new LocalEmbedFooterBuilder
                 {
-                    Text = $"Executed by {ctx.Member.DisplayName}#{ctx.Member.Discriminator}",
+                    Text = $"Executed by {ctx.Member.Name}#{ctx.Member.Discriminator}",
                     IconUrl = ctx.Aatrox.GetAvatarUrl()
                 },
                 Color = Color.Goldenrod

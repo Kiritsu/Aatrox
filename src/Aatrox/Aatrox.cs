@@ -36,13 +36,26 @@ namespace Aatrox
             _services = BuildServiceProvider();
             _dbLogger = LogService.GetLogger("Database");
 
-            AatroxDbContext.DatabaseUpdated += DatabaseUpdated;
-            using (var db = _services.GetRequiredService<AatroxDbContext>())
+            try
             {
+                AatroxDbContext.DatabaseUpdated += DatabaseUpdated;
+                using var db = _services.GetRequiredService<AatroxDbContext>();
                 db.Database.Migrate();
+            }
+            catch (Exception ex)
+            {
+                _dbLogger.Error("Database migration failed. Exiting.", ex);
+                return;
             }
 
             var ds = _services.GetRequiredService<DiscordService>();
+            ds.AddTypeParser(CachedChannelParser.Instance);
+            ds.AddTypeParser(CachedGuildParser.Instance);
+            ds.AddTypeParser(CachedUserParser.Instance);
+            ds.AddTypeParser(CachedMemberParser.Instance);
+            ds.AddTypeParser(SkeletonUserParser.Instance);
+            ds.AddTypeParser(TimeSpanParser.Instance);
+            ds.AddTypeParser(UriTypeParser.Instance);
             await ds.SetupAsync(Assembly.GetEntryAssembly());
 
             await Task.Delay(Timeout.Infinite);

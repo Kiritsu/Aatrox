@@ -84,10 +84,31 @@ namespace Aatrox.Modules
                 var matchingModule = _commands.TopLevelModules.FirstOrDefault(x => x.Name.Equals(command, StringComparison.OrdinalIgnoreCase));
                 if (matchingModule is null)
                 {
-                    matchingModule = _commands.TopLevelModules.FirstOrDefault(x => x.Name.Equals(command.Levenshtein(_commands), StringComparison.OrdinalIgnoreCase));   
+                    matchingModule = _commands.TopLevelModules.FirstOrDefault(x => x.Name.Equals(command.Levenshtein(_commands), StringComparison.OrdinalIgnoreCase));
                 }
 
-                if (matchingModule is null)
+                var modules = _commands.GetAllModules();
+                if (matchingModule is null) //Look for nested modules
+                {
+                    matchingModule = modules.FirstOrDefault(x => x.FullAliases.Any(y => y.Equals(command, StringComparison.OrdinalIgnoreCase)));
+                }
+
+                if (matchingModule is null) //Look for nested modules with levenshtein
+                {
+                    matchingModule = modules.FirstOrDefault(x => x.FullAliases.Any(y => y.Equals(command.Levenshtein(modules.Select(x => x.FullAliases.FirstOrDefault()).ToList()), StringComparison.OrdinalIgnoreCase)));
+                }
+
+                if (matchingModule is null) //Look for submodule but without complete module path
+                {
+                    matchingModule = modules.FirstOrDefault(x => x.Name.Equals(command, StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (matchingModule is null) //Look for submodule but without complete module path with levenshtein
+                {
+                    matchingModule = modules.FirstOrDefault(x => x.Name.Equals(command.Levenshtein(modules.Select(x => x.Name).ToList()), StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (matchingModule is null) //Remove last input
                 {
                     var cmdArgs = command.Split(' ').ToList();
                     cmdArgs.RemoveAt(cmdArgs.Count - 1);
@@ -105,6 +126,11 @@ namespace Aatrox.Modules
                         Text = InternationalizationService.GetLocalization("help_module_footer", DbContext.User.Language, matchingModule.Commands.Count)
                     }
                 };
+
+                if (matchingModule.Submodules.Count > 0)
+                {
+                    embed.AddField("Modules", string.Join(", ", matchingModule.Submodules.DistinctBy(x => x.Name).Select(x => $"`{x.Name}`")));
+                }
 
                 if (matchingModule.Commands.Count > 0)
                 {

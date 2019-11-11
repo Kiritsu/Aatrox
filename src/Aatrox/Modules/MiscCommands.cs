@@ -1,9 +1,13 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Net.NetworkInformation;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Aatrox.Core.Configurations;
 using Aatrox.Core.Entities;
+using Aatrox.Core.Extensions;
+using Aatrox.Core.Helpers;
 using Aatrox.Core.Interfaces;
 using Disqord;
 using Qmmands;
@@ -18,6 +22,20 @@ namespace Aatrox.Modules
         public MiscCommands(IAatroxConfigurationProvider config)
         {
             _configuration = config.GetConfiguration();
+        }
+
+        [Command("About")]
+        [Description("Displays a few informations about the bot.")]
+        public Task AboutAsync()
+        {
+            var embed = EmbedHelper.New(Context, GetLocalization("about_description"));
+            embed.AddField("Language", $"C# ({RuntimeInformation.FrameworkDescription})", true)
+                 .AddField("Library", Markdown.MaskedUrl($"Disqord v{Library.Version}", Library.RepositoryUrl), true)
+                 .AddField("Bot Repository", Markdown.MaskedUrl("Aatrox's Github", "https://github.com/Kiritsu/Aatrox"), true)
+                 .AddField("Servers", Context.Client.Guilds.Count, true)
+                 .AddField("Channels", Context.Client.Guilds.Values.SelectMany(x => x.Channels).Count(), true)
+                 .AddField("Users", Context.Client.Guilds.Values.SelectMany(x => x.Members.Values).DistinctBy(x => x.Id).Count(), true);
+            return RespondAsync(embed.Build());
         }
 
         [Command("Ping")]

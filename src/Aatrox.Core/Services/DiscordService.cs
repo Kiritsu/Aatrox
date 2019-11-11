@@ -42,35 +42,20 @@ namespace Aatrox.Core.Services
             _client.Ready += OnReadyAsync;
             _client.Logger.MessageLogged += OnMessageLogged;
 
-            var parsers = PullTypeParsersFromContainer(assembly).Where(x => x != null);
-            var method = _commands.GetType().GetMethod("AddTypeParserInternal", BindingFlags.NonPublic | BindingFlags.Instance);
-            foreach (var parser in parsers)
-            {
-                method.Invoke(_commands, new[] { parser.GetType().BaseType.GetGenericArguments().First(), parser, false });
-            }
-
             _commands.AddModules(assembly);
             _commands.CommandExecutionFailed += OnCommandErrored;
 
             await _client.ConnectAsync();
         }
 
+        public void AddTypeParser<T>(TypeParser<T> parser, bool replacePrimitive = false)
+        {
+            _commands.AddTypeParser(parser, replacePrimitive);
+        }
+
         private void OnMessageLogged(object sender, MessageLoggedEventArgs e)
         {
             _logger.Log(e.Severity.ToString(), e.Message, e.Exception);
-        }
-
-        //https://github.com/k-boyle/Kommon/blob/master/src/Kommon/Qmmands/Extensions.cs#L18-L65
-        private IEnumerable<object> PullTypeParsersFromContainer(Assembly assembly)
-        {
-            var itf = _commands.GetType().Assembly.GetTypes()
-                .First(x => x.Name == "ITypeParser").GetTypeInfo();
-
-            var parsers = assembly.GetTypes().Where(x => itf.IsAssignableFrom(x) && !x.IsAbstract);
-            foreach (var parser in parsers)
-            {
-                yield return parser.GetField("Instance").GetValue(null);
-            }
         }
 
         private async Task OnCommandErrored(CommandExecutionFailedEventArgs e)

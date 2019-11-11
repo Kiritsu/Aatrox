@@ -11,6 +11,11 @@ namespace Aatrox.Core.Entities
     {
         public DatabaseCommandContext DbContext => Context.DatabaseContext;
 
+        public string GetLocalization(string key, params object[] parameters)
+        {
+            return InternationalizationService.GetLocalization(key, DbContext.User.Language, parameters);
+        }
+
         public Task<RestUserMessage> RespondLocalizedAsync(string key, params object[] parameters)
         {
             var localization = InternationalizationService.GetLocalization(key, DbContext.User.Language, parameters);

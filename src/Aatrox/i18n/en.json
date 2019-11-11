@@ -6,5 +6,11 @@
   "help_module_description": "This embed contains the list of every command in this module.",
   "help_module_footer": "{0} commands available in this context.",
   "clean_no_messages": "Uh, I've found no messages to delete. Note that they must be newer than 2 weeks!",
-  "clean_done": "`{0}/{1}` messages have been deleted."
+  "clean_done": "`{0}/{1}` messages have been deleted.",
+  "about_description": "Thank you for using Aatrox. Here's some information about the bot itself.",
+  "no_custom_prefix": "No custom prefixes set for that guild.",
+  "prefix_already_added": "This prefix has already been added for that guild.",
+  "prefix_added": "This prefix has been added for that guild.",
+  "unknown_prefix": "The prefix is not added or is protected and can't be removed.",
+  "prefix_removed": "The prefix has been removed from the guild's custom prefixes."
 }
