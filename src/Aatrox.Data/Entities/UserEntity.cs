@@ -10,5 +10,9 @@ namespace Aatrox.Data.Entities
         public Lang Language { get; set; }
 
         public LeagueUserEntity LeagueProfile { get; set; }
+
+        public OsuUserEntity OsuProfile { get; set; }
+
+        public bool Premium { get; set; }
     }
 }

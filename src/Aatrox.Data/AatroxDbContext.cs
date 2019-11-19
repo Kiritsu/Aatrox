@@ -6,6 +6,7 @@ using Aatrox.Data.Entities;
 using Aatrox.Data.EventArgs;
 using Aatrox.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Storage.ValueConversion;
 
 namespace Aatrox.Data
 {
@@ -17,6 +18,7 @@ namespace Aatrox.Data
         public DbSet<GuildEntity> Guilds { get; set; }
         public DbSet<UserEntity> Users { get; set; }
         public DbSet<LeagueUserEntity> LeagueUsers { get; set; }
+        public DbSet<OsuUserEntity> OsuUsers { get; set; }
 
         public static Func<DatabaseActionEventArgs, Task> DatabaseUpdated;
 
@@ -29,10 +31,12 @@ namespace Aatrox.Data
             var guildRepository = new GuildRepository(Guilds, this);
             var userRepository = new UserRepository(Users, this);
             var leagueUserRepository = new LeagueUserRepository(LeagueUsers, this);
+            var osuUserRepository = new OsuUserRepository(OsuUsers, this);
 
             repositories.Add(guildRepository);
             repositories.Add(userRepository);
             repositories.Add(leagueUserRepository);
+            repositories.Add(osuUserRepository);
 
             _repositories = repositories.AsReadOnly();
         }
@@ -71,11 +75,32 @@ namespace Aatrox.Data
                 .Property(x => x.CreatedAt).ValueGeneratedNever();
 
             builder.Entity<LeagueUserEntity>()
+                .Property(x => x.Channels)
+                .HasConversion(new ListUlongToLongConverter());
+
+            builder.Entity<LeagueUserEntity>()
                 .HasOne(x => x.User)
                 .WithOne(x => x.LeagueProfile)
                 .HasForeignKey<LeagueUserEntity>(x => x.Id)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fkey_league_user_entity_user_id");
+
+            builder.Entity<OsuUserEntity>()
+                .Property(x => x.Id).ValueGeneratedNever();
+
+            builder.Entity<OsuUserEntity>()
+                .Property(x => x.CreatedAt).ValueGeneratedNever();
+
+            builder.Entity<OsuUserEntity>()
+                .Property(x => x.Channels)
+                .HasConversion(new ListUlongToLongConverter());
+
+            builder.Entity<OsuUserEntity>()
+                .HasOne(x => x.User)
+                .WithOne(x => x.OsuProfile)
+                .HasForeignKey<OsuUserEntity>(x => x.Id)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fkey_osu_user_entity_user_id");
         }
 
         internal void InvokeEvent(DatabaseActionEventArgs e)

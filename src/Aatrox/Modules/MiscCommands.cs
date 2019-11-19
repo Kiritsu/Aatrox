@@ -30,8 +30,8 @@ namespace Aatrox.Modules
         {
             var embed = EmbedHelper.New(Context, GetLocalization("about_description"));
             embed.AddField("Language", $"C# ({RuntimeInformation.FrameworkDescription})", true)
-                 .AddField("Library", Markdown.MaskedUrl($"Disqord v{Library.Version}", Library.RepositoryUrl), true)
-                 .AddField("Bot Repository", Markdown.MaskedUrl("Aatrox's Github", "https://github.com/Kiritsu/Aatrox"), true)
+                 .AddField("Library", Markdown.Link($"Disqord v{Library.Version}", Library.RepositoryUrl), true)
+                 .AddField("Bot Repository", Markdown.Link("Aatrox's Github", "https://github.com/Kiritsu/Aatrox"), true)
                  .AddField("Servers", Context.Client.Guilds.Count, true)
                  .AddField("Channels", Context.Client.Guilds.Values.SelectMany(x => x.Channels).Count(), true)
                  .AddField("Users", Context.Client.Guilds.Values.SelectMany(x => x.Members.Values).DistinctBy(x => x.Id).Count(), true);

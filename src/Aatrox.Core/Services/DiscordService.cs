@@ -45,7 +45,7 @@ namespace Aatrox.Core.Services
             _commands.AddModules(assembly);
             _commands.CommandExecutionFailed += OnCommandErrored;
 
-            await _client.ConnectAsync();
+            await _client.RunAsync();
         }
 
         public void AddTypeParser<T>(TypeParser<T> parser, bool replacePrimitive = false)

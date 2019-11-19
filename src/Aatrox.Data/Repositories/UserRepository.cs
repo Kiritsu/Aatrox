@@ -26,7 +26,8 @@ namespace Aatrox.Data.Repositories
                 {
                     Id = id,
                     CreatedAt = DateTimeOffset.UtcNow,
-                    Language = Lang.En
+                    Language = Lang.En,
+                    Premium = false
                 });
             }
 

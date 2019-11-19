@@ -7,26 +7,28 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aatrox.Data.Repositories
 {
-    public sealed class LeagueUserRepository : Repository<LeagueUserEntity>, IGetOrAddRepository<LeagueUserEntity>
+    public sealed class OsuUserRepository : Repository<OsuUserEntity>, IGetOrAddRepository<OsuUserEntity>
     {
-        public LeagueUserRepository(DbSet<LeagueUserEntity> entities, AatroxDbContext context) : base(entities, context, "LeagueUser")
+        public OsuUserRepository(DbSet<OsuUserEntity> entities, AatroxDbContext context) : base(entities, context, "OsuUser")
         {
         }
 
-        public async Task<LeagueUserEntity> GetOrAddAsync(ulong id)
+        public async Task<OsuUserEntity> GetOrAddAsync(ulong id)
         {
             var entity = await GetAsync(id);
 
             if (entity is null)
             {
-                entity = await AddAsync(new LeagueUserEntity
+                entity = await AddAsync(new OsuUserEntity
                 {
                     Id = id,
                     CreatedAt = DateTimeOffset.UtcNow,
-                    CurrentGameInfo = false,
-                    Region = "EUW",
                     Username = "",
-                    Channels = new List<ulong>()
+                    Channels = new List<ulong>(),
+                    CountryRankMin = 0,
+                    PpMin = 0,
+                    SendNewBestScore = false,
+                    SendRecentScore = false
                 });
             }
 
