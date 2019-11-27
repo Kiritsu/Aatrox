@@ -10,7 +10,7 @@ namespace Aatrox.Core.Entities
 {
     public sealed class AatroxCommandContext : CommandContext, IDisposable
     {
-        public CommandService Commands { get; }
+        public ICommandService Commands { get; }
         public DiscordClient Client { get; }
         public CachedGuild Guild { get; }
         public IMessageChannel Channel { get; }
@@ -39,7 +39,7 @@ namespace Aatrox.Core.Entities
 
         public AatroxCommandContext(MessageReceivedEventArgs e, IServiceProvider services) : base(services)
         {
-            Commands = services.GetRequiredService<CommandService>();
+            Commands = services.GetRequiredService<ICommandService>();
 
             Client = e.Client as DiscordClient;
             Guild = (e.Message.Channel as CachedGuildChannel).Guild;
@@ -55,7 +55,7 @@ namespace Aatrox.Core.Entities
 
         public AatroxCommandContext(MessageUpdatedEventArgs e, IServiceProvider services) : base(services)
         {
-            Commands = services.GetRequiredService<CommandService>();
+            Commands = services.GetRequiredService<ICommandService>();
 
             Client = e.Client as DiscordClient;
             Guild = (e.NewMessage.Channel as CachedGuildChannel).Guild;

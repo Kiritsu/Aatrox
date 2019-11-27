@@ -1,8 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Immutable;
+using System.Threading.Tasks;
+using Aatrox.Core.Abstractions;
 using Aatrox.Core.Helpers;
 using Aatrox.Core.Services;
 using Disqord;
 using Disqord.Rest;
+using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 
 namespace Aatrox.Core.Entities
@@ -51,6 +54,12 @@ namespace Aatrox.Core.Entities
         public Task<RestUserMessage> RespondAsync(LocalEmbed embed)
         {
             return Context.Channel.SendMessageAsync(embed: embed);
+        }
+
+        public async Task<IPaginator> PaginateAsync(ImmutableArray<IPage> pages, bool extraEmojis = true)
+        {
+            var paginatorInstance = Context.ServiceProvider.GetRequiredService<IPaginatorService>();
+            return await paginatorInstance.CreatePaginatorAsync(Context, pages, extraEmojis);
         }
     }
 }

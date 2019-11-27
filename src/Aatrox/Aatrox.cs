@@ -2,12 +2,13 @@
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Aatrox.Core.Abstractions;
 using Aatrox.Core.Configurations;
-using Aatrox.Core.Entities;
 using Aatrox.Core.Interfaces;
 using Aatrox.Core.Services;
 using Aatrox.Data;
 using Aatrox.Data.EventArgs;
+using Aatrox.Services;
 using Aatrox.TypeParsers;
 using Disqord;
 using Disqord.Rest;
@@ -48,7 +49,7 @@ namespace Aatrox
                 return;
             }
 
-            var ds = _services.GetRequiredService<DiscordService>();
+            var ds = _services.GetRequiredService<IDiscordService>();
             ds.AddTypeParser(CachedChannelParser.Instance);
             ds.AddTypeParser(CachedGuildParser.Instance);
             ds.AddTypeParser(CachedUserParser.Instance);
@@ -73,11 +74,12 @@ namespace Aatrox
                 .AddDbContext<AatroxDbContext>(ServiceLifetime.Transient)
                 .AddSingleton(x =>
                 {
-                    var token = x.GetService<IAatroxConfigurationProvider>().GetConfiguration().Token;
+                    var token = x.GetRequiredService<IAatroxConfigurationProvider>().GetConfiguration().Token;
                     return new DiscordClient(new RestDiscordClient(TokenType.Bot, token));
                 })
-                .AddSingleton<CommandService>()
-                .AddSingleton<DiscordService>()
+                .AddSingleton<ICommandService, CommandService>()
+                .AddSingleton<IDiscordService, DiscordService>()
+                .AddSingleton<IPaginatorService, PaginatorService>()
                 .BuildServiceProvider();
         }
 

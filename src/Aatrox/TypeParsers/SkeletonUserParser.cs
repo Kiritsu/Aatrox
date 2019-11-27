@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Aatrox.Core.Entities;
-using Disqord;
 using Qmmands;
 
 namespace Aatrox.TypeParsers

@@ -16,10 +16,10 @@ namespace Aatrox.Modules
     [Name("Help"), Hidden]
     public sealed class HelpCommands : AatroxModuleBase
     {
-        private readonly CommandService _commands;
+        private readonly ICommandService _commands;
         private readonly AatroxConfiguration _configuration;
 
-        public HelpCommands(CommandService commands, IAatroxConfigurationProvider configuration)
+        public HelpCommands(ICommandService commands, IAatroxConfigurationProvider configuration)
         {
             _commands = commands;
             _configuration = configuration.GetConfiguration();

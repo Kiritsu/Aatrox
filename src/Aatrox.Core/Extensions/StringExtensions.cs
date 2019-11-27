@@ -7,7 +7,7 @@ namespace Aatrox.Core.Extensions
 {
     public static class StringExtensions
     {
-        public static string Levenshtein(this string original, CommandService cmdsrvc)
+        public static string Levenshtein(this string original, ICommandService cmdsrvc)
         {
             if (original.Length < 3)
             {

@@ -19,13 +19,13 @@ namespace Aatrox.Core.Services
 {
     public sealed class DiscordService : IDiscordService
     {
-        private readonly CommandService _commands;
+        private readonly ICommandService _commands;
         private readonly DiscordClient _client;
         private readonly LogService _logger;
         private readonly IServiceProvider _services;
         private readonly AatroxConfiguration _configuration;
 
-        public DiscordService(CommandService commands, DiscordClient client,
+        public DiscordService(ICommandService commands, DiscordClient client,
             IAatroxConfigurationProvider configuration, IServiceProvider services)
         {
             _commands = commands;
