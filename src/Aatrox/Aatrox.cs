@@ -27,7 +27,7 @@ namespace Aatrox
 
         private async Task InitializeAsync()
         {
-            const string configPath = "credentials.json";
+            var configPath = Environment.GetEnvironmentVariable("AATROX_CONFIG_PATH") ?? "credentials.json";
 
             var cfg = new ConfigurationBuilder()
                 .AddJsonFile(configPath, false)
