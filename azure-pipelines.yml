@@ -31,7 +31,7 @@ steps:
   inputs:
     command: 'publish'
     publishWebProjects: false
-    arguments: '--framework netcoreapp3.0 --configuration $(buildConfiguration) --runtime ubuntu.16.04-x64 --output $(Build.ArtifactStagingDirectory)'
+    arguments: '--framework netcoreapp3.1 --configuration $(buildConfiguration) --runtime ubuntu.16.04-x64 --output $(Build.ArtifactStagingDirectory)'
     zipAfterPublish: false
 
 - task: PublishBuildArtifacts@1
