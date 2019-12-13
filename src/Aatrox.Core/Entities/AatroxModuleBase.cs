@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Aatrox.Core.Abstractions;
 using Aatrox.Core.Helpers;
-using Aatrox.Core.Providers;
+using Aatrox.Core.Services;
 using Disqord;
 using Disqord.Bot;
 using Disqord.Rest;

@@ -19,7 +19,7 @@ using Disqord.Rest;
 using Microsoft.Extensions.DependencyInjection;
 using Qmmands;
 
-namespace Aatrox.Core.Providers
+namespace Aatrox.Core.Services
 {
     public sealed class AatroxDiscordBot : DiscordBot, IAatroxDiscordBot
     {
@@ -83,6 +83,7 @@ namespace Aatrox.Core.Providers
         {
             if (result.IsSuccessful)
             {
+                await (context as AatroxCommandContext).EndAsync();
                 return;
             }
 
@@ -124,6 +125,8 @@ namespace Aatrox.Core.Providers
 
                 result = tryResult;
             }
+
+            await ctx.EndAsync();
 
             var str = new StringBuilder();
 
@@ -187,6 +190,8 @@ namespace Aatrox.Core.Providers
 
             _logger.Warn($"{ctx.User.Id} - {ctx.Guild.Id} ::> Command errored: {ctx.Command?.Name ?? "-unknown command-"}");
             await (ctx.Channel as IMessageChannel).SendMessageAsync("", false, embed.Build());
+
+            await ctx.DisposeAsync();
         }
 
         private Task DiscordService_CommandExecutionFailed(CommandExecutionFailedEventArgs e)

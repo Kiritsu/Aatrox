@@ -5,7 +5,7 @@ using System.IO;
 using Aatrox.Data.Enums;
 using Newtonsoft.Json;
 
-namespace Aatrox.Core.Providers
+namespace Aatrox.Core.Services
 {
     public static class InternationalizationService
     {
