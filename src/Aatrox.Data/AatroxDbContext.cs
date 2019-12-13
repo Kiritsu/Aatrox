@@ -6,7 +6,6 @@ using Aatrox.Data.Entities;
 using Aatrox.Data.EventArgs;
 using Aatrox.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Storage.ValueConversion;
 
 namespace Aatrox.Data
 {

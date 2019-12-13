@@ -9,7 +9,7 @@ namespace Aatrox.Data.Repositories
 {
     public sealed class LeagueUserRepository : Repository<LeagueUserEntity>, IGetOrAddRepository<LeagueUserEntity>
     {
-        public LeagueUserRepository(DbSet<LeagueUserEntity> entities, AatroxDbContext context) : base(entities, context, "LeagueUser")
+        internal LeagueUserRepository(DbSet<LeagueUserEntity> entities, AatroxDbContext context) : base(entities, context, "LeagueUser")
         {
         }
 

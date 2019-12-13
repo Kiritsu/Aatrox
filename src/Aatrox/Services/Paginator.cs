@@ -4,9 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Aatrox.Core.Abstractions;
 using Aatrox.Core.Entities;
-using Aatrox.Core.Services;
+using Aatrox.Core.Providers;
 using Aatrox.Data.Enums;
 using Disqord;
+using Disqord.Bot;
 using Disqord.Events;
 using Disqord.Rest;
 
@@ -22,7 +23,7 @@ namespace Aatrox.Services
         public static readonly LocalEmoji NameIdentifier = new LocalEmoji("🔠");
         public static readonly LocalEmoji PageIdentifier = new LocalEmoji("🔠");
 
-        public DiscordClient Client { get; }
+        public DiscordBot Client { get; }
         public IMessageChannel Channel { get; }
         public CachedUser User { get; }
 
@@ -41,7 +42,7 @@ namespace Aatrox.Services
 
         public Paginator(AatroxCommandContext ctx, ImmutableArray<IPage> pages)
         {
-            Client = ctx.Client;
+            Client = ctx.Bot;
             Channel = ctx.Channel;
             User = ctx.User;
             Pages = pages;

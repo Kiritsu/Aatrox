@@ -21,7 +21,7 @@ namespace Aatrox.TypeParsers
                 return new TypeParserResult<CachedGuild>("The given ID is not valid.");
             }
 
-            if (ctx.Client.Guilds.TryGetValue(id, out var guild))
+            if (ctx.Bot.Guilds.TryGetValue(id, out var guild))
             {
                 return new TypeParserResult<CachedGuild>(guild);
             }

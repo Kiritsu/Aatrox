@@ -4,7 +4,9 @@ namespace Aatrox.Core.Configurations
 {
     public sealed class AatroxConfiguration
     {
-        public string Token { get; set; }
-        public Color EmbedColor => Color.Goldenrod;
+        public string OsuToken { get; set; }
+        public string DiscordToken { get; set; }
+
+        public Color DefaultEmbedColor = Color.Goldenrod;
     }
 }

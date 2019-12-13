@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Aatrox.Data.Entities;
 using Aatrox.Data.Enums;
-using Aatrox.Data.EventArgs;
 using Aatrox.Data.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,7 +9,7 @@ namespace Aatrox.Data.Repositories
 {
     public sealed class UserRepository : Repository<UserEntity>, IGetOrAddRepository<UserEntity>
     {
-        public UserRepository(DbSet<UserEntity> entities, AatroxDbContext context) : base(entities, context, "User")
+        internal UserRepository(DbSet<UserEntity> entities, AatroxDbContext context) : base(entities, context, "User")
         {
         }
 

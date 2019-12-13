@@ -17,7 +17,7 @@ namespace Aatrox.Checks
 
             if (!(argument is CachedMember mbr))
             {
-                return CheckResult.Unsuccessful("The argument was not a DiscordMember");
+                return CheckResult.Unsuccessful("The argument was not a CachedMember");
             }
 
             return ctx.Member.Hierarchy > mbr.Hierarchy && ctx.Guild.CurrentMember.Hierarchy > mbr.Hierarchy

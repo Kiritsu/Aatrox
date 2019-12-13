@@ -4,14 +4,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using Aatrox.Core.Abstractions;
 using Aatrox.Core.Configurations;
+using Aatrox.Core.Entities;
 using Aatrox.Core.Interfaces;
-using Aatrox.Core.Services;
+using Aatrox.Core.Providers;
 using Aatrox.Data;
 using Aatrox.Data.EventArgs;
+using Aatrox.Enums;
 using Aatrox.Services;
 using Aatrox.TypeParsers;
-using Disqord;
-using Disqord.Rest;
+using Disqord.Bot;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -49,15 +50,24 @@ namespace Aatrox
                 return;
             }
 
-            var ds = _services.GetRequiredService<IDiscordService>();
-            ds.AddTypeParser(CachedChannelParser.Instance);
-            ds.AddTypeParser(CachedGuildParser.Instance);
-            ds.AddTypeParser(CachedUserParser.Instance);
-            ds.AddTypeParser(CachedMemberParser.Instance);
-            ds.AddTypeParser(SkeletonUserParser.Instance);
-            ds.AddTypeParser(TimeSpanParser.Instance);
-            ds.AddTypeParser(UriTypeParser.Instance);
+            var ds = _services.GetRequiredService<IAatroxDiscordBot>();
+            var cmds = (ICommandService)ds;
+
+            cmds.RemoveTypeParser(Disqord.Bot.Parsers.CachedUserParser.Instance);
+            cmds.AddTypeParser(CachedUserParser.Instance);
+
+            cmds.RemoveTypeParser(Disqord.Bot.Parsers.CachedMemberParser.Instance);
+            cmds.AddTypeParser(CachedMemberParser.Instance);
+
+            cmds.AddTypeParser(CachedGuildParser.Instance);
+            cmds.AddTypeParser(SkeletonUserParser.Instance);
+            cmds.AddTypeParser(TimeSpanParser.Instance);
+            cmds.AddTypeParser(UriTypeParser.Instance);
+
             await ds.SetupAsync(Assembly.GetEntryAssembly());
+
+            var bot = (DiscordBot)ds;
+            await bot.RunAsync();
 
             await Task.Delay(Timeout.Infinite);
         }
@@ -66,21 +76,46 @@ namespace Aatrox
         {
             return new ServiceCollection()
                 .AddSingleton(x => new LogService("Aatrox"))
-                .Configure<AatroxConfiguration>(x => _configuration.GetSection("Aatrox").Bind(x))
+                .Configure<AatroxConfiguration>(x => _configuration.GetSection("Secrets").Bind(x))
                 .AddSingleton<IAatroxConfigurationProvider, AatroxConfigurationProvider>()
                 .Configure<DatabaseConfiguration>(x => _configuration.GetSection("Database").Bind(x))
                 .AddSingleton<IDatabaseConfigurationProvider, DatabaseConfigurationProvider>()
                 .AddSingleton<ConnectionStringProvider>()
                 .AddDbContext<AatroxDbContext>(ServiceLifetime.Transient)
-                .AddSingleton(x =>
+                .AddSingleton(x => new DiscordBotConfiguration
                 {
-                    var token = x.GetRequiredService<IAatroxConfigurationProvider>().GetConfiguration().Token;
-                    return new DiscordClient(new RestDiscordClient(TokenType.Bot, token));
+                    ProviderFactory = _ => x,
+                    CommandService = new CommandService(new CommandServiceConfiguration
+                    {
+                        IgnoresExtraArguments = true,
+                        CooldownBucketKeyGenerator = CooldownBucketGenerator,
+                        StringComparison = StringComparison.OrdinalIgnoreCase
+                    })
                 })
-                .AddSingleton<ICommandService, CommandService>()
-                .AddSingleton<IDiscordService, DiscordService>()
+                .AddSingleton<IAatroxDiscordBot, AatroxDiscordBot>()
                 .AddSingleton<IPaginatorService, PaginatorService>()
                 .BuildServiceProvider();
+        }
+
+        private object CooldownBucketGenerator(object bucketType, CommandContext context)
+        {
+            if (!(context is AatroxCommandContext ctx))
+            {
+                throw new InvalidOperationException("The passed command context is invalid.");
+            }
+
+            if (!(bucketType is CooldownBucketType type))
+            {
+                throw new InvalidOperationException("Invalid bucket type.");
+            }
+
+            return type switch
+            {
+                CooldownBucketType.Guild => ctx.Guild.Id,
+                CooldownBucketType.Channel => ctx.Channel.Id,
+                CooldownBucketType.User => ctx.User.Id,
+                _ => throw new InvalidOperationException("Invalid bucket type.")
+            };
         }
 
         private Task DatabaseUpdated(DatabaseActionEventArgs arg)

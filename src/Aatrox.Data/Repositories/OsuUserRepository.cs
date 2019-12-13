@@ -9,7 +9,7 @@ namespace Aatrox.Data.Repositories
 {
     public sealed class OsuUserRepository : Repository<OsuUserEntity>, IGetOrAddRepository<OsuUserEntity>
     {
-        public OsuUserRepository(DbSet<OsuUserEntity> entities, AatroxDbContext context) : base(entities, context, "OsuUser")
+        internal OsuUserRepository(DbSet<OsuUserEntity> entities, AatroxDbContext context) : base(entities, context, "OsuUser")
         {
         }
 

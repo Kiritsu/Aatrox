@@ -32,7 +32,7 @@ namespace Aatrox.TypeParsers
 
             try
             {
-                var user = await ctx.Client.GetUserAsync(id);
+                var user = await ctx.Bot.GetUserAsync(id);
                 return new TypeParserResult<SkeletonUser>(new SkeletonUser(user));
             }
             catch

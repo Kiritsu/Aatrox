@@ -21,7 +21,7 @@ namespace Aatrox.TypeParsers
                 return new TypeParserResult<CachedUser>("A user cannot exist in that context.");
             }
 
-            var users = new List<CachedUser>(ctx.Client.Guilds.SelectMany(x => x.Value.Members.Values));
+            var users = new List<CachedUser>(ctx.Bot.Guilds.SelectMany(x => x.Value.Members.Values));
             if (ctx.Guild != null)
             {
                 users.AddRange(ctx.Guild.Members.Values);

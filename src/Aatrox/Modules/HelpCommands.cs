@@ -7,7 +7,7 @@ using Aatrox.Core.Configurations;
 using Aatrox.Core.Entities;
 using Aatrox.Core.Extensions;
 using Aatrox.Core.Interfaces;
-using Aatrox.Core.Services;
+using Aatrox.Core.Providers;
 using Disqord;
 using Qmmands;
 
@@ -44,7 +44,7 @@ namespace Aatrox.Modules
             var prefixes = DbContext.Guild.Prefixes.Select(x => $"`{x}`").Append("`Aa!`");
             var embed = new LocalEmbedBuilder
             {
-                Color = _configuration.EmbedColor,
+                Color = _configuration.DefaultEmbedColor,
                 Title = "Help",
                 Description = InternationalizationService.GetLocalization("help_description", DbContext.User.Language, Context.Prefix, string.Join(", ", prefixes)),
                 Footer = new LocalEmbedFooterBuilder
@@ -118,7 +118,7 @@ namespace Aatrox.Modules
 
                 embed = new LocalEmbedBuilder
                 {
-                    Color = _configuration.EmbedColor,
+                    Color = _configuration.DefaultEmbedColor,
                     Title = "Help",
                     Description = InternationalizationService.GetLocalization("help_module_description"),
                     Footer = new LocalEmbedFooterBuilder
@@ -148,7 +148,7 @@ namespace Aatrox.Modules
 
             embed = new LocalEmbedBuilder
             {
-                Color = _configuration.EmbedColor,
+                Color = _configuration.DefaultEmbedColor,
                 Title = "Help"
             };
 

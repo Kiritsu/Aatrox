@@ -2,9 +2,9 @@
 using System.Reflection;
 using NLog;
 
-namespace Aatrox.Core.Services
+namespace Aatrox.Core.Providers
 {
-    public class LogService
+    public sealed class LogService
     {
         private readonly ILogger _logger;
 

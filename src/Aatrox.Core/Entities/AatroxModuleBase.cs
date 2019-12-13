@@ -2,15 +2,15 @@
 using System.Threading.Tasks;
 using Aatrox.Core.Abstractions;
 using Aatrox.Core.Helpers;
-using Aatrox.Core.Services;
+using Aatrox.Core.Providers;
 using Disqord;
+using Disqord.Bot;
 using Disqord.Rest;
 using Microsoft.Extensions.DependencyInjection;
-using Qmmands;
 
 namespace Aatrox.Core.Entities
 {
-    public class AatroxModuleBase : ModuleBase<AatroxCommandContext>
+    public class AatroxModuleBase : DiscordModuleBase<AatroxCommandContext>
     {
         public DatabaseCommandContext DbContext => Context.DatabaseContext;
 

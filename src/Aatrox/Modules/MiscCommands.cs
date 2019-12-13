@@ -32,9 +32,9 @@ namespace Aatrox.Modules
             embed.AddField("Language", $"C# ({RuntimeInformation.FrameworkDescription})", true)
                  .AddField("Library", Markdown.Link($"Disqord v{Library.Version}", Library.RepositoryUrl), true)
                  .AddField("Bot Repository", Markdown.Link("Aatrox's Github", "https://github.com/Kiritsu/Aatrox"), true)
-                 .AddField("Servers", Context.Client.Guilds.Count, true)
-                 .AddField("Channels", Context.Client.Guilds.Values.SelectMany(x => x.Channels).Count(), true)
-                 .AddField("Users", Context.Client.Guilds.Values.SelectMany(x => x.Members.Values).DistinctBy(x => x.Id).Count(), true);
+                 .AddField("Servers", Context.Bot.Guilds.Count, true)
+                 .AddField("Channels", Context.Bot.Guilds.Values.SelectMany(x => x.Channels).Count(), true)
+                 .AddField("Users", Context.Bot.Guilds.Values.SelectMany(x => x.Members.Values).DistinctBy(x => x.Id).Count(), true);
             return RespondAsync(embed.Build());
         }
 
@@ -55,8 +55,8 @@ namespace Aatrox.Modules
             }
 
             var emb = new LocalEmbedBuilder()
-                .WithColor(_configuration.EmbedColor)
-                .WithDescription($":heart:  |  {(Context.Client.Latency.HasValue ? Math.Round(Context.Client.Latency.Value.TotalMilliseconds, 2) : -42)}ms " +
+                .WithColor(_configuration.DefaultEmbedColor)
+                .WithDescription($":heart:  |  {(Context.Bot.Latency.HasValue ? Math.Round(Context.Bot.Latency.Value.TotalMilliseconds, 2) : -42)}ms " +
                     $"\n:earth_americas:  |  {distant}ms ({host})")
                 .WithTitle("Current latency : (websocket, host, messages)");
 

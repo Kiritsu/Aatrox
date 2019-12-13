@@ -2,7 +2,7 @@
 using Aatrox.Data;
 using Microsoft.Extensions.Options;
 
-namespace Aatrox.Core.Services
+namespace Aatrox.Core.Providers
 {
     public sealed class DatabaseConfigurationProvider : IDatabaseConfigurationProvider
     {

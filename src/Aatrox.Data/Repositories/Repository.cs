@@ -16,7 +16,7 @@ namespace Aatrox.Data.Repositories
 
         protected readonly string _name;
 
-        public Repository(DbSet<TEntity> entities, AatroxDbContext context, string name)
+        protected Repository(DbSet<TEntity> entities, AatroxDbContext context, string name)
         {
             _entities = entities;
             _context = context;
