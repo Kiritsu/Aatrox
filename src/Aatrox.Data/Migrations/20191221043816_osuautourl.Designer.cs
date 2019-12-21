@@ -4,15 +4,17 @@ using System.Collections.Generic;
 using Aatrox.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Aatrox.Data.Migrations
 {
     [DbContext(typeof(AatroxDbContext))]
-    partial class AatroxDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191221043816_osuautourl")]
+    partial class osuautourl
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

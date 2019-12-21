@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Aatrox.Core.Entities;
 using Qmmands;
@@ -9,6 +10,22 @@ namespace Aatrox.Modules
     [Name("Settings"), Group("Settings")]
     public sealed class SettingsCommands : AatroxModuleBase
     {
+        [Name("Osu"), Group("Osu")]
+        public sealed class OsuSettingsCommands : AatroxModuleBase
+        {
+            [Command("AutoResolve", "Url")]
+            [Description("Enables or disables auto-resolve for osu! urls.")]
+            public async Task ToggleAutoResolve()
+            {
+                DbContext.Guild.AutoResolveOsuUrl = !DbContext.Guild.AutoResolveOsuUrl;
+                await DbContext.UpdateGuildAsync();
+                
+                await RespondEmbedLocalizedAsync(DbContext.Guild.AutoResolveOsuUrl 
+                    ? "osu_url_auto_resolve_enabled" 
+                    : "osu_url_auto_resolve_disabled");
+            }
+        }
+        
         [Name("Prefix"), Group("Prefix")]
         public sealed class PrefixCommands : AatroxModuleBase
         {

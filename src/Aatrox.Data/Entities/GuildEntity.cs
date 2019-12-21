@@ -8,5 +8,8 @@ namespace Aatrox.Data.Entities
     {
         [Column("prefixes")]
         public List<string> Prefixes { get; set; }
+        
+        [Column("auto_resolve_osu_url")]
+        public bool AutoResolveOsuUrl { get; set; }
     }
 }

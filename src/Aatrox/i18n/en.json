@@ -13,5 +13,7 @@
   "prefix_added": "This prefix has been added for that guild.",
   "unknown_prefix": "The prefix is not added or is protected and can't be removed.",
   "prefix_removed": "The prefix has been removed from the guild's custom prefixes.",
-  "paginator_identifier": "{0} | Please provide a valid `{1}`. Write `{2}` to cancel. This will timeout after {3} seconds."
+  "paginator_identifier": "{0} | Please provide a valid `{1}`. Write `{2}` to cancel. This will timeout after {3} seconds.",
+  "osu_url_auto_resolve_enabled": "URL auto-resolve has been enabled.",
+  "osu_url_auto_resolve_disabled": "URL auto-resolve has been disabled."
 }

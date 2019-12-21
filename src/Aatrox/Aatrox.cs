@@ -14,6 +14,7 @@ using Disqord.Bot;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OsuSharp;
 using Qmmands;
 
 namespace Aatrox
@@ -47,7 +48,10 @@ namespace Aatrox
                 _dbLogger.Error("Database migration failed. Exiting.", ex);
                 return;
             }
-
+            
+            var os = _services.GetRequiredService<OsuService>();
+            await os.SetupAsync();
+            
             var multiLanguage = _services.GetRequiredService<InternationalizationService>();
             await multiLanguage.SetupAsync();
             
@@ -93,6 +97,17 @@ namespace Aatrox
                 .AddSingleton<DiscordService>()
                 .AddSingleton<PaginatorService>()
                 .AddSingleton<InternationalizationService>()
+                .AddSingleton(x =>
+                {
+                    var config = x.GetRequiredService<AatroxConfigurationProvider>().GetConfiguration();
+                    
+                    return new OsuClient(new OsuSharpConfiguration
+                    {
+                        ApiKey = config.OsuToken,
+                        ModeSeparator = " "
+                    });
+                })
+                .AddSingleton<OsuService>()
                 .BuildServiceProvider();
         }
 

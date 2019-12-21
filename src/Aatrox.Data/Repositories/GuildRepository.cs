@@ -23,7 +23,8 @@ namespace Aatrox.Data.Repositories
                 {
                     Id = id,
                     Prefixes = new List<string>(),
-                    CreatedAt = DateTimeOffset.UtcNow
+                    CreatedAt = DateTimeOffset.UtcNow,
+                    AutoResolveOsuUrl = true
                 });
             }
 
