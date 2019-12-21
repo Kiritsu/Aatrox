@@ -53,10 +53,10 @@ namespace Aatrox.Modules
                     await PurgeAsync(messages, count, x => x.Author.IsBot);
                     break;
                 case CleanMessageType.File:
-                    await PurgeAsync(messages, count, x => (x as RestUserMessage).Attachments.Count > 0);
+                    await PurgeAsync(messages, count, x => (x as RestUserMessage)?.Attachments.Count > 0);
                     break;
                 case CleanMessageType.Embed:
-                    await PurgeAsync(messages, count, x => (x as RestUserMessage).Embeds.Count > 0);
+                    await PurgeAsync(messages, count, x => (x as RestUserMessage)?.Embeds.Count > 0);
                     break;
                 default:
                     await PurgeAsync(messages, count);
@@ -79,7 +79,7 @@ namespace Aatrox.Modules
                 return;
             }
 
-            await (Context.Channel as CachedTextChannel).DeleteMessagesAsync(messages.Select(x => x.Id));
+            await ((CachedTextChannel) Context.Channel).DeleteMessagesAsync(messages.Select(x => x.Id));
             await RespondLocalizedAsync("clean_done", count, baseAmount);
         }
 

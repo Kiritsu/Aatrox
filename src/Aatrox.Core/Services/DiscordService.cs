@@ -81,13 +81,13 @@ namespace Aatrox.Core.Services
 
         protected override async ValueTask AfterExecutedAsync(IResult result, DiscordCommandContext context)
         {
+            var ctx = (AatroxCommandContext) context;
+            
             if (result.IsSuccessful)
             {
-                await (context as AatroxCommandContext).EndAsync();
+                await ctx.EndAsync();
                 return;
             }
-
-            var ctx = context as AatroxCommandContext;
 
             if (result is CommandNotFoundResult)
             {
@@ -189,19 +189,16 @@ namespace Aatrox.Core.Services
             embed.AddField("__Error(s)__", str.ToString());
 
             _logger.Warn($"{ctx.User.Id} - {ctx.Guild.Id} ::> Command errored: {ctx.Command?.Name ?? "-unknown command-"}");
-            await (ctx.Channel as IMessageChannel).SendMessageAsync("", false, embed.Build());
+            await ctx.Channel.SendMessageAsync("", false, embed.Build());
 
             await ctx.DisposeAsync();
         }
 
         private Task DiscordService_CommandExecutionFailed(CommandExecutionFailedEventArgs e)
         {
-            _logger.Error($"Command errored: {e.Context.Command.Name} by {(e.Context as AatroxCommandContext).User.Id} in {(e.Context as AatroxCommandContext).Guild.Id}", e.Result.Exception);
-
-            if (!(e.Context is AatroxCommandContext ctx))
-            {
-                return Task.CompletedTask;
-            }
+            var ctx = (AatroxCommandContext) e.Context;
+            
+            _logger.Error($"Command errored: {e.Context.Command.Name} by {ctx.User.Id} in {ctx.Guild.Id}", e.Result.Exception);
 
             var str = new StringBuilder();
             switch (e.Result.Exception)
@@ -240,14 +237,14 @@ namespace Aatrox.Core.Services
             embed.AddField("__Error(s)__", str.ToString());
             embed.WithFooter($"Type '{ctx.Prefix}help {ctx.Command.FullAliases[0].ToLowerInvariant()}' for more information.");
 
-            return (ctx.Channel as IMessageChannel).SendMessageAsync("", false, embed.Build());
+            return ctx.Channel.SendMessageAsync("", false, embed.Build());
         }
 
         private Task OnReadyAsync(ReadyEventArgs e)
         {
             _logger.Info("Aatrox is ready.");
 
-            return (e.Client as DiscordClient).SetPresenceAsync(UserStatus.DoNotDisturb,
+            return ((DiscordClient) e.Client).SetPresenceAsync(UserStatus.DoNotDisturb,
                 new LocalActivity("hate speeches", ActivityType.Listening));
         }
 

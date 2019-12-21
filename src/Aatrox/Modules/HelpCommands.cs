@@ -94,7 +94,7 @@ namespace Aatrox.Modules
 
                 if (matchingModule is null) //Look for nested modules with levenshtein
                 {
-                    matchingModule = modules.FirstOrDefault(x => x.FullAliases.Any(y => y.Equals(command.Levenshtein(modules.Select(x => x.FullAliases.FirstOrDefault()).ToList()), StringComparison.OrdinalIgnoreCase)));
+                    matchingModule = modules.FirstOrDefault(x => x.FullAliases.Any(y => y.Equals(command.Levenshtein(modules.Select(z => z.FullAliases.FirstOrDefault()).ToList()), StringComparison.OrdinalIgnoreCase)));
                 }
 
                 if (matchingModule is null) //Look for submodule but without complete module path
@@ -104,7 +104,7 @@ namespace Aatrox.Modules
 
                 if (matchingModule is null) //Look for submodule but without complete module path with levenshtein
                 {
-                    matchingModule = modules.FirstOrDefault(x => x.Name.Equals(command.Levenshtein(modules.Select(x => x.Name).ToList()), StringComparison.OrdinalIgnoreCase));
+                    matchingModule = modules.FirstOrDefault(x => x.Name.Equals(command.Levenshtein(modules.Select(z => z.Name).ToList()), StringComparison.OrdinalIgnoreCase));
                 }
 
                 if (matchingModule is null) //Remove last input
@@ -165,17 +165,17 @@ namespace Aatrox.Modules
 
             embed.AddField("Usages", builder.ToString());
 
-            var defaultCmd = matchingCommands.FirstOrDefault().Command;
+            var defaultCmd = matchingCommands.First().Command;
 
             var checks = CommandUtilities.EnumerateAllChecks(defaultCmd.Module).Cast<AatroxCheckBaseAttribute>().ToArray();
             if (checks.Length > 0)
             {
-                embed.AddField($"Module Requirements", string.Join("\n", checks.Select(x => $"- `{x.Name}{x.Details}`")));
+                embed.AddField("Module Requirements", string.Join("\n", checks.Select(x => $"- `{x.Name}{x.Details}`")));
             }
 
             if (defaultCmd.Checks.Count > 0)
             {
-                embed.AddField($"Command Requirements", string.Join("\n", defaultCmd.Checks.Cast<AatroxCheckBaseAttribute>().Select(x => $"- `{x.Name}{x.Details}`")));
+                embed.AddField("Command Requirements", string.Join("\n", defaultCmd.Checks.Cast<AatroxCheckBaseAttribute>().Select(x => $"- `{x.Name}{x.Details}`")));
             }
 
             return RespondAsync(embed: embed.Build());

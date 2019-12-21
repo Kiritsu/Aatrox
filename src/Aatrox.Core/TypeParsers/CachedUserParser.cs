@@ -38,7 +38,7 @@ namespace Aatrox.Core.TypeParsers
             users = users.DistinctBy(x => x.Id).ToList();
 
             CachedUser user = null;
-            if ((value.Length > 3 && value[0] == '<' && value[1] == '@' && value[value.Length - 1] == '>' && ulong.TryParse(value[2] == '!' ? value.Substring(3, value.Length - 4) : value.Substring(2, value.Length - 3), out var id))
+            if ((value.Length > 3 && value[0] == '<' && value[1] == '@' && value[^1] == '>' && ulong.TryParse(value[2] == '!' ? value.Substring(3, value.Length - 4) : value.Substring(2, value.Length - 3), out var id))
                 || ulong.TryParse(value, out id))
             {
                 user = users.FirstOrDefault(x => x.Id == id);
