@@ -8,7 +8,7 @@ using Aatrox.Core.Configurations;
 using Aatrox.Core.Entities;
 using Aatrox.Core.Extensions;
 using Aatrox.Core.Helpers;
-using Aatrox.Core.Interfaces;
+using Aatrox.Core.Providers;
 using Disqord;
 using Qmmands;
 
@@ -19,7 +19,7 @@ namespace Aatrox.Modules
     {
         private readonly AatroxConfiguration _configuration;
 
-        public MiscCommands(IAatroxConfigurationProvider config)
+        public MiscCommands(AatroxConfigurationProvider config)
         {
             _configuration = config.GetConfiguration();
         }

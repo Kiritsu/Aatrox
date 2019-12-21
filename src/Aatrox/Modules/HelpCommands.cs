@@ -2,13 +2,11 @@
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Aatrox.Checks;
+using Aatrox.Core.Checks;
 using Aatrox.Core.Configurations;
 using Aatrox.Core.Entities;
 using Aatrox.Core.Extensions;
-using Aatrox.Core.Interfaces;
 using Aatrox.Core.Providers;
-using Aatrox.Core.Services;
 using Disqord;
 using Qmmands;
 
@@ -17,10 +15,10 @@ namespace Aatrox.Modules
     [Name("Help"), Hidden]
     public sealed class HelpCommands : AatroxModuleBase
     {
-        private readonly ICommandService _commands;
+        private readonly CommandService _commands;
         private readonly AatroxConfiguration _configuration;
 
-        public HelpCommands(ICommandService commands, IAatroxConfigurationProvider configuration)
+        public HelpCommands(CommandService commands, AatroxConfigurationProvider configuration)
         {
             _commands = commands;
             _configuration = configuration.GetConfiguration();
@@ -47,10 +45,10 @@ namespace Aatrox.Modules
             {
                 Color = _configuration.DefaultEmbedColor,
                 Title = "Help",
-                Description = InternationalizationService.GetLocalization("help_description", DbContext.User.Language, Context.Prefix, string.Join(", ", prefixes)),
+                Description = MultiLanguage.GetLocalization("help_description", DbContext.User.Language, Context.Prefix, string.Join(", ", prefixes)),
                 Footer = new LocalEmbedFooterBuilder
                 {
-                    Text = InternationalizationService.GetLocalization("help_footer", DbContext.User.Language, modules.Length, commands.Length)
+                    Text = MultiLanguage.GetLocalization("help_footer", DbContext.User.Language, modules.Length, commands.Length)
                 }
             };
 
@@ -121,10 +119,10 @@ namespace Aatrox.Modules
                 {
                     Color = _configuration.DefaultEmbedColor,
                     Title = "Help",
-                    Description = InternationalizationService.GetLocalization("help_module_description"),
+                    Description = MultiLanguage.GetLocalization("help_module_description"),
                     Footer = new LocalEmbedFooterBuilder
                     {
-                        Text = InternationalizationService.GetLocalization("help_module_footer", DbContext.User.Language, matchingModule.Commands.Count)
+                        Text = MultiLanguage.GetLocalization("help_module_footer", DbContext.User.Language, matchingModule.Commands.Count)
                     }
                 };
 

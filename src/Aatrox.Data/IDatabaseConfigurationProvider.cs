@@ -2,6 +2,6 @@
 {
     public interface IDatabaseConfigurationProvider
     {
-        IDatabaseConfiguration GetConfiguration();
+        DatabaseConfiguration GetConfiguration();
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Immutable;
 using System.Threading.Tasks;
-using Aatrox.Core.Abstractions;
 using Aatrox.Core.Helpers;
 using Aatrox.Core.Services;
 using Disqord;
@@ -14,21 +13,23 @@ namespace Aatrox.Core.Entities
     {
         public DatabaseCommandContext DbContext => Context.DatabaseContext;
 
+        public InternationalizationService MultiLanguage => Context.MultiLanguage;
+        
         public string GetLocalization(string key, params object[] parameters)
         {
-            return InternationalizationService.GetLocalization(key, DbContext.User.Language, parameters);
+            return MultiLanguage.GetLocalization(key, DbContext.User.Language, parameters);
         }
 
         public Task<RestUserMessage> RespondLocalizedAsync(string key, params object[] parameters)
         {
-            var localization = InternationalizationService.GetLocalization(key, DbContext.User.Language, parameters);
+            var localization = MultiLanguage.GetLocalization(key, DbContext.User.Language, parameters);
 
             return Context.Channel.SendMessageAsync(localization);
         }
 
         public Task<RestUserMessage> RespondEmbedLocalizedAsync(string key, params object[] parameters)
         {
-            var localization = InternationalizationService.GetLocalization(key, DbContext.User.Language, parameters);
+            var localization = MultiLanguage.GetLocalization(key, DbContext.User.Language, parameters);
             var embed = EmbedHelper.New(Context, localization);
 
             return Context.Channel.SendMessageAsync(embed: embed.Build());
@@ -56,9 +57,9 @@ namespace Aatrox.Core.Entities
             return Context.Channel.SendMessageAsync(embed: embed);
         }
 
-        public async Task<IPaginator> PaginateAsync(ImmutableArray<IPage> pages, bool extraEmojis = true)
+        public async Task<Paginator> PaginateAsync(ImmutableArray<Page> pages, bool extraEmojis = true)
         {
-            var paginatorInstance = Context.ServiceProvider.GetRequiredService<IPaginatorService>();
+            var paginatorInstance = Context.ServiceProvider.GetRequiredService<PaginatorService>();
             return await paginatorInstance.CreatePaginatorAsync(Context, pages, extraEmojis);
         }
     }

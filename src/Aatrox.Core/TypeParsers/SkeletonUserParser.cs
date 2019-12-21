@@ -2,7 +2,7 @@
 using Aatrox.Core.Entities;
 using Qmmands;
 
-namespace Aatrox.TypeParsers
+namespace Aatrox.Core.TypeParsers
 {
     public sealed class SkeletonUserParser : TypeParser<SkeletonUser>
     {

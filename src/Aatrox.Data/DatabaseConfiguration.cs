@@ -1,8 +1,6 @@
-﻿using Aatrox.Data;
-
-namespace Aatrox.Core.Configurations
+﻿namespace Aatrox.Data
 {
-    public sealed class DatabaseConfiguration : IDatabaseConfiguration
+    public sealed class DatabaseConfiguration 
     {
         public string Host { get; set; }
         public int Port { get; set; }

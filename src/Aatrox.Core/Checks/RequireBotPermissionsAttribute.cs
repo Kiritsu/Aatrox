@@ -3,15 +3,15 @@ using Aatrox.Core.Entities;
 using Disqord;
 using Qmmands;
 
-namespace Aatrox.Checks
+namespace Aatrox.Core.Checks
 {
-    public sealed class RequireUserPermissionsAttribute : AatroxCheckBaseAttribute
+    public sealed class RequireBotPermissionsAttribute : AatroxCheckBaseAttribute
     {
         public Permission Permissions { get; }
 
-        public override string Name { get; set; } = "User permissions";
+        public override string Name { get; set; } = "Bot permissions";
 
-        public RequireUserPermissionsAttribute(Permission permissions)
+        public RequireBotPermissionsAttribute(Permission permissions)
         {
             Permissions = permissions;
             Details += Permissions.ToString();
@@ -29,12 +29,12 @@ namespace Aatrox.Checks
                 return CheckResult.Successful;
             }
 
-            if (ctx.Guild.OwnerId == ctx.Member.Id)
+            if (ctx.Guild.OwnerId == ctx.Aatrox.Id)
             {
                 return CheckResult.Successful;
             }
 
-            var perms = ctx.Member.GetPermissionsFor(ctx.Channel as CachedTextChannel);
+            var perms = ctx.Guild.CurrentMember.GetPermissionsFor(ctx.Channel as CachedTextChannel);
 
             if (perms.Has(Permission.Administrator))
             {
@@ -46,7 +46,7 @@ namespace Aatrox.Checks
                 return CheckResult.Successful;
             }
 
-            return new CheckResult($"You need the following permissions: {Permissions.ToString()}");
+            return new CheckResult($"I need the following permissions: {Permissions.ToString()}");
         }
     }
 }

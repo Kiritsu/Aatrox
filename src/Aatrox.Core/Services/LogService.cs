@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using NLog;
 
 namespace Aatrox.Core.Services
@@ -8,13 +7,8 @@ namespace Aatrox.Core.Services
     {
         private readonly ILogger _logger;
 
-        public LogService(string name = null)
+        public LogService(string name)
         {
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                name = Assembly.GetEntryAssembly().FullName;
-            }
-
             _logger = LogManager.GetLogger(name);
         }
 

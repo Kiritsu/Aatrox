@@ -2,17 +2,14 @@
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Aatrox.Core.Abstractions;
 using Aatrox.Core.Configurations;
 using Aatrox.Core.Entities;
-using Aatrox.Core.Interfaces;
 using Aatrox.Core.Providers;
 using Aatrox.Core.Services;
 using Aatrox.Data;
 using Aatrox.Data.EventArgs;
 using Aatrox.Enums;
-using Aatrox.Services;
-using Aatrox.TypeParsers;
+using Aatrox.Core.TypeParsers;
 using Disqord.Bot;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -42,7 +39,7 @@ namespace Aatrox
             try
             {
                 AatroxDbContext.DatabaseUpdated += DatabaseUpdated;
-                using var db = _services.GetRequiredService<AatroxDbContext>();
+                await using var db = _services.GetRequiredService<AatroxDbContext>();
                 db.Database.Migrate();
             }
             catch (Exception ex)
@@ -51,24 +48,24 @@ namespace Aatrox
                 return;
             }
 
-            var ds = _services.GetRequiredService<IAatroxDiscordBot>();
-            var cmds = (ICommandService)ds;
+            var multiLanguage = _services.GetRequiredService<InternationalizationService>();
+            await multiLanguage.SetupAsync();
+            
+            var ds = _services.GetRequiredService<DiscordService>();
+            
+            ds.RemoveTypeParser(Disqord.Bot.Parsers.CachedUserParser.Instance);
+            ds.AddTypeParser(CachedUserParser.Instance);
 
-            cmds.RemoveTypeParser(Disqord.Bot.Parsers.CachedUserParser.Instance);
-            cmds.AddTypeParser(CachedUserParser.Instance);
+            ds.RemoveTypeParser(Disqord.Bot.Parsers.CachedMemberParser.Instance);
+            ds.AddTypeParser(CachedMemberParser.Instance);
 
-            cmds.RemoveTypeParser(Disqord.Bot.Parsers.CachedMemberParser.Instance);
-            cmds.AddTypeParser(CachedMemberParser.Instance);
-
-            cmds.AddTypeParser(CachedGuildParser.Instance);
-            cmds.AddTypeParser(SkeletonUserParser.Instance);
-            cmds.AddTypeParser(TimeSpanParser.Instance);
-            cmds.AddTypeParser(UriTypeParser.Instance);
+            ds.AddTypeParser(CachedGuildParser.Instance);
+            ds.AddTypeParser(SkeletonUserParser.Instance);
+            ds.AddTypeParser(TimeSpanParser.Instance);
+            ds.AddTypeParser(UriTypeParser.Instance);
 
             await ds.SetupAsync(Assembly.GetEntryAssembly());
-
-            var bot = (DiscordBot)ds;
-            await bot.RunAsync();
+            await ds.RunAsync();
 
             await Task.Delay(Timeout.Infinite);
         }
@@ -78,7 +75,7 @@ namespace Aatrox
             return new ServiceCollection()
                 .AddSingleton(x => new LogService("Aatrox"))
                 .Configure<AatroxConfiguration>(x => _configuration.GetSection("Secrets").Bind(x))
-                .AddSingleton<IAatroxConfigurationProvider, AatroxConfigurationProvider>()
+                .AddSingleton<AatroxConfigurationProvider>()
                 .Configure<DatabaseConfiguration>(x => _configuration.GetSection("Database").Bind(x))
                 .AddSingleton<IDatabaseConfigurationProvider, DatabaseConfigurationProvider>()
                 .AddSingleton<ConnectionStringProvider>()
@@ -93,8 +90,9 @@ namespace Aatrox
                         StringComparison = StringComparison.OrdinalIgnoreCase
                     })
                 })
-                .AddSingleton<IAatroxDiscordBot, AatroxDiscordBot>()
-                .AddSingleton<IPaginatorService, PaginatorService>()
+                .AddSingleton<DiscordService>()
+                .AddSingleton<PaginatorService>()
+                .AddSingleton<InternationalizationService>()
                 .BuildServiceProvider();
         }
 

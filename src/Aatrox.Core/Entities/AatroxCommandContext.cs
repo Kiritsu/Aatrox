@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Aatrox.Core.Services;
 using Aatrox.Data;
 using Disqord;
 using Disqord.Bot;
 using Microsoft.Extensions.DependencyInjection;
-using Qmmands;
 
 namespace Aatrox.Core.Entities
 {
     public sealed class AatroxCommandContext : DiscordCommandContext, IAsyncDisposable
     {
-        public ICommandService Commands { get; }
         public CachedUser Aatrox => Bot.CurrentUser;
         public CachedMember CurrentMember => Guild.CurrentMember;
 
@@ -19,10 +18,14 @@ namespace Aatrox.Core.Entities
         public AatroxCommandContext(DiscordBot bot, CachedUserMessage message, string prefix)
             : base(bot, prefix, message)
         {
+            MultiLanguage = ServiceProvider.GetRequiredService<InternationalizationService>();
+            
             _databaseContext = new DatabaseCommandContext(
                 this, ServiceProvider.GetRequiredService<AatroxDbContext>());
         }
 
+        public InternationalizationService MultiLanguage { get; }
+        
         public DatabaseCommandContext DatabaseContext
         {
             get

@@ -2,21 +2,17 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Threading.Tasks;
 using Aatrox.Data.Enums;
 using Newtonsoft.Json;
 
 namespace Aatrox.Core.Services
 {
-    public static class InternationalizationService
+    public sealed class InternationalizationService
     {
-        private static ReadOnlyDictionary<Lang, ReadOnlyDictionary<string, string>> Strings { get; set; }
-
-        static InternationalizationService()
-        {
-            Setup();
-        }
-
-        public static void Setup()
+        private ReadOnlyDictionary<Lang, ReadOnlyDictionary<string, string>> _strings;
+        
+        public Task SetupAsync()
         {
             var strings = new Dictionary<Lang, ReadOnlyDictionary<string, string>>();
 
@@ -30,22 +26,24 @@ namespace Aatrox.Core.Services
                 strings.Add((Lang)lang, new ReadOnlyDictionary<string, string>(elements));
             }
 
-            Strings = new ReadOnlyDictionary<Lang, ReadOnlyDictionary<string, string>>(strings);
+            _strings = new ReadOnlyDictionary<Lang, ReadOnlyDictionary<string, string>>(strings);
+
+            return Task.CompletedTask;
         }
 
-        public static string GetLocalization(string key, Lang lang = Lang.En, params object[] parameters)
+        public string GetLocalization(string key, Lang lang = Lang.En, params object[] parameters)
         {
-            if (!Strings.ContainsKey(lang))
+            if (!_strings.ContainsKey(lang))
             {
                 lang = Lang.En;
             }
 
-            if (!Strings[lang].ContainsKey(key))
+            if (!_strings[lang].ContainsKey(key))
             {
                 lang = Lang.En;
             }
 
-            return string.Format(Strings[lang][key], parameters);
+            return string.Format(_strings[lang][key], parameters);
         }
     }
 }

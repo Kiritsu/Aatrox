@@ -1,10 +1,9 @@
 ﻿using Aatrox.Core.Configurations;
-using Aatrox.Core.Interfaces;
 using Microsoft.Extensions.Options;
 
 namespace Aatrox.Core.Providers
 {
-    public sealed class AatroxConfigurationProvider : IAatroxConfigurationProvider
+    public sealed class AatroxConfigurationProvider
     {
         private readonly AatroxConfiguration _configuration;
 

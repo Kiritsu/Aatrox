@@ -6,7 +6,7 @@ using Aatrox.Core.Extensions;
 using Disqord;
 using Qmmands;
 
-namespace Aatrox.TypeParsers
+namespace Aatrox.Core.TypeParsers
 {
     public sealed class CachedMemberParser : TypeParser<CachedMember>
     {

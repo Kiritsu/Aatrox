@@ -1,14 +1,14 @@
 ﻿using OsuSharp;
 
-namespace Aatrox.Services
+namespace Aatrox.Core.Services
 {
     public sealed class OsuService
     {
-        public OsuClient Osu { get; }
+        private readonly OsuClient _osu;
 
         public OsuService(OsuClient osu)
         {
-            Osu = osu;
+            _osu = osu;
         }
     }
 }

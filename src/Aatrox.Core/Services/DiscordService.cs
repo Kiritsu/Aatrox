@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Aatrox.Core.Configurations;
 using Aatrox.Core.Entities;
 using Aatrox.Core.Extensions;
-using Aatrox.Core.Interfaces;
+using Aatrox.Core.Providers;
 using Aatrox.Data;
 using Aatrox.Data.Repositories;
 using Disqord;
@@ -21,12 +21,12 @@ using Qmmands;
 
 namespace Aatrox.Core.Services
 {
-    public sealed class AatroxDiscordBot : DiscordBot, IAatroxDiscordBot
+    public sealed class DiscordService : DiscordBot
     {
         private readonly LogService _logger;
         private readonly AatroxConfiguration _configuration;
 
-        public AatroxDiscordBot(IAatroxConfigurationProvider ac, DiscordBotConfiguration dbc = null)
+        public DiscordService(AatroxConfigurationProvider ac, DiscordBotConfiguration dbc = null)
             : base(TokenType.Bot, ac.GetConfiguration().DiscordToken, dbc)
         {
             _logger = LogService.GetLogger("Discord");

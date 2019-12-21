@@ -2,18 +2,17 @@
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
-using Aatrox.Core.Abstractions;
-using Aatrox.Core.Entities;
-using Aatrox.Core.Providers;
+using Aatrox.Core.Services;
 using Aatrox.Data.Enums;
 using Disqord;
 using Disqord.Bot;
 using Disqord.Events;
 using Disqord.Rest;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Aatrox.Services
+namespace Aatrox.Core.Entities
 {
-    public sealed class Paginator : IPaginator
+    public sealed class Paginator
     {
         public static readonly LocalEmoji FastPrevious = new LocalEmoji("⏮");
         public static readonly LocalEmoji Previous = new LocalEmoji("⏪");
@@ -27,7 +26,7 @@ namespace Aatrox.Services
         public IMessageChannel Channel { get; }
         public CachedUser User { get; }
 
-        public ImmutableArray<IPage> Pages { get; }
+        public ImmutableArray<Page> Pages { get; }
 
         public RestUserMessage Message { get; private set; }
 
@@ -40,12 +39,16 @@ namespace Aatrox.Services
 
         private TimeSpan _timeout = TimeSpan.FromMinutes(5);
 
-        public Paginator(AatroxCommandContext ctx, ImmutableArray<IPage> pages)
+        private readonly InternationalizationService _multiLanguage;
+
+        public Paginator(AatroxCommandContext ctx, ImmutableArray<Page> pages)
         {
             Client = ctx.Bot;
             Channel = ctx.Channel;
             User = ctx.User;
             Pages = pages;
+
+            _multiLanguage = ctx.ServiceProvider.GetRequiredService<InternationalizationService>();
 
             _cursor = 0;
             _stopped = false;
@@ -61,7 +64,7 @@ namespace Aatrox.Services
             return SendAsync(extraEmojis);
         }
 
-        public async Task<IPaginator> SendAsync(bool extraEmojis = true)
+        public async Task<Paginator> SendAsync(bool extraEmojis = true)
         {
             _extraEmojis = extraEmojis;
 
@@ -206,7 +209,7 @@ namespace Aatrox.Services
 
             Client.MessageReceived += MessageCreated;
 
-            var confirmMessage = await Channel.SendMessageAsync(InternationalizationService.GetLocalization(
+            var confirmMessage = await Channel.SendMessageAsync(_multiLanguage.GetLocalization(
                     "paginator_identifier", _userLanguage, User.Mention, "Identifier", "Cancel", 30));
 
             var trigger = tcs.Task;
@@ -269,7 +272,7 @@ namespace Aatrox.Services
 
             Client.MessageReceived += MessageCreated;
 
-            var confirmMessage = await Channel.SendMessageAsync(InternationalizationService.GetLocalization(
+            var confirmMessage = await Channel.SendMessageAsync(_multiLanguage.GetLocalization(
                 "paginator_identifier", _userLanguage, User.Mention, "Page", "Cancel", 30));
 
             var trigger = tcs.Task;
@@ -326,13 +329,6 @@ namespace Aatrox.Services
                     return e.Message.DeleteAsync();
                 }
             }
-        }
-
-        private sealed class Page : IPage
-        {
-            public string Message { get; set; }
-            public LocalEmbed Embed { get; set; }
-            public string Identifier { get; set; }
         }
     }
 }

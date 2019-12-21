@@ -3,7 +3,7 @@ using Aatrox.Core.Entities;
 using Disqord;
 using Qmmands;
 
-namespace Aatrox.TypeParsers
+namespace Aatrox.Core.TypeParsers
 {
     public sealed class CachedGuildParser : TypeParser<CachedGuild>
     {

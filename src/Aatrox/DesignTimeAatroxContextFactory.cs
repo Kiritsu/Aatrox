@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using Aatrox.Core.Configurations;
 using Aatrox.Data;
 using Microsoft.EntityFrameworkCore.Design;
 using Newtonsoft.Json.Linq;
@@ -16,7 +15,7 @@ namespace Aatrox
 
     public sealed class DesignTimeDatabaseConfigurationProvider : IDatabaseConfigurationProvider
     {
-        public IDatabaseConfiguration GetConfiguration()
+        public DatabaseConfiguration GetConfiguration()
         {
             var config = JObject.Parse(File.ReadAllText("credentials.json"))["Database"];
 

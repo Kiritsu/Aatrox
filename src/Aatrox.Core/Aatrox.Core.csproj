@@ -11,18 +11,15 @@
     <PackageReference Include="NLog" Version="4.6.7" />
     <PackageReference Include="NLog.Config" Version="4.6.7" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.0" />
+    <PackageReference Include="OsuSharp" Version="5.3.0" />
+    <PackageReference Include="OsuSharp.Analyzer" Version="5.3.0" />
+    <PackageReference Include="OsuSharp.Oppai" Version="5.3.0" />
     <ProjectReference Include="..\..\submodules\Disqord\src\Disqord.Bot\Disqord.Bot.csproj" />
     <ProjectReference Include="..\..\submodules\Disqord\src\Disqord.Core\Disqord.Core.csproj" />
     <ProjectReference Include="..\..\submodules\Disqord\src\Disqord.Rest\Disqord.Rest.csproj" />
     <ProjectReference Include="..\..\submodules\Disqord\src\Disqord.Serialization.Newtonsoft\Disqord.Serialization.Json.Newtonsoft.csproj" />
     <ProjectReference Include="..\..\submodules\Disqord\src\Disqord\Disqord.csproj" />
     <ProjectReference Include="..\Aatrox.Data\Aatrox.Data.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="NLog.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>
