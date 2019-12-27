@@ -68,6 +68,8 @@ namespace Aatrox
             ds.AddTypeParser(TimeSpanParser.Instance);
             ds.AddTypeParser(UriTypeParser.Instance);
 
+            ds.AddArgumentParser(ComplexCommandsArgumentParser.Instance);
+
             await ds.SetupAsync(Assembly.GetEntryAssembly());
             await ds.RunAsync();
 

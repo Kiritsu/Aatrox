@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,6 +24,9 @@ namespace Aatrox.Core.Services
         private readonly IServiceProvider _serviceProvider;
         private readonly AatroxConfiguration _config;
 
+        public ReadOnlyDictionary<Snowflake, long> LastBeatmapPerChannel { get; }
+        private readonly Dictionary<Snowflake, long> _lastBeatmapPerChannel;
+
         public OsuService(DiscordService service, OsuClient osu, LogService log, 
             AatroxConfigurationProvider config, IServiceProvider serviceProvider)
         {
@@ -31,6 +35,9 @@ namespace Aatrox.Core.Services
             _log = log;
             _serviceProvider = serviceProvider;
             _config = config.GetConfiguration();
+            
+            _lastBeatmapPerChannel = new Dictionary<Snowflake, long>();
+            LastBeatmapPerChannel = new ReadOnlyDictionary<Snowflake, long>(_lastBeatmapPerChannel);
         }
 
         public Task SetupAsync()
@@ -144,6 +151,8 @@ namespace Aatrox.Core.Services
             }
 
             await e.Message.Channel.SendMessageAsync(embed: embed.Build());
+
+            _lastBeatmapPerChannel[e.Message.Channel.Id] = beatmap.BeatmapId;
         }
     }
 }
