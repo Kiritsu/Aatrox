@@ -51,16 +51,16 @@ namespace Aatrox
                 {
                     case '-':
                     {
-                        if (state == ParserState.Nothing)
+                        if (state == ParserState.Nothing) // beginning
                         {
                             state = ParserState.FirstDash;
                         }
-                        else if (state == ParserState.EscapeNext)
+                        else if (state == ParserState.EscapeNext) // in value, \-
                         {
                             argValue.Append(chr);
                             state = ParserState.Value;
                         }
-                        else if (state == ParserState.Value && !isInQuote && parameter != null && argValue.Length > 0)
+                        else if (state == ParserState.Value && !isInQuote && parameter != null && argValue.Length > 0) // end of param, new param!!
                         {
                             AddParameter(parameter, parameters, argValue);
                             
@@ -68,11 +68,11 @@ namespace Aatrox
                             argName.Clear();
                             state = ParserState.FirstDash;
                         }
-                        else if (state == ParserState.FirstDash)
+                        else if (state == ParserState.FirstDash) // handling name of param
                         {
                             state = ParserState.Name;
                         }
-                        else if (state == ParserState.Value)
+                        else if (state == ParserState.Value) // dash in middle of value, obviously in quote
                         {
                             argValue.Append(chr);
                         }
@@ -82,14 +82,14 @@ namespace Aatrox
 
                     case ' ':
                     {
-                        if (state == ParserState.Name)
+                        if (state == ParserState.Name) // end of name, beginning of value
                         {
                             parameter = context.Command.Parameters.FirstOrDefault(x =>
                                 x.Name.Equals(argName.ToString(), StringComparison.OrdinalIgnoreCase));
 
                             state = ParserState.Value;
                         }
-                        else if (state == ParserState.Value)
+                        else if (state == ParserState.Value) // espace in value, so its a string
                         {
                             argValue.Append(chr);
                         }
@@ -99,16 +99,16 @@ namespace Aatrox
 
                     case '"':
                     {
-                        if (state == ParserState.EscapeNext)
+                        if (state == ParserState.EscapeNext) // " but escaped
                         {
                             argValue.Append(chr);
                             state = ParserState.Value;
                         }
-                        else if (isInQuote)
+                        else if (isInQuote) // end of "..."
                         {
                             isInQuote = false;
                         }
-                        else
+                        else // begin of "..."
                         {
                             isInQuote = true;
                         }
@@ -116,20 +116,19 @@ namespace Aatrox
                         break;
                     }
 
-                    case '\\':
+                    case '\\': // next char lose its power
                     {
                         state = ParserState.EscapeNext;
-                        
                         break;
                     }
 
                     default:
                     {
-                        if (state == ParserState.Name)
+                        if (state == ParserState.Name) // append arg name
                         {
                             argName.Append(chr);
                         }
-                        else if (state == ParserState.Value)
+                        else if (state == ParserState.Value) // append arg value
                         {
                             argValue.Append(chr);
                         }
@@ -139,7 +138,7 @@ namespace Aatrox
                 }
             }
             
-            AddParameter(parameter, parameters, argValue);
+            AddParameter(parameter, parameters, argValue); // add last parameter if theres one
             
             return new DefaultArgumentParserResult(command, parameters);
         }
