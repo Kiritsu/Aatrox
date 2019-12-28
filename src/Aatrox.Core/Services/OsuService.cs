@@ -19,11 +19,12 @@ namespace Aatrox.Core.Services
     public sealed class OsuService
     {
         private readonly DiscordService _service;
-        private readonly OsuClient _osu;
         private readonly LogService _log;
         private readonly IServiceProvider _serviceProvider;
         private readonly AatroxConfiguration _config;
 
+        public OsuClient Osu { get; }
+        
         public ReadOnlyDictionary<Snowflake, long> LastBeatmapPerChannel { get; }
         private readonly Dictionary<Snowflake, long> _lastBeatmapPerChannel;
 
@@ -31,7 +32,7 @@ namespace Aatrox.Core.Services
             AatroxConfigurationProvider config, IServiceProvider serviceProvider)
         {
             _service = service;
-            _osu = osu;
+            Osu = osu;
             _log = log;
             _serviceProvider = serviceProvider;
             _config = config.GetConfiguration();
@@ -80,7 +81,7 @@ namespace Aatrox.Core.Services
 
             var beatmapId = split[4];
 
-            var beatmap = await _osu.GetBeatmapByIdAsync(long.Parse(beatmapId), 
+            var beatmap = await Osu.GetBeatmapByIdAsync(long.Parse(beatmapId), 
                 (GameMode)Enum.Parse(typeof(GameMode), mode ?? "standard", true), true);
 
             ReadOnlyDictionary<float, PerformanceData> pps = null;

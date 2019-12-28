@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Aatrox.Core.Checks;
 using Aatrox.Core.Entities;
 using Qmmands;
 
@@ -43,7 +44,8 @@ namespace Aatrox.Modules
 
             [Command("Add")]
             [Description("Adds a prefix for that guild.")]
-            public async Task AddAsync([Description("Prefix to add"), Remainder] string prefix)
+            public async Task AddAsync(
+                [Description("Prefix to add"), Remainder] string prefix)
             {
                 if (DbContext.Guild.Prefixes.Select(x => x.ToLowerInvariant()).Contains(prefix.ToLowerInvariant()))
                 {
@@ -58,7 +60,8 @@ namespace Aatrox.Modules
 
             [Command("Remove", "Delete")]
             [Description("Removes a prefix from that guild.")]
-            public async Task RemoveAsync([Description("Prefix to remove"), Remainder] string prefix)
+            public async Task RemoveAsync(
+                [Description("Prefix to remove"), Remainder] string prefix)
             {
                 if (!DbContext.Guild.Prefixes.Select(x => x.ToLowerInvariant()).Contains(prefix.ToLowerInvariant()))
                 {

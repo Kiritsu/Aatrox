@@ -24,17 +24,27 @@ namespace Aatrox.Modules
             _configuration = configuration.GetConfiguration();
         }
 
+        private Func<Parameter, string> GetUsage(Command command)
+        {
+            if (command.CustomArgumentParserType == typeof(ComplexCommandsArgumentParser))
+            {
+                return x => $"--{x.Name} {x.DefaultValue ?? x.Type.Name}";
+            }
+            
+            return x => $"[{x.Name}{(x.DefaultValue != null ? $"={x.DefaultValue}" : "")}]";
+        }
+
         [Command("Help"), Hidden]
         [Description("Shows the different commands and modules usages.")]
         public async Task HelpAsync()
         {
-            var modules = await Task.WhenAll(_commands.GetAllModules().Where(x => !x.Attributes.Any(y => y is HiddenAttribute)).Select(async x =>
+            var modules = await Task.WhenAll(_commands.GetAllModules().Where(x => !x.Attributes.Any(y => y is HiddenAttribute) && x.Parent is null && x.Aliases.Count > 0).Select(async x =>
             {
                 var result = await x.RunChecksAsync(Context);
                 return result.IsSuccessful ? x : null;
             }).Where(x => x != null));
 
-            var commands = (await Task.WhenAll(_commands.GetAllCommands().Where(x => !x.Attributes.Any(y => y is HiddenAttribute)).Select(async x =>
+            var commands = (await Task.WhenAll(_commands.GetAllCommands().Where(x => !x.Attributes.Any(y => y is HiddenAttribute) && x.Module.Aliases.Count == 0).Select(async x =>
             {
                 var result = await x.RunChecksAsync(Context);
                 return result.IsSuccessful ? x : null;
@@ -155,7 +165,7 @@ namespace Aatrox.Modules
             foreach (var cmd in matchingCommands)
             {
                 builder.AppendLine($"**{cmd.Command.Description ?? "Undocumented."}**");
-                builder.AppendLine($"`{Context.Prefix}{cmd.Command.Name} {string.Join(" ", cmd.Command.Parameters.Select(x => $"[{x.Name}]"))}`".ToLowerInvariant());
+                builder.AppendLine(($"`{Context.Prefix}{cmd.Command.Name} {string.Join(" ", cmd.Command.Parameters.Select(GetUsage(cmd.Command)))}`".ToLowerInvariant()).TrimEnd());
                 foreach (var param in cmd.Command.Parameters)
                 {
                     builder.AppendLine($"`[{param.Name}]`: {param.Description ?? "Undocumented."}");

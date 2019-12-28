@@ -43,6 +43,11 @@ namespace Aatrox
             var state = ParserState.Nothing;
             var isInQuote = false;
 
+            foreach (var param in command.Parameters)
+            {
+                parameters[param] = param.DefaultValue;
+            }
+
             for (var pos = 0; pos < rawArguments.Length; pos++)
             {
                 var chr = rawArguments[pos];

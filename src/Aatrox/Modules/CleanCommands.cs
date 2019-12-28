@@ -27,7 +27,8 @@ namespace Aatrox.Modules
 
         [Command("Clean")]
         [Description("Removes the last 'count' messages sent in this channel.")]
-        public async Task CleanAsync([Description("Amount of messages to remove")] int count)
+        public async Task CleanAsync(
+            [Description("Amount of messages to remove")] int count)
         {
             var messages = await Context.Channel.GetMessagesAsync(count);
             await PurgeAsync(messages, count);
@@ -35,7 +36,9 @@ namespace Aatrox.Modules
 
         [Command("Clean")]
         [Description("Removes the last 'count' messages sent by the specified 'user' in this channel.")]
-        public async Task CleanAsync([Description("Amount of messages to remove")] int count, [Description("User affected by the filter.")] CachedUser user)
+        public async Task CleanAsync(
+            [Description("Amount of messages to remove")] int count, 
+            [Description("User affected by the filter.")] CachedUser user)
         {
             var messages = await Context.Channel.GetMessagesAsync(count);
             await PurgeAsync(messages, count, x => x.Author.Id == user.Id);
@@ -43,7 +46,9 @@ namespace Aatrox.Modules
 
         [Command("Clean")]
         [Description("Removes the last 'count' messages with the specified type of clean.")]
-        public async Task CleanAsync([Description("Amount of messages to remove")] int count, [Description("Type of message. Bot File or Embed.")] CleanMessageType type)
+        public async Task CleanAsync(
+            [Description("Amount of messages to remove")] int count, 
+            [Description("Type of message. Bot File or Embed.")] CleanMessageType type)
         {
             var messages = await Context.Channel.GetMessagesAsync(count);
 

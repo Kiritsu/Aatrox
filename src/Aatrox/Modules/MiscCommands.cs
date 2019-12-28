@@ -25,7 +25,7 @@ namespace Aatrox.Modules
         }
 
         [Command("About")]
-        [Description("Displays a few informations about the bot.")]
+        [Description("Displays a few information about the bot.")]
         public Task AboutAsync()
         {
             var embed = EmbedHelper.New(Context, GetLocalization("about_description"));
@@ -40,7 +40,8 @@ namespace Aatrox.Modules
 
         [Command("Ping")]
         [Description("Shows the current websocket's latency.")]
-        public async Task PingAsync(string host = "8.8.8.8")
+        public async Task PingAsync(
+            [Description("IP address or remote host")] string host = "8.8.8.8")
         {
             long distant = 0;
             using var ping = new Ping();
