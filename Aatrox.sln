@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Disqord.Core", "submodules\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Disqord.Serialization.Json.Newtonsoft", "submodules\Disqord\src\Disqord.Serialization.Newtonsoft\Disqord.Serialization.Json.Newtonsoft.csproj", "{EB5B5FFC-F02F-438F-8DD5-2578ADFBB8B7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aatrox.ShadowHunters", "src\Aatrox.ShadowHunters\Aatrox.ShadowHunters.csproj", "{6EB92FC7-5749-40B9-976D-C4DDE51F34A7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,10 @@ Global
 		{EB5B5FFC-F02F-438F-8DD5-2578ADFBB8B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB5B5FFC-F02F-438F-8DD5-2578ADFBB8B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB5B5FFC-F02F-438F-8DD5-2578ADFBB8B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EB92FC7-5749-40B9-976D-C4DDE51F34A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EB92FC7-5749-40B9-976D-C4DDE51F34A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EB92FC7-5749-40B9-976D-C4DDE51F34A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EB92FC7-5749-40B9-976D-C4DDE51F34A7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
