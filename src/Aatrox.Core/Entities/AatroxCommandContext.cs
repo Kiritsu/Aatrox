@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Aatrox.Core.Providers;
 using Aatrox.Core.Services;
 using Aatrox.Data;
 using Disqord;
 using Disqord.Bot;
+using Disqord.Bot.Prefixes;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aatrox.Core.Entities
@@ -15,7 +17,7 @@ namespace Aatrox.Core.Entities
 
         private readonly DatabaseCommandContext _databaseContext;
 
-        public AatroxCommandContext(DiscordBot bot, CachedUserMessage message, string prefix)
+        public AatroxCommandContext(DiscordBot bot, CachedUserMessage message, IPrefix prefix)
             : base(bot, prefix, message)
         {
             MultiLanguage = ServiceProvider.GetRequiredService<InternationalizationService>();

@@ -13,6 +13,7 @@ using Aatrox.Data;
 using Aatrox.Data.Repositories;
 using Disqord;
 using Disqord.Bot;
+using Disqord.Bot.Prefixes;
 using Disqord.Events;
 using Disqord.Logging;
 using Disqord.Rest;
@@ -26,8 +27,9 @@ namespace Aatrox.Core.Services
         private readonly LogService _logger;
         private readonly AatroxConfiguration _configuration;
 
-        public DiscordService(AatroxConfigurationProvider ac, DiscordBotConfiguration dbc = null)
-            : base(TokenType.Bot, ac.GetConfiguration().DiscordToken, dbc)
+        public DiscordService(IServiceProvider services, AatroxConfigurationProvider ac,
+            DiscordBotConfiguration dbc = null) : base(TokenType.Bot, ac.GetConfiguration().DiscordToken,
+                new AatroxPrefixProvider(services), dbc)
         {
             _logger = LogService.GetLogger("Discord");
             _configuration = ac.GetConfiguration();
@@ -44,8 +46,8 @@ namespace Aatrox.Core.Services
             return Task.CompletedTask;
         }
 
-        protected override async ValueTask<DiscordCommandContext> GetCommandContextAsync(
-            CachedUserMessage message, string prefix)
+        protected override async ValueTask<DiscordCommandContext> GetCommandContextAsync(CachedUserMessage message, 
+            IPrefix prefix)
         {
             var ctx = new AatroxCommandContext(this, message, prefix);
             await ctx.PrepareAsync();
@@ -53,36 +55,10 @@ namespace Aatrox.Core.Services
             return ctx;
         }
 
-        protected override async ValueTask<(string Prefix, string Output)> FindPrefixAsync(
-            CachedUserMessage message)
-        {
-            var prefixes = new List<string>()
-            {
-                $"<@{message.Guild.CurrentMember.Id}> ",
-                $"<@!{message.Guild.CurrentMember.Id}> ",
-                "Aa!"
-            };
-
-            if (CommandUtilities.HasAnyPrefix(message.Content, prefixes,
-                StringComparison.OrdinalIgnoreCase, out var prefix, out var output))
-            {
-                return (prefix, output);
-            }
-
-            await using var db = this.GetRequiredService<AatroxDbContext>();
-            var repository = db.RequestRepository<GuildRepository>();
-
-            var guild = await repository.GetOrAddAsync(message.Guild.Id);
-            return CommandUtilities.HasAnyPrefix(message.Content, guild.Prefixes,
-                StringComparison.OrdinalIgnoreCase, out prefix, out output)
-                ? (prefix, output)
-                : default;
-        }
-
         protected override async ValueTask AfterExecutedAsync(IResult result, DiscordCommandContext context)
         {
-            var ctx = (AatroxCommandContext) context;
-            
+            var ctx = (AatroxCommandContext)context;
+
             if (result.IsSuccessful)
             {
                 await ctx.EndAsync();
@@ -94,7 +70,7 @@ namespace Aatrox.Core.Services
                 string cmdName;
                 var toLev = "";
                 var index = 0;
-                var split = ctx.Message.Content.Substring(ctx.Prefix.Length)
+                var split = ctx.Message.Content.Substring(ctx.Prefix.ToString().Length)
                     .Split(Separator, StringSplitOptions.RemoveEmptyEntries);
 
                 do
@@ -196,8 +172,8 @@ namespace Aatrox.Core.Services
 
         private Task DiscordService_CommandExecutionFailed(CommandExecutionFailedEventArgs e)
         {
-            var ctx = (AatroxCommandContext) e.Context;
-            
+            var ctx = (AatroxCommandContext)e.Context;
+
             _logger.Error($"Command errored: {e.Context.Command.Name} by {ctx.User.Id} in {ctx.Guild.Id}", e.Result.Exception);
 
             var str = new StringBuilder();
@@ -244,7 +220,7 @@ namespace Aatrox.Core.Services
         {
             _logger.Info("Aatrox is ready.");
 
-            return ((DiscordClient) e.Client).SetPresenceAsync(UserStatus.DoNotDisturb,
+            return ((DiscordClient)e.Client).SetPresenceAsync(UserStatus.DoNotDisturb,
                 new LocalActivity("hate speeches", ActivityType.Listening));
         }
 

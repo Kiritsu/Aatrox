@@ -22,7 +22,7 @@ namespace Aatrox.Core.Entities
         public static readonly LocalEmoji NameIdentifier = new LocalEmoji("🔠");
         public static readonly LocalEmoji PageIdentifier = new LocalEmoji("🔠");
 
-        public DiscordBot Client { get; }
+        public DiscordBotBase Client { get; }
         public IMessageChannel Channel { get; }
         public CachedUser User { get; }
 
