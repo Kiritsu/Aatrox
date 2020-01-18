@@ -22,7 +22,6 @@ namespace Aatrox.Core.Extensions
 
         public static string Levenshtein(this string original, IReadOnlyList<string> references)
         {
-            //The algorithm is not enough accurate to deal with strings length less than 3
             if (original.Length < 3)
             {
                 return null;

@@ -9,10 +9,14 @@ namespace Aatrox.Data.Entities
         [Column("language")]
         public Lang Language { get; set; }
 
+        [Column("premium")]
+        public bool Premium { get; set; }
+
+        [Column("blacklisted")]
+        public bool Blacklisted { get; set; }
+
         public LeagueUserEntity LeagueProfile { get; set; }
 
         public OsuUserEntity OsuProfile { get; set; }
-
-        public bool Premium { get; set; }
     }
 }
