@@ -22,9 +22,10 @@ namespace Aatrox.Modules
         [OverrideArgumentParser(typeof(ComplexCommandsArgumentParser))]
         [Description("Gets the amount of PP for a specified beatmap with accuracy and used modes.")]
         public async Task GetPpAsync(
-            [Description("Id of the beatmap.")] long beatmapId = 0, 
+            [Description("Id of the beatmap.")] long beatmapId = 0,
             [Description("Accuracy of the play.")] float accuracy = 100.0f,
-            [OverrideTypeParser(typeof(EnumModeTypeParser))] [Description("Modes of the play.")] Mode modes = Mode.None)
+            [OverrideTypeParser(typeof(EnumModeTypeParser))] [Description("Modes of the play.")] Mode modes = Mode.None,
+            [Description("Combo of the play.")] int? combo = null)
         {
             if (_osuService.LastBeatmapPerChannel.TryGetValue(Context.Channel.Id, out var bmId) && beatmapId == 0)
             {
@@ -37,8 +38,9 @@ namespace Aatrox.Modules
                 return;
             }
 
-            var ppData = await OppaiClient.GetPPAsync(beatmapId, modes, accuracy);
-            await RespondEmbedLocalizedAsync("osu_pp_data", ppData.Pp, ppData.Mods.ToModeString(_osuService.Osu), accuracy);
+            var ppData = await OppaiClient.GetPPAsync(beatmapId, modes, accuracy, combo);
+            await RespondEmbedLocalizedAsync("osu_pp_data", ppData.Pp, ppData.Mods.ToModeString(_osuService.Osu),
+                accuracy, ppData.Combo, ppData.MaxCombo);
         }
     }
 }

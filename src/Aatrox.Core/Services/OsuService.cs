@@ -24,11 +24,11 @@ namespace Aatrox.Core.Services
         private readonly AatroxConfiguration _config;
 
         public OsuClient Osu { get; }
-        
+
         public ReadOnlyDictionary<Snowflake, long> LastBeatmapPerChannel { get; }
         private readonly Dictionary<Snowflake, long> _lastBeatmapPerChannel;
 
-        public OsuService(DiscordService service, OsuClient osu, LogService log, 
+        public OsuService(DiscordService service, OsuClient osu, LogService log,
             AatroxConfigurationProvider config, IServiceProvider serviceProvider)
         {
             _service = service;
@@ -36,7 +36,7 @@ namespace Aatrox.Core.Services
             _log = log;
             _serviceProvider = serviceProvider;
             _config = config.GetConfiguration();
-            
+
             _lastBeatmapPerChannel = new Dictionary<Snowflake, long>();
             LastBeatmapPerChannel = new ReadOnlyDictionary<Snowflake, long>(_lastBeatmapPerChannel);
         }
@@ -44,7 +44,7 @@ namespace Aatrox.Core.Services
         public Task SetupAsync()
         {
             _service.MessageReceived += ServiceOnMessageReceived;
-            
+
             return Task.CompletedTask;
         }
 
@@ -58,7 +58,7 @@ namespace Aatrox.Core.Services
             {
                 return;
             }
-            
+
             if (!Uri.TryCreate(e.Message.Content, UriKind.Absolute, out var uri))
             {
                 return;
@@ -81,7 +81,7 @@ namespace Aatrox.Core.Services
 
             var beatmapId = split[4];
 
-            var beatmap = await Osu.GetBeatmapByIdAsync(long.Parse(beatmapId), 
+            var beatmap = await Osu.GetBeatmapByIdAsync(long.Parse(beatmapId),
                 (GameMode)Enum.Parse(typeof(GameMode), mode ?? "standard", true), true);
 
             ReadOnlyDictionary<float, PerformanceData> pps = null;
@@ -91,23 +91,20 @@ namespace Aatrox.Core.Services
                 _log.Warn("Beatmap null?");
                 return;
             }
-            
-            if (beatmap.GameMode == GameMode.Standard || beatmap.GameMode == GameMode.Taiko)
+
+            try
             {
-                try
-                {
-                    pps = await OppaiClient.GetPPAsync(long.Parse(beatmapId), new float[] { 100, 99, 98, 97, 95 });
-                }
-                catch (Exception)
-                {
-                    _log.Warn("Attempting to get PP for a converted beatmap. It failed.");
-                }
+                pps = await OppaiClient.GetPPAsync(long.Parse(beatmapId), new float[] { 100, 99, 98, 97, 95 });
+            }
+            catch (Exception ex)
+            {
+                _log.Error("Attempting to get PP for a converted beatmap. It failed.", ex);
             }
 
             var successRate = 0.0;
             if (beatmap.PassCount.HasValue && beatmap.PlayCount.HasValue)
             {
-                successRate = Math.Round((double) beatmap.PassCount.Value / beatmap.PlayCount.Value, 2) * 100;
+                successRate = Math.Round((double)beatmap.PassCount.Value / beatmap.PlayCount.Value, 2) * 100;
             }
 
             var embed = new LocalEmbedBuilder
@@ -134,14 +131,18 @@ namespace Aatrox.Core.Services
             {
                 str += $"\nMax combo: `{beatmap.MaxCombo}`";
             }
+            else if (pps != null)
+            {
+                str += $"\nMax combo: `{pps.First().Value.MaxCombo}`";
+            }
 
             if (pps != null)
             {
                 str += $"\n`{Math.Round(pps.First().Value.Stars, 2)}` stars";
             }
-            
+
             embed.AddField("Difficulties", str, true);
-            
+
             embed.AddField("Lengths", $"Length: `{beatmap.TotalLength:g}`" +
                                       $"\nHit Length: `{beatmap.HitLength:g}`", true);
 
@@ -149,6 +150,12 @@ namespace Aatrox.Core.Services
             {
                 var lines = pps.Select(x => $"`{Math.Round(x.Key)}%: {Math.Round(x.Value.Pp)}`");
                 embed.AddField("Performance Points", string.Join(" | ", lines));
+            }
+
+            if (beatmap.GameMode == GameMode.Catch || beatmap.GameMode == GameMode.Mania)
+            {
+                embed.AddField("Not supported!",
+                    $"**`{beatmap.GameMode}` is not supported. Star rating and performance points cannot be calculated.**");
             }
 
             await e.Message.Channel.SendMessageAsync(embed: embed.Build());

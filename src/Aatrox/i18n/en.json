@@ -17,6 +17,6 @@
   "osu_url_auto_resolve_enabled": "URL auto-resolve has been enabled.",
   "osu_url_auto_resolve_disabled": "URL auto-resolve has been disabled.",
   "osu_unknown_beatmap": "No valid beatmap found. Either paste the beatmap url before or give the beatmap id as a parameter.",
-  "osu_pp_data": "This map (`{1}` | `{2}`%) is worth: `{0}`pp",
+  "osu_pp_data": "This map (`{1}` | `{2}%` | `{3}/{4} combos`) is worth: `{0}`pp",
   "user_language_changed": "Your language has been updated."
 }
