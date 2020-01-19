@@ -34,7 +34,7 @@ namespace Aatrox.Core.TypeParsers
         public override ValueTask<TypeParserResult<Mode>> ParseAsync(Parameter parameter, string value, CommandContext context)
         {
             var modes = ModeStrings
-                .Where(k => value.Contains(k.Value))
+                .Where(k => value.Contains(k.Value, StringComparison.OrdinalIgnoreCase))
                 .Select(x => x.Key);
 
             Mode combined = Mode.None;

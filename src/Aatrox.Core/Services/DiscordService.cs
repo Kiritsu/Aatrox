@@ -46,6 +46,15 @@ namespace Aatrox.Core.Services
             return Task.CompletedTask;
         }
 
+        protected override async ValueTask<bool> CheckMessageAsync(CachedUserMessage message)
+        {
+            await using var db = this.GetRequiredService<AatroxDbContext>();
+            var repository = db.RequestRepository<UserRepository>();
+            var user = await repository.GetAsync(message.Author.Id);
+
+            return await base.CheckMessageAsync(message) && !user.Blacklisted;
+        }
+
         protected override async ValueTask<DiscordCommandContext> GetCommandContextAsync(CachedUserMessage message, 
             IPrefix prefix)
         {

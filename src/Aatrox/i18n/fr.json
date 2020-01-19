@@ -1,10 +1,22 @@
 {
   "ping": ":ping_pong: | **Pong ! ({0} ms)**",
   "invite": "Lien d'invitation : <https://discordapp.com/oauth2/authorize?client_id={0}&scope=bot&permissions={1}>",
-  "help_description": "Cet embed contient tous les modules disponibles et utilisables. Pour avoir plus d'information sur un module, utilisez `{0}help <module>`. Les pr�fixes de cette guilde sont : {1}.",
+  "help_description": "Cet embed contient tous les modules disponibles et utilisables. Pour avoir plus d'information sur un module, utilisez `{0}help <module>`. Les préfixes de cette guilde sont : {1}.",
   "help_footer": "{0} modules et {1} commandes sont disponibles dans ce contexte.",
   "help_module_description": "Cet embed contient la liste de toutes les commandes de ce module.",
   "help_module_footer": "{0} commandes sont disponibles dans ce contexte.",
-  "clean_no_messages": "Mmh... Je n'ai trouv� aucun message � supprimer. Attention, ils ne doivent pas �tre vieux de deux semaines.",
-  "clean_done": "`{0}/{1}` messages ont pu �tre supprim�s."
+  "clean_no_messages": "Mmh... Je n'ai trouvé aucun message à supprimer. Attention, ils ne doivent pas être vieux de deux semaines.",
+  "clean_done": "`{0}/{1}` messages ont pu être supprimés.",
+  "about_description": "Merci d'utiliser Aatrox. Vous trouverez ci-dessous quelques informations à propos du bot.",
+  "no_custom_prefix": "Aucun préfixe personnalisé trouvé sur ce serveur.",
+  "prefix_already_added": "Ce préfixe a déjà été ajouté dans les préfixe personnalisés.",
+  "prefix_added": "Ce préfixe a bien été ajouté dans la liste des préfixes personnalisés.",
+  "unknown_prefix": "Ce préfixe n'existe pas ou est protégé.",
+  "prefix_removed": "Ce préfixe a bien été retiré de la liste des préfixes personnalisés.",
+  "paginator_identifier": "{0} | Donnez une vraie `{1}`. Ecrivez `{2}` pour annuler. Cela va s'arrêter d'ici {3} secondes.",
+  "osu_url_auto_resolve_enabled": "L'auto-résolution des URLs osu! a bien été activée.",
+  "osu_url_auto_resolve_disabled": "L'auto-résolution des URLs osu! a bien été désactivée.",
+  "osu_unknown_beatmap": "Aucune map valide trouvée. Postez l'url de la map dans le tchat avant ou donnez l'id de celle-ci en paramètres de la commande.",
+  "osu_pp_data": "Cette map (`{1}` | `{2}`%) vaut : `{0}`pp",
+  "user_language_changed": "Votre language a bien été mis à jour."
 }
