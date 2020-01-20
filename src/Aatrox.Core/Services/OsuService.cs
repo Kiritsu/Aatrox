@@ -27,6 +27,7 @@ namespace Aatrox.Core.Services
 
         public ReadOnlyDictionary<Snowflake, long> LastBeatmapPerChannel { get; }
         private readonly Dictionary<Snowflake, long> _lastBeatmapPerChannel;
+        private readonly object _locker = new object();
 
         public OsuService(DiscordService service, OsuClient osu, LogService log,
             AatroxConfigurationProvider config, IServiceProvider serviceProvider)
@@ -46,6 +47,14 @@ namespace Aatrox.Core.Services
             _service.MessageReceived += ServiceOnMessageReceived;
 
             return Task.CompletedTask;
+        }
+
+        public void AddOrUpdateValue(Snowflake snowflake, long id)
+        {
+            lock (_locker)
+            {
+                _lastBeatmapPerChannel[snowflake] = id;
+            }
         }
 
         private async Task ServiceOnMessageReceived(MessageReceivedEventArgs e)
@@ -160,7 +169,7 @@ namespace Aatrox.Core.Services
 
             await e.Message.Channel.SendMessageAsync(embed: embed.Build());
 
-            _lastBeatmapPerChannel[e.Message.Channel.Id] = beatmap.BeatmapId;
+            AddOrUpdateValue(e.Message.Channel.Id, beatmap.BeatmapId);
         }
     }
 }

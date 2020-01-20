@@ -83,5 +83,42 @@ namespace Aatrox.Modules
         {
             return RespondLocalizedAsync("invite", Context.Aatrox.Id, 8);
         }
+
+        [Command("Presence")]
+        [Description("Shows the given user's presence.")]
+        public Task PresenceAsync(
+            [Description("User to check presence.")] CachedMember user = null)
+        {
+            user ??= Context.Member;
+
+            var embed = EmbedHelper.New(Context, $"Displays {user.Mention}'s presences. (`{user.Presence.Status}`)");
+            foreach (var presence in user.Presence.Activities)
+            {
+                switch (presence)
+                {
+                    case RichActivity ra:
+                        if (ra.State != null && ra.Details != null)
+                        {
+                            embed.AddField($"{presence.Type}", $"`{presence.Name}`, `{ra.State}`: `{ra.Details}`");
+                        }
+                        else
+                        {
+                            embed.AddField($"{presence.Type}", $"`{presence.Name}`");
+                        }
+                        break;
+                    case CustomActivity ca:
+                        embed.AddField($"Custom Status", $"{ca.Emoji.MessageFormat} | `{ca.Text}`");
+                        break;
+                    case StreamingActivity sa:
+                        embed.AddField($"Streaming", $"[{sa.Name}]({sa.Url})");
+                        break;
+                    case SpotifyActivity spa:
+                        embed.AddField($"Listening to", $"`{spa.TrackTitle}` (`{string.Join(", ", spa.Artists)}`) - `{spa.Elapsed:hh:mm:ss}/{spa.Duration:hh:mm:ss}`");
+                        break;
+                }
+            }
+
+            return RespondAsync(embed.Build());
+        }
     }
 }

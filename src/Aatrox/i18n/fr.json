@@ -17,6 +17,6 @@
   "osu_url_auto_resolve_enabled": "L'auto-résolution des URLs osu! a bien été activée.",
   "osu_url_auto_resolve_disabled": "L'auto-résolution des URLs osu! a bien été désactivée.",
   "osu_unknown_beatmap": "Aucune map valide trouvée. Postez l'url de la map dans le tchat avant ou donnez l'id de celle-ci en paramètres de la commande.",
-  "osu_pp_data": "Cette map (`{1}` | `{2}%` | `{3}/{4} combos`) vaut : `{0}`pp",
+  "osu_pp_data": "[Cette map](https://osu.ppy.sh/beatmaps/{5}) (`{1}` | `{2}%` | `{3}/{4} combos`) vaut : `{0}`pp",
   "user_language_changed": "Votre language a bien été mis à jour."
 }

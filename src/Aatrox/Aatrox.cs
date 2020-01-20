@@ -16,6 +16,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OsuSharp;
 using Qmmands;
+using Disqord.Extensions.Interactivity;
 
 namespace Aatrox
 {
@@ -48,15 +49,15 @@ namespace Aatrox
                 _dbLogger.Error("Database migration failed. Exiting.", ex);
                 return;
             }
-            
+
             var os = _services.GetRequiredService<OsuService>();
             await os.SetupAsync();
-            
+
             var multiLanguage = _services.GetRequiredService<InternationalizationService>();
             await multiLanguage.SetupAsync();
-            
+
             var ds = _services.GetRequiredService<DiscordService>();
-            
+
             ds.RemoveTypeParser(Disqord.Bot.Parsers.CachedUserParser.Instance);
             ds.AddTypeParser(CachedUserParser.Instance);
 
@@ -68,10 +69,14 @@ namespace Aatrox
             ds.AddTypeParser(TimeSpanParser.Instance);
             ds.AddTypeParser(UriTypeParser.Instance);
             ds.AddTypeParser(EnumModeTypeParser.Instance);
-            
+
             ds.AddArgumentParser(ComplexCommandsArgumentParser.Instance);
 
             await ds.SetupAsync(Assembly.GetEntryAssembly());
+
+            var interactivty = _services.GetRequiredService<InteractivityExtension>();
+            await ds.AddExtensionAsync(interactivty);
+
             await ds.RunAsync();
 
             await Task.Delay(Timeout.Infinite);
@@ -103,7 +108,7 @@ namespace Aatrox
                 .AddSingleton(x =>
                 {
                     var config = x.GetRequiredService<AatroxConfigurationProvider>().GetConfiguration();
-                    
+
                     return new OsuClient(new OsuSharpConfiguration
                     {
                         ApiKey = config.OsuToken,
@@ -111,6 +116,7 @@ namespace Aatrox
                     });
                 })
                 .AddSingleton<OsuService>()
+                .AddSingleton<InteractivityExtension>()
                 .BuildServiceProvider();
         }
 

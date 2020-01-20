@@ -10,7 +10,8 @@ namespace Aatrox.Modules
     {
         [Command("Language", "Lang")]
         [Description("Changes the current user's language.")]
-        public async Task ChangeLanguage(Lang language)
+        public async Task ChangeLanguage(
+            [Description("Language to set")] Lang language)
         {
             DbContext.User.Language = language;
             await DbContext.UpdateUserAsync();

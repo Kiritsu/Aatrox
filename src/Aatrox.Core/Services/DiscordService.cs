@@ -15,6 +15,7 @@ using Disqord;
 using Disqord.Bot;
 using Disqord.Bot.Prefixes;
 using Disqord.Events;
+using Disqord.Extensions.Interactivity;
 using Disqord.Logging;
 using Disqord.Rest;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,19 +36,22 @@ namespace Aatrox.Core.Services
             _configuration = ac.GetConfiguration();
         }
 
-        public Task SetupAsync(Assembly assembly)
+        public async Task SetupAsync(Assembly assembly)
         {
             Ready += OnReadyAsync;
             CommandExecutionFailed += DiscordService_CommandExecutionFailed;
             Logger.MessageLogged += OnMessageLogged;
 
             AddModules(assembly);
-
-            return Task.CompletedTask;
         }
 
         protected override async ValueTask<bool> CheckMessageAsync(CachedUserMessage message)
         {
+            if (message.Guild == null)
+            {
+                return false;
+            }
+
             await using var db = this.GetRequiredService<AatroxDbContext>();
             var repository = db.RequestRepository<UserRepository>();
             var user = await repository.GetAsync(message.Author.Id);
