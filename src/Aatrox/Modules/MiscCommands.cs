@@ -113,7 +113,7 @@ namespace Aatrox.Modules
                         embed.AddField($"Streaming", $"[{sa.Name}]({sa.Url})");
                         break;
                     case SpotifyActivity spa:
-                        embed.AddField($"Listening to", $"`{spa.TrackTitle}` (`{string.Join(", ", spa.Artists)}`) - `{spa.Elapsed:hh:mm:ss}/{spa.Duration:hh:mm:ss}`");
+                        embed.AddField($"Listening to", $"`{spa.TrackTitle}` (`{string.Join(", ", spa.Artists)}`) - `{spa.Elapsed:hh\\:mm\\:ss}/{spa.Duration:hh\\:mm\\:ss}`");
                         break;
                 }
             }
