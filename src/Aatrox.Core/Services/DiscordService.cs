@@ -233,7 +233,7 @@ namespace Aatrox.Core.Services
         {
             _logger.Info("Aatrox is ready.");
 
-            return ((DiscordClient)e.Client).SetPresenceAsync(UserStatus.DoNotDisturb,
+            return e.Client.SetPresenceAsync(UserStatus.DoNotDisturb,
                 new LocalActivity("hate speeches", ActivityType.Listening));
         }
 
