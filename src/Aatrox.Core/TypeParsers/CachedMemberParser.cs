@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Aatrox.Core.Entities;
-using Aatrox.Core.Extensions;
 using Disqord;
 using Qmmands;
 
@@ -65,16 +64,17 @@ namespace Aatrox.Core.TypeParsers
                 return new TypeParserResult<CachedMember>(member);
             }
 
-            member = members.FirstOrDefault(x => x.Name.Equals(value, StringComparison.OrdinalIgnoreCase) || (!string.IsNullOrEmpty(x.Nick) && x.Nick.Equals(value, StringComparison.OrdinalIgnoreCase)));
-            if (!(member is null))
+            members = members.Where(x => x.Name.Equals(value, StringComparison.OrdinalIgnoreCase) || (!string.IsNullOrEmpty(x.Nick) && x.Nick.Equals(value, StringComparison.OrdinalIgnoreCase))).ToList();
+
+            if (members.Count > 1)
             {
-                return new TypeParserResult<CachedMember>(member);
+                return new TypeParserResult<CachedMember>("Multiple matches found. Mention the member or use their ID.");
             }
 
-            var correctUsername = username.Levenshtein(members.Select(x => x.Name).ToList());
-            var correctNickname = value.Levenshtein(members.Where(x => !string.IsNullOrEmpty(x.Nick)).Select(x => x.Nick).ToList());
-
-            member = members.FirstOrDefault(x => x.Name.Equals(correctUsername, StringComparison.OrdinalIgnoreCase) || (!string.IsNullOrEmpty(x.Nick) && x.Nick.Equals(correctNickname, StringComparison.OrdinalIgnoreCase)));
+            if (members.Count == 1)
+            {
+                member = members[0];
+            }
 
             return member is null
                 ? new TypeParserResult<CachedMember>($"The member '{value}' was not found.")

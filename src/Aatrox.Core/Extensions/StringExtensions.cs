@@ -101,7 +101,7 @@ namespace Aatrox.Core.Extensions
             var marginError = min / (double)original.Length;
 
             //If the minimal distance was greater than 4 or the margin error > 42%, we don't want to tell bullshit.
-            return min > 4 || marginError > 0.42 ? null : references[index];
+            return min > 5 || marginError > 0.3 ? null : references[index];
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Aatrox.Core.Providers;
 using Aatrox.Core.Services;
 using Aatrox.Data;
 using Disqord;

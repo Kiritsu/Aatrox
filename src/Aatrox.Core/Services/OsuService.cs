@@ -18,7 +18,7 @@ namespace Aatrox.Core.Services
 {
     public sealed class OsuService
     {
-        private readonly DiscordService _service;
+        private readonly DiscordService _discord;
         private readonly LogService _log;
         private readonly IServiceProvider _serviceProvider;
         private readonly AatroxConfiguration _config;
@@ -29,10 +29,10 @@ namespace Aatrox.Core.Services
         private readonly Dictionary<Snowflake, long> _lastBeatmapPerChannel;
         private readonly object _locker = new object();
 
-        public OsuService(DiscordService service, OsuClient osu, LogService log,
+        public OsuService(DiscordService discord, OsuClient osu, LogService log,
             AatroxConfigurationProvider config, IServiceProvider serviceProvider)
         {
-            _service = service;
+            _discord = discord;
             Osu = osu;
             _log = log;
             _serviceProvider = serviceProvider;
@@ -44,7 +44,7 @@ namespace Aatrox.Core.Services
 
         public Task SetupAsync()
         {
-            _service.MessageReceived += ServiceOnMessageReceived;
+            _discord.MessageReceived += DiscordOnMessageReceived;
 
             return Task.CompletedTask;
         }
@@ -57,7 +57,7 @@ namespace Aatrox.Core.Services
             }
         }
 
-        private async Task ServiceOnMessageReceived(MessageReceivedEventArgs e)
+        private async Task DiscordOnMessageReceived(MessageReceivedEventArgs e)
         {
             var db = _serviceProvider.GetRequiredService<AatroxDbContext>();
             var repo = db.RequestRepository<IGetOrAddRepository<GuildEntity>>();

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Reflection;
@@ -15,7 +14,6 @@ using Disqord;
 using Disqord.Bot;
 using Disqord.Bot.Prefixes;
 using Disqord.Events;
-using Disqord.Extensions.Interactivity;
 using Disqord.Logging;
 using Disqord.Rest;
 using Microsoft.Extensions.DependencyInjection;
@@ -54,8 +52,8 @@ namespace Aatrox.Core.Services
 
             await using var db = this.GetRequiredService<AatroxDbContext>();
             var repository = db.RequestRepository<UserRepository>();
-            var user = await repository.GetAsync(message.Author.Id);
-
+            var user = await repository.GetOrAddAsync(message.Author.Id);
+            
             return await base.CheckMessageAsync(message) && !user.Blacklisted;
         }
 
