@@ -9,7 +9,6 @@ using Aatrox.Core.Services;
 using Aatrox.Data;
 using Aatrox.Data.EventArgs;
 using Aatrox.Enums;
-using Aatrox.Core.TypeParsers;
 using Disqord.Bot;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -22,20 +21,24 @@ namespace Aatrox
 {
     public class Aatrox
     {
-        private IConfiguration _configuration;
-        private IServiceProvider _services;
+        private readonly IServiceProvider _services;
+        private readonly OsuService _osuService;
+        private readonly InternationalizationService _multiLanguage;
+        private readonly DiscordService _discordService;
+
         private LogService _dbLogger;
 
-        private async Task InitializeAsync()
+        public Aatrox(IServiceProvider services, OsuService osuService, 
+            InternationalizationService multiLanguage, DiscordService discordService)
         {
-            var configPath = Environment.GetEnvironmentVariable("AATROX_CONFIG_PATH") ?? "credentials.json";
+            _services = services;
+            _osuService = osuService;
+            _multiLanguage = multiLanguage;
+            _discordService = discordService;
+        }
 
-            var cfg = new ConfigurationBuilder()
-                .AddJsonFile(configPath, false)
-                .Build();
-
-            _configuration = cfg;
-            _services = BuildServiceProvider();
+        private async Task SetupAsync()
+        {
             _dbLogger = LogService.GetLogger("Database");
 
             try
@@ -50,45 +53,30 @@ namespace Aatrox
                 return;
             }
 
-            var os = _services.GetRequiredService<OsuService>();
-            await os.SetupAsync();
-
-            var multiLanguage = _services.GetRequiredService<InternationalizationService>();
-            await multiLanguage.SetupAsync();
-
-            var ds = _services.GetRequiredService<DiscordService>();
-
-            ds.RemoveTypeParser(Disqord.Bot.Parsers.CachedUserParser.Instance);
-            ds.AddTypeParser(CachedUserParser.Instance);
-
-            ds.RemoveTypeParser(Disqord.Bot.Parsers.CachedMemberParser.Instance);
-            ds.AddTypeParser(CachedMemberParser.Instance);
-
-            ds.AddTypeParser(CachedGuildParser.Instance);
-            ds.AddTypeParser(SkeletonUserParser.Instance);
-            ds.AddTypeParser(TimeSpanParser.Instance);
-            ds.AddTypeParser(UriTypeParser.Instance);
-            ds.AddTypeParser(EnumModeTypeParser.Instance);
-
-            ds.AddArgumentParser(ComplexCommandsArgumentParser.Instance);
-
-            await ds.SetupAsync(Assembly.GetEntryAssembly());
-
-            var interactivty = _services.GetRequiredService<InteractivityExtension>();
-            await ds.AddExtensionAsync(interactivty);
-
-            await ds.RunAsync();
-
-            await Task.Delay(Timeout.Infinite);
+            await _osuService.SetupAsync();
+            await _multiLanguage.SetupAsync();
+            
+            _discordService.AddArgumentParser(ComplexCommandsArgumentParser.Instance);
+            
+            await _discordService.SetupAsync(Assembly.GetEntryAssembly());
+            await _discordService.RunAsync();
         }
 
-        private IServiceProvider BuildServiceProvider()
+        private static IServiceProvider BuildServiceProvider()
         {
+            var configPath = Environment.GetEnvironmentVariable("AATROX_CONFIG_PATH") ?? "credentials.json";
+
+            var cfg = new ConfigurationBuilder()
+                .AddJsonFile(configPath, false)
+                .Build();
+
             return new ServiceCollection()
+                .AddSingleton(cfg)
+                .AddSingleton<Aatrox>()
                 .AddSingleton(x => new LogService("Aatrox"))
-                .Configure<AatroxConfiguration>(x => _configuration.GetSection("Secrets").Bind(x))
+                .Configure<AatroxConfiguration>(x => cfg.GetSection("Secrets").Bind(x))
                 .AddSingleton<AatroxConfigurationProvider>()
-                .Configure<DatabaseConfiguration>(x => _configuration.GetSection("Database").Bind(x))
+                .Configure<DatabaseConfiguration>(x => cfg.GetSection("Database").Bind(x))
                 .AddSingleton<IDatabaseConfigurationProvider, DatabaseConfigurationProvider>()
                 .AddSingleton<ConnectionStringProvider>()
                 .AddDbContext<AatroxDbContext>(ServiceLifetime.Transient)
@@ -120,7 +108,7 @@ namespace Aatrox
                 .BuildServiceProvider();
         }
 
-        private object CooldownBucketGenerator(object bucketType, CommandContext context)
+        private static object CooldownBucketGenerator(object bucketType, CommandContext context)
         {
             if (!(context is AatroxCommandContext ctx))
             {
@@ -157,7 +145,11 @@ namespace Aatrox
 
         private static async Task Main()
         {
-            await new Aatrox().InitializeAsync();
+            var services = BuildServiceProvider();
+            var aatrox = services.GetRequiredService<Aatrox>();
+
+            await aatrox.SetupAsync();
+            await Task.Delay(Timeout.Infinite);
         }
     }
 }

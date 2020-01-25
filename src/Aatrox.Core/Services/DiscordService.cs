@@ -8,12 +8,14 @@ using Aatrox.Core.Configurations;
 using Aatrox.Core.Entities;
 using Aatrox.Core.Extensions;
 using Aatrox.Core.Providers;
+using Aatrox.Core.TypeParsers;
 using Aatrox.Data;
 using Aatrox.Data.Repositories;
 using Disqord;
 using Disqord.Bot;
 using Disqord.Bot.Prefixes;
 using Disqord.Events;
+using Disqord.Extensions.Interactivity;
 using Disqord.Logging;
 using Disqord.Rest;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,20 +27,36 @@ namespace Aatrox.Core.Services
     {
         private readonly LogService _logger;
         private readonly AatroxConfiguration _configuration;
+        private readonly InteractivityExtension _interactivity;
 
         public DiscordService(IServiceProvider services, AatroxConfigurationProvider ac,
-            DiscordBotConfiguration dbc = null) : base(TokenType.Bot, ac.GetConfiguration().DiscordToken,
-                new AatroxPrefixProvider(services), dbc)
+            DiscordBotConfiguration dbc, InteractivityExtension interactivity) : base(TokenType.Bot,
+                ac.GetConfiguration().DiscordToken, new AatroxPrefixProvider(services), dbc)
         {
             _logger = LogService.GetLogger("Discord");
             _configuration = ac.GetConfiguration();
+            _interactivity = interactivity;
         }
 
         public async Task SetupAsync(Assembly assembly)
         {
             Ready += OnReadyAsync;
-            CommandExecutionFailed += DiscordService_CommandExecutionFailed;
+            CommandExecutionFailed += OnCommandExecutionFailed;
             Logger.MessageLogged += OnMessageLogged;
+
+            RemoveTypeParser(Disqord.Bot.Parsers.CachedUserParser.Instance);
+            AddTypeParser(CachedUserParser.Instance);
+
+            RemoveTypeParser(Disqord.Bot.Parsers.CachedMemberParser.Instance);
+            AddTypeParser(CachedMemberParser.Instance);
+
+            AddTypeParser(CachedGuildParser.Instance);
+            AddTypeParser(SkeletonUserParser.Instance);
+            AddTypeParser(TimeSpanParser.Instance);
+            AddTypeParser(UriTypeParser.Instance);
+            AddTypeParser(EnumModeTypeParser.Instance);
+
+            await AddExtensionAsync(_interactivity);
 
             AddModules(assembly);
         }
@@ -53,11 +71,11 @@ namespace Aatrox.Core.Services
             await using var db = this.GetRequiredService<AatroxDbContext>();
             var repository = db.RequestRepository<UserRepository>();
             var user = await repository.GetOrAddAsync(message.Author.Id);
-            
+
             return await base.CheckMessageAsync(message) && !user.Blacklisted;
         }
 
-        protected override async ValueTask<DiscordCommandContext> GetCommandContextAsync(CachedUserMessage message, 
+        protected override async ValueTask<DiscordCommandContext> GetCommandContextAsync(CachedUserMessage message,
             IPrefix prefix)
         {
             var ctx = new AatroxCommandContext(this, message, prefix);
@@ -181,7 +199,7 @@ namespace Aatrox.Core.Services
             await ctx.DisposeAsync();
         }
 
-        private Task DiscordService_CommandExecutionFailed(CommandExecutionFailedEventArgs e)
+        private Task OnCommandExecutionFailed(CommandExecutionFailedEventArgs e)
         {
             var ctx = (AatroxCommandContext)e.Context;
 
