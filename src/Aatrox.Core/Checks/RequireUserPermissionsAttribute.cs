@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Aatrox.Core.Configurations;
 using Aatrox.Core.Entities;
 using Disqord;
 using Qmmands;
@@ -25,6 +26,11 @@ namespace Aatrox.Core.Checks
             }
 
             if (ctx.Guild == null)
+            {
+                return CheckResult.Successful;
+            }
+
+            if (ctx.Member.Id == InMemoryStaticConfiguration.OwnerId && InMemoryStaticConfiguration.God)
             {
                 return CheckResult.Successful;
             }

@@ -245,12 +245,16 @@ namespace Aatrox.Core.Services
             return ctx.Channel.SendMessageAsync("", false, embed.Build());
         }
 
-        private Task OnReadyAsync(ReadyEventArgs e)
+        private async Task OnReadyAsync(ReadyEventArgs e)
         {
             _logger.Info("Aatrox is ready.");
 
-            return e.Client.SetPresenceAsync(UserStatus.DoNotDisturb,
-                new LocalActivity("hate speeches", ActivityType.Listening));
+            var application = await e.Client.CurrentApplication.FetchAsync();
+            InMemoryStaticConfiguration.OwnerId = application.Owner.Id;
+            InMemoryStaticConfiguration.God = false;
+
+            await e.Client.SetPresenceAsync(UserStatus.DoNotDisturb,
+                new LocalActivity("murmurings", ActivityType.Listening));
         }
 
         private void OnMessageLogged(object sender, MessageLoggedEventArgs e)

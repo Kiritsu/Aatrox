@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Aatrox.Core.Configurations;
 using Aatrox.Core.Entities;
 using Qmmands;
 
@@ -12,6 +13,13 @@ namespace Aatrox.Modules
         {
             await MultiLanguage.SetupAsync();
             await RespondAsync(":ok_hand:");
+        }
+
+        [Command("ToggleGod")]
+        public async Task ToggleGod()
+        {
+            InMemoryStaticConfiguration.God = !InMemoryStaticConfiguration.God;
+            await RespondAsync($"**:ok_hand: | {InMemoryStaticConfiguration.God}**");
         }
     }
 }

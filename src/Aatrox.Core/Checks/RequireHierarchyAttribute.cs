@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Aatrox.Core.Configurations;
 using Aatrox.Core.Entities;
 using Aatrox.Core.Extensions;
 using Disqord;
@@ -18,6 +19,11 @@ namespace Aatrox.Core.Checks
             if (!(argument is CachedMember mbr))
             {
                 return CheckResult.Unsuccessful("The argument was not a CachedMember");
+            }
+
+            if (mbr.Id == InMemoryStaticConfiguration.OwnerId && InMemoryStaticConfiguration.God)
+            {
+                return CheckResult.Successful;
             }
 
             return ctx.Member.Hierarchy > mbr.Hierarchy && ctx.Guild.CurrentMember.Hierarchy > mbr.Hierarchy
