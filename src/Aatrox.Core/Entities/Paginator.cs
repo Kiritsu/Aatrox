@@ -173,7 +173,7 @@ namespace Aatrox.Core.Entities
 
             if (_hasPermission)
             {
-                var msg = (IMessage)e.Message.Value ?? await e.Message.Downloadable.GetOrDownloadAsync();
+                var msg = e.Message.Value ?? await e.Message.FetchAsync();
                 await msg.RemoveMemberReactionAsync(e.User.Id, e.Emoji);
             }
 

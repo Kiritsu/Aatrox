@@ -14,25 +14,13 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-
-- task: CmdLine@2
+- task: UseDotNet@2
   inputs:
-    script: 'git submodule update --init --recursive'
+    version: 3.1.x
+    
+- script: dotnet restore
 
-- task: NuGetToolInstaller@1
-
-- task: NuGetCommand@2
-  inputs:
-    command: 'restore'
-    restoreSolution: '$(solution)'
-    feedsToUse: 'config'
-
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'publish'
-    publishWebProjects: false
-    arguments: '--framework netcoreapp3.1 --configuration $(buildConfiguration) --runtime ubuntu.16.04-x64 --output $(Build.ArtifactStagingDirectory)'
-    zipAfterPublish: false
+- script: dotnet publish --configuration $(buildConfiguration) --runtime ubuntu.16.04-x64 --output $(Build.ArtifactStagingDirectory) --verbosity n
 
 - task: PublishBuildArtifacts@1
   inputs:
