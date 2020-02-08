@@ -5,7 +5,6 @@ using Aatrox.Core.Services;
 using Disqord;
 using Disqord.Bot;
 using Disqord.Rest;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Aatrox.Core.Entities
 {
@@ -59,8 +58,7 @@ namespace Aatrox.Core.Entities
 
         public async Task<Paginator> PaginateAsync(ImmutableArray<Page> pages, bool extraEmojis = true)
         {
-            var paginatorInstance = Context.ServiceProvider.GetRequiredService<PaginatorService>();
-            return await paginatorInstance.CreatePaginatorAsync(Context, pages, extraEmojis);
+            return await PaginatorService.CreatePaginatorAsync(Context, pages, extraEmojis);
         }
     }
 }

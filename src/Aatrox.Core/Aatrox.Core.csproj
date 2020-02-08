@@ -6,20 +6,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Disqord" Version="1.0.0-nightly-00026" />
-    <PackageReference Include="Disqord.Bot" Version="1.0.0-nightly-00026" />
-    <PackageReference Include="Disqord.Core" Version="1.0.0-nightly-00026" />
-    <PackageReference Include="Disqord.Extensions.Interactivity" Version="1.0.0-nightly-00026" />
-    <PackageReference Include="Disqord.Rest" Version="1.0.0-nightly-00026" />
-    <PackageReference Include="Disqord.Serialization.Json.Newtonsoft" Version="1.0.0-nightly-00026" />
+    <PackageReference Include="Disqord" Version="1.0.0-nightly-00037" />
+    <PackageReference Include="Disqord.Bot" Version="1.0.0-nightly-00037" />
+    <PackageReference Include="Disqord.Core" Version="1.0.0-nightly-00037" />
+    <PackageReference Include="Disqord.Extensions.Interactivity" Version="1.0.0-nightly-00037" />
+    <PackageReference Include="Disqord.Rest" Version="1.0.0-nightly-00037" />
+    <PackageReference Include="Disqord.Serialization.Json.Newtonsoft" Version="1.0.0-nightly-00037" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.1" />
     <PackageReference Include="NLog" Version="4.6.8" />
     <PackageReference Include="NLog.Config" Version="4.6.8" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.1" />
-    <PackageReference Include="OsuSharp" Version="5.3.2" />
-    <PackageReference Include="OsuSharp.Analyzer" Version="5.3.2" />
-    <PackageReference Include="OsuSharp.Oppai" Version="5.3.2" />
+    <PackageReference Include="OsuSharp" Version="5.4.0" />
+    <PackageReference Include="OsuSharp.Analyzer" Version="5.4.0" />
+    <PackageReference Include="OsuSharp.Oppai" Version="5.4.0" />
     <ProjectReference Include="..\Aatrox.Data\Aatrox.Data.csproj" />
   </ItemGroup>
 

@@ -18,12 +18,9 @@ namespace Aatrox.Modules
             [Description("List the different prefixes for that guild.")]
             public Task ListAsync()
             {
-                if (DbContext.Guild.Prefixes.Count <= 0)
-                {
-                    return RespondEmbedLocalizedAsync("no_custom_prefix");
-                }
-
-                return RespondEmbedAsync(string.Join(", ", DbContext.Guild.Prefixes.Select(x => $"`{x}`")));
+                return DbContext.Guild.Prefixes.Count <= 0
+                    ? RespondEmbedLocalizedAsync("no_custom_prefix")
+                    : RespondEmbedAsync(string.Join(", ", DbContext.Guild.Prefixes.Select(x => $"`{x}`")));
             }
 
             [Command("Add")]

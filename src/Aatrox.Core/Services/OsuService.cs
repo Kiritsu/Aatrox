@@ -101,6 +101,14 @@ namespace Aatrox.Core.Services
                 return;
             }
 
+            var gc = e.Message.Channel as CachedGuildChannel;
+            var permission = gc.Guild.CurrentMember.GetPermissionsFor(gc);
+
+            if (permission.Has(Permission.Administrator) || permission.Has(Permission.ManageMessages))
+            {
+                await (e.Message as CachedUserMessage).ModifyAsync(x => x.Flags = MessageFlags.SuppressedEmbeds);
+            }
+
             try
             {
                 pps = await OppaiClient.GetPPAsync(long.Parse(beatmapId), new float[] { 100, 99, 98, 97, 95 });

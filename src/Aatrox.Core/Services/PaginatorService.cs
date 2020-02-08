@@ -4,15 +4,15 @@ using Aatrox.Core.Entities;
 
 namespace Aatrox.Core.Services
 {
-    public sealed class PaginatorService
+    public static class PaginatorService
     {
-        public Task<Paginator> CreatePaginatorAsync(AatroxCommandContext context, ImmutableArray<Page> pages, bool extraEmojis = true)
+        public static Task<Paginator> CreatePaginatorAsync(AatroxCommandContext context, ImmutableArray<Page> pages, bool extraEmojis = true)
         {
             var paginator = new Paginator(context, pages);
             return paginator.SendAsync(extraEmojis);
         }
 
-        public Task EndPaginatorAsync(Paginator paginator)
+        public static Task EndPaginatorAsync(Paginator paginator)
         {
             return paginator.StopAsync();
         }

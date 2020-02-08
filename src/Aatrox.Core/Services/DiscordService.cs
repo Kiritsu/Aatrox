@@ -14,6 +14,7 @@ using Aatrox.Data.Repositories;
 using Disqord;
 using Disqord.Bot;
 using Disqord.Bot.Prefixes;
+using Disqord.Bot.Sharding;
 using Disqord.Events;
 using Disqord.Extensions.Interactivity;
 using Disqord.Logging;
@@ -23,14 +24,14 @@ using Qmmands;
 
 namespace Aatrox.Core.Services
 {
-    public sealed class DiscordService : DiscordBot
+    public sealed class DiscordService : DiscordBotSharder
     {
         private readonly LogService _logger;
         private readonly AatroxConfiguration _configuration;
         private readonly InteractivityExtension _interactivity;
 
         public DiscordService(IServiceProvider services, AatroxConfigurationProvider ac,
-            DiscordBotConfiguration dbc, InteractivityExtension interactivity) : base(TokenType.Bot,
+            DiscordBotSharderConfiguration dbc, InteractivityExtension interactivity) : base(TokenType.Bot,
                 ac.GetConfiguration().DiscordToken, new AatroxPrefixProvider(services), dbc)
         {
             _logger = LogService.GetLogger("Discord");

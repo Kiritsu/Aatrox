@@ -91,8 +91,8 @@ namespace Aatrox.Modules
         {
             user ??= Context.Member;
 
-            var embed = EmbedHelper.New(Context, $"Displays {user.Mention}'s presences. (`{user.Presence.Status}`)");
-            foreach (var presence in user.Presence.Activities)
+            var embed = EmbedHelper.New(Context, $"Displays {user.Mention}'s presences. (`{user.Presence?.Status.ToString() ?? "Offline"}`)");
+            foreach (var presence in user.Presence?.Activities)
             {
                 switch (presence)
                 {

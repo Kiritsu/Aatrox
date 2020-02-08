@@ -9,13 +9,13 @@ using Aatrox.Core.Services;
 using Aatrox.Data;
 using Aatrox.Data.EventArgs;
 using Aatrox.Enums;
-using Disqord.Bot;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OsuSharp;
 using Qmmands;
 using Disqord.Extensions.Interactivity;
+using Disqord.Bot.Sharding;
 
 namespace Aatrox
 {
@@ -28,7 +28,7 @@ namespace Aatrox
 
         private LogService _dbLogger;
 
-        public Aatrox(IServiceProvider services, OsuService osuService, 
+        public Aatrox(IServiceProvider services, OsuService osuService,
             InternationalizationService multiLanguage, DiscordService discordService)
         {
             _services = services;
@@ -55,9 +55,9 @@ namespace Aatrox
 
             await _osuService.SetupAsync();
             await _multiLanguage.SetupAsync();
-            
+
             _discordService.AddArgumentParser(ComplexCommandsArgumentParser.Instance);
-            
+
             await _discordService.SetupAsync(Assembly.GetEntryAssembly());
             await _discordService.RunAsync();
         }
@@ -80,18 +80,23 @@ namespace Aatrox
                 .AddSingleton<IDatabaseConfigurationProvider, DatabaseConfigurationProvider>()
                 .AddSingleton<ConnectionStringProvider>()
                 .AddDbContext<AatroxDbContext>(ServiceLifetime.Transient)
-                .AddSingleton(x => new DiscordBotConfiguration
+                .AddSingleton(x =>
                 {
-                    ProviderFactory = _ => x,
-                    CommandService = new CommandService(new CommandServiceConfiguration
+                    var config = x.GetRequiredService<AatroxConfigurationProvider>().GetConfiguration();
+
+                    return new DiscordBotSharderConfiguration
                     {
-                        IgnoresExtraArguments = true,
-                        CooldownBucketKeyGenerator = CooldownBucketGenerator,
-                        StringComparison = StringComparison.OrdinalIgnoreCase
-                    })
+                        ProviderFactory = _ => x,
+                        CommandServiceConfiguration = new CommandServiceConfiguration
+                        {
+                            IgnoresExtraArguments = true,
+                            CooldownBucketKeyGenerator = CooldownBucketGenerator,
+                            StringComparison = StringComparison.OrdinalIgnoreCase
+                        },
+                        ShardCount = config.ShardCount
+                    };
                 })
                 .AddSingleton<DiscordService>()
-                .AddSingleton<PaginatorService>()
                 .AddSingleton<InternationalizationService>()
                 .AddSingleton(x =>
                 {

@@ -38,7 +38,7 @@ namespace Aatrox.Core.TypeParsers
             users = users.DistinctBy(x => x.Id).ToList();
 
             CachedUser user = null;
-            if ((value.Length > 3 && value[0] == '<' && value[1] == '@' && value[^1] == '>' && ulong.TryParse(value[2] == '!' ? value.Substring(3, value.Length - 4) : value.Substring(2, value.Length - 3), out var id))
+            if ((value.Length > 3 && value[0] == '<' && value[1] == '@' && value[^1] == '>' && ulong.TryParse(value[2] == '!' ? value[3..^1] : value[2..^1], out var id))
                 || ulong.TryParse(value, out id))
             {
                 user = users.FirstOrDefault(x => x.Id == id);
@@ -49,7 +49,7 @@ namespace Aatrox.Core.TypeParsers
                 var hashIndex = value.LastIndexOf('#');
                 if (hashIndex != -1 && hashIndex + 5 == value.Length)
                 {
-                    user = users.FirstOrDefault(x => x.Name.Equals(value.Substring(0, value.Length - 5), StringComparison.OrdinalIgnoreCase) && x.Discriminator.Equals(value.Substring(hashIndex + 1), StringComparison.OrdinalIgnoreCase));
+                    user = users.FirstOrDefault(x => x.Name.Equals(value[0..^5], StringComparison.OrdinalIgnoreCase) && x.Discriminator.Equals(value.Substring(hashIndex + 1), StringComparison.OrdinalIgnoreCase));
                 }
             }
 
