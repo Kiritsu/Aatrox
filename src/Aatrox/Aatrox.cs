@@ -113,19 +113,11 @@ namespace Aatrox
                 .BuildServiceProvider();
         }
 
-        private static object CooldownBucketGenerator(object bucketType, CommandContext context)
+        private static object CooldownBucketGenerator(object __, CommandContext _)
         {
-            if (!(context is AatroxCommandContext ctx))
-            {
-                throw new InvalidOperationException("The passed command context is invalid.");
-            }
+            var ctx = _ as AatroxCommandContext;
 
-            if (!(bucketType is CooldownBucketType type))
-            {
-                throw new InvalidOperationException("Invalid bucket type.");
-            }
-
-            return type switch
+            return (CooldownBucketType)__ switch
             {
                 CooldownBucketType.Guild => ctx.Guild.Id,
                 CooldownBucketType.Channel => ctx.Channel.Id,
