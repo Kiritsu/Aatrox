@@ -30,9 +30,9 @@ namespace Aatrox.Core.Services
         private readonly AatroxConfiguration _configuration;
         private readonly InteractivityExtension _interactivity;
 
-        public DiscordService(IServiceProvider services, AatroxConfigurationProvider ac,
-            DiscordBotSharderConfiguration dbc, InteractivityExtension interactivity) : base(TokenType.Bot,
-                ac.GetConfiguration().DiscordToken, new AatroxPrefixProvider(services), dbc)
+        public DiscordService(AatroxConfigurationProvider ac, DiscordBotSharderConfiguration dbc, 
+            InteractivityExtension interactivity, AatroxPrefixProvider aapp) : base(TokenType.Bot,
+                ac.GetConfiguration().DiscordToken, aapp, dbc)
         {
             _logger = LogService.GetLogger("Discord");
             _configuration = ac.GetConfiguration();

@@ -96,6 +96,7 @@ namespace Aatrox
                         ShardCount = config.ShardCount
                     };
                 })
+                .AddSingleton<AatroxPrefixProvider>()
                 .AddSingleton<DiscordService>()
                 .AddSingleton<InternationalizationService>()
                 .AddSingleton(x =>
