@@ -1,11 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Aatrox.Data;
 using Aatrox.Data.Entities;
 using Aatrox.Data.Repositories.Interfaces;
 
 namespace Aatrox.Core.Entities
 {
-    public sealed class DatabaseCommandContext
+    public sealed class DatabaseCommandContext : IAsyncDisposable
     {
         private readonly AatroxCommandContext _ctx;
 
@@ -30,6 +31,7 @@ namespace Aatrox.Core.Entities
             _users = context.RequestRepository<IGetOrAddRepository<UserEntity>>();
             _leagueUsers = context.RequestRepository<IGetOrAddRepository<LeagueUserEntity>>();
             _osuUsers = context.RequestRepository<IGetOrAddRepository<OsuUserEntity>>();
+            
             Database = context;
         }
 
@@ -61,6 +63,11 @@ namespace Aatrox.Core.Entities
         public async Task UpdateOsuUserAsync()
         {
             await _osuUsers.UpdateAsync(User.OsuProfile);
+        }
+
+        public ValueTask DisposeAsync()
+        {
+            return Database.DisposeAsync();
         }
     }
 }

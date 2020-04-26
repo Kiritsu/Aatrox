@@ -7,7 +7,7 @@ using Qmmands;
 
 namespace Aatrox.Modules
 {
-    public sealed partial class SettingsCommands : AatroxModuleBase
+    public sealed partial class SettingsCommands
     {
         [Name("Osu"), Group("Osu")]
         [RequireUserPermissions(Permission.ManageMessages)]
@@ -17,10 +17,10 @@ namespace Aatrox.Modules
             [Description("Enables or disables auto-resolve for osu! urls.")]
             public async Task ToggleAutoResolve()
             {
-                DbContext.Guild.AutoResolveOsuUrl = !DbContext.Guild.AutoResolveOsuUrl;
+                DbContext.Guild.ResolveOsuUrls = !DbContext.Guild.ResolveOsuUrls;
                 await DbContext.UpdateGuildAsync();
                 
-                await RespondEmbedLocalizedAsync(DbContext.Guild.AutoResolveOsuUrl 
+                await RespondEmbedLocalizedAsync(DbContext.Guild.ResolveOsuUrls 
                     ? "osu_url_auto_resolve_enabled" 
                     : "osu_url_auto_resolve_disabled");
             }

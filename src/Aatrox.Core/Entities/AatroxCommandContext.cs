@@ -17,7 +17,7 @@ namespace Aatrox.Core.Entities
 
         private readonly DatabaseCommandContext _databaseContext;
 
-        public AatroxCommandContext(DiscordBotSharder bot, CachedUserMessage message, IPrefix prefix)
+        public AatroxCommandContext(DiscordBotBase bot, CachedUserMessage message, IPrefix prefix)
             : base(bot, prefix, message)
         {
             MultiLanguage = ServiceProvider.GetRequiredService<InternationalizationService>();
@@ -54,7 +54,7 @@ namespace Aatrox.Core.Entities
 
         public ValueTask DisposeAsync()
         {
-            return _databaseContext.Database.DisposeAsync();
+            return _databaseContext.DisposeAsync();
         }
     }
 }

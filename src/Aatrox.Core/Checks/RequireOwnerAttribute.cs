@@ -4,16 +4,13 @@ using Qmmands;
 
 namespace Aatrox.Core.Checks
 {
-    public sealed class RequireOwnerAttribute : AatroxCheckBaseAttribute
+    public sealed class RequireOwnerAttribute : AatroxCheckAttribute
     {
         public override string Name { get; set; } = "Owner command";
 
         public override async ValueTask<CheckResult> CheckAsync(CommandContext context)
         {
-            if (!(context is AatroxCommandContext ctx))
-            {
-                return CheckResult.Unsuccessful("Invalid command context.");
-            }
+            var ctx = (AatroxCommandContext) context;
 
             var application = await ctx.Bot.GetCurrentApplicationAsync();
             return application.Owner.Id == ctx.User.Id

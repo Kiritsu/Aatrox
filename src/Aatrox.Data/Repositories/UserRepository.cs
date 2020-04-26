@@ -15,7 +15,7 @@ namespace Aatrox.Data.Repositories
 
         public async Task<UserEntity> GetOrAddAsync(ulong id)
         {
-            _entities.Include(x => x.LeagueProfile);
+            Entities.Include(x => x.LeagueProfile);
 
             var entity = await GetAsync(id);
 

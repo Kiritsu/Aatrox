@@ -74,10 +74,6 @@ namespace Aatrox.Data
                 .Property(x => x.CreatedAt).ValueGeneratedNever();
 
             builder.Entity<LeagueUserEntity>()
-                .Property(x => x.Channels)
-                .HasConversion(new ListUlongToLongConverter());
-
-            builder.Entity<LeagueUserEntity>()
                 .HasOne(x => x.User)
                 .WithOne(x => x.LeagueProfile)
                 .HasForeignKey<LeagueUserEntity>(x => x.Id)
@@ -89,10 +85,6 @@ namespace Aatrox.Data
 
             builder.Entity<OsuUserEntity>()
                 .Property(x => x.CreatedAt).ValueGeneratedNever();
-
-            builder.Entity<OsuUserEntity>()
-                .Property(x => x.Channels)
-                .HasConversion(new ListUlongToLongConverter());
 
             builder.Entity<OsuUserEntity>()
                 .HasOne(x => x.User)

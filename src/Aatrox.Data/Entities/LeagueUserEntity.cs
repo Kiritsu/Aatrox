@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aatrox.Data.Entities
 {
-    [Table("league_user_entity")]
+    [Table("league_users")]
     public sealed class LeagueUserEntity : Entity
     {
         [Column("username")]
@@ -11,12 +11,6 @@ namespace Aatrox.Data.Entities
 
         [Column("region")]
         public string Region { get; set; }
-
-        [Column("channels")]
-        public List<ulong> Channels { get; set; }
-
-        [Column("send_current_game_info")]
-        public bool CurrentGameInfo { get; set; }
 
         public UserEntity User { get; set; }
     }

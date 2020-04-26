@@ -50,7 +50,7 @@ namespace Aatrox
             catch (Exception ex)
             {
                 _dbLogger.Error("Database migration failed. Exiting.", ex);
-                return;
+                Environment.Exit(42);
             }
 
             await _osuService.SetupAsync();
@@ -114,11 +114,11 @@ namespace Aatrox
                 .BuildServiceProvider();
         }
 
-        private static object CooldownBucketGenerator(object __, CommandContext _)
+        private static object CooldownBucketGenerator(object bucketType, CommandContext _)
         {
-            var ctx = _ as AatroxCommandContext;
+            var ctx = (AatroxCommandContext)_;
 
-            return (CooldownBucketType)__ switch
+            return (CooldownBucketType)bucketType switch
             {
                 CooldownBucketType.Guild => ctx.Guild.Id,
                 CooldownBucketType.Channel => ctx.Channel.Id,

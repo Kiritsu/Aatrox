@@ -31,10 +31,12 @@ namespace Aatrox.Modules
             var embed = EmbedHelper.New(Context, GetLocalization("about_description"));
             embed.AddField("Language", $"C# ({RuntimeInformation.FrameworkDescription})", true)
                  .AddField("Library", Markdown.Link($"Disqord v{Library.Version}", Library.RepositoryUrl), true)
-                 .AddField("Bot Repository", Markdown.Link("Aatrox's Github", "https://github.com/Kiritsu/Aatrox"), true)
+                 .AddField("Bot Repository", Markdown.Link("Aatrox's GitHub", "https://github.com/Kiritsu/Aatrox"), true)
                  .AddField("Servers", Context.Bot.Guilds.Count, true)
                  .AddField("Channels", Context.Bot.Guilds.Values.SelectMany(x => x.Channels).Count(), true)
-                 .AddField("Users", Context.Bot.Guilds.Values.SelectMany(x => x.Members.Values).DistinctBy(x => x.Id).Count(), true);
+                 .AddField("Users", Context.Bot.Guilds.Values.SelectMany(x => x.Members.Values).DistinctBy(x => x.Id).Count(), true)
+                 .AddField("Invite", Markdown.Link("Click here to invite the bot.", GetLocalization("invite_url", Context.Aatrox.Id, 8)));
+            
             return RespondAsync(embed.Build());
         }
 
@@ -87,33 +89,43 @@ namespace Aatrox.Modules
         [Command("Presence")]
         [Description("Shows the given user's presence.")]
         public Task PresenceAsync(
-            [Description("User to check presence.")] CachedMember user = null)
+            [Description("User to check presence.")] CachedUser user = null)
         {
-            user ??= Context.Member;
+            user ??= Context.User;
 
             var embed = EmbedHelper.New(Context, $"Displays {user.Mention}'s presences. (`{user.Presence?.Status.ToString() ?? "Offline"}`)");
+            if (user.Presence?.Activities is null)
+            {
+                embed.AddField("Presence", "No presence for that user.");
+                return RespondAsync(embed.Build());
+            }
+            
             foreach (var presence in user.Presence?.Activities)
             {
                 switch (presence)
                 {
                     case RichActivity ra:
+                        var content = $"`{presence.Name}`";
+                        
                         if (ra.State != null && ra.Details != null)
                         {
-                            embed.AddField($"{presence.Type}", $"`{presence.Name}`, `{ra.State}`: `{ra.Details}`");
+                            content = $"`{presence.Name}`, `{ra.State}`: `{ra.Details}`";
                         }
-                        else
+                        else if (ra.Details != null)
                         {
-                            embed.AddField($"{presence.Type}", $"`{presence.Name}`");
+                            content = $"`{presence.Name}`: `{ra.Details}`";
                         }
+
+                        embed.AddField($"{presence.Type}", content);
                         break;
                     case CustomActivity ca:
-                        embed.AddField($"Custom Status", $"{ca.Emoji.MessageFormat} | `{ca.Text}`");
+                        embed.AddField("Custom Status", $"{ca.Emoji.MessageFormat} | {(string.IsNullOrWhiteSpace(ca.Text) ? "No custom message." : $"`{ca.Text}`")}");
                         break;
                     case StreamingActivity sa:
-                        embed.AddField($"Streaming", $"[{sa.Name}]({sa.Url})");
+                        embed.AddField("Streaming", $"[{sa.Name}]({sa.Url})");
                         break;
                     case SpotifyActivity spa:
-                        embed.AddField($"Listening to", $"`{spa.TrackTitle}` (`{string.Join(", ", spa.Artists)}`) - `{spa.Elapsed:hh\\:mm\\:ss}/{spa.Duration:hh\\:mm\\:ss}`");
+                        embed.AddField("Listening to", $"`{spa.TrackTitle}` (`{string.Join(", ", spa.Artists.Take(3))}`) - `{spa.Elapsed:hh\\:mm\\:ss}/{spa.Duration:hh\\:mm\\:ss}`");
                         break;
                 }
             }

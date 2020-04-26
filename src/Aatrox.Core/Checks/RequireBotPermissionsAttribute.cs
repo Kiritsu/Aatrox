@@ -5,7 +5,7 @@ using Qmmands;
 
 namespace Aatrox.Core.Checks
 {
-    public sealed class RequireBotPermissionsAttribute : AatroxCheckBaseAttribute
+    public sealed class RequireBotPermissionsAttribute : AatroxCheckAttribute
     {
         public Permission Permissions { get; }
 
@@ -19,10 +19,7 @@ namespace Aatrox.Core.Checks
 
         public override ValueTask<CheckResult> CheckAsync(CommandContext context)
         {
-            if (!(context is AatroxCommandContext ctx))
-            {
-                return new CheckResult("Invalid command context.");
-            }
+            var ctx = (AatroxCommandContext) context;
 
             if (ctx.Guild == null)
             {

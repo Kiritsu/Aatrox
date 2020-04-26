@@ -23,10 +23,8 @@ namespace Aatrox.Data.Repositories
                 {
                     Id = id,
                     CreatedAt = DateTimeOffset.UtcNow,
-                    CurrentGameInfo = false,
                     Region = "EUW",
-                    Username = "",
-                    Channels = new List<ulong>()
+                    Username = ""
                 });
             }
 

@@ -15,7 +15,7 @@ namespace Aatrox.Modules
             await RespondAsync(":ok_hand:");
         }
 
-        [Command("ToggleGod")]
+        [Command("ToggleGod", "God")]
         public async Task ToggleGod()
         {
             InMemoryStaticConfiguration.God = !InMemoryStaticConfiguration.God;

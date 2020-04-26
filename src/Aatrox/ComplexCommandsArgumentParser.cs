@@ -83,21 +83,24 @@ namespace Aatrox
                         }
 
                     case ' ':
+                    {
+                        switch (state)
                         {
-                            if (state == ParserState.Name) // end of name, beginning of value
-                            {
+                            // end of name, beginning of value
+                            case ParserState.Name:
                                 parameter = context.Command.Parameters.FirstOrDefault(x =>
                                     x.Name.Equals(argName.ToString(), StringComparison.OrdinalIgnoreCase));
 
                                 state = ParserState.Value;
-                            }
-                            else if (state == ParserState.Value) // espace in value, so its a string
-                            {
+                                break;
+                            // espace in value, so its a string
+                            case ParserState.Value:
                                 argValue.Append(chr);
-                            }
-
-                            break;
+                                break;
                         }
+
+                        break;
+                    }
 
                     case '"':
                         {
@@ -121,18 +124,21 @@ namespace Aatrox
                         }
 
                     default:
+                    {
+                        switch (state)
                         {
-                            if (state == ParserState.Name) // append arg name
-                            {
+                            // append arg name
+                            case ParserState.Name:
                                 argName.Append(chr);
-                            }
-                            else if (state == ParserState.Value) // append arg value
-                            {
+                                break;
+                            // append arg value
+                            case ParserState.Value:
                                 argValue.Append(chr);
-                            }
-
-                            break;
+                                break;
                         }
+
+                        break;
+                    }
                 }
             }
 

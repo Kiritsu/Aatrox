@@ -11,11 +11,8 @@ namespace Aatrox.Core.Checks
     {
         public override ValueTask<CheckResult> CheckAsync(object argument, CommandContext context)
         {
-            if (!(context is AatroxCommandContext ctx))
-            {
-                return CheckResult.Unsuccessful("Invalid command context.");
-            }
-
+            var ctx = (AatroxCommandContext) context;
+            
             if (!(argument is CachedMember mbr))
             {
                 return CheckResult.Unsuccessful("The argument was not a CachedMember");
@@ -28,7 +25,7 @@ namespace Aatrox.Core.Checks
 
             return ctx.Member.Hierarchy > mbr.Hierarchy && ctx.Guild.CurrentMember.Hierarchy > mbr.Hierarchy
                 ? CheckResult.Successful
-                : CheckResult.Unsuccessful($"Sorry. {mbr.FormatUser()} is protected.");
+                : CheckResult.Unsuccessful($"Sorry. {mbr.FullName()} is protected.");
         }
     }
 }

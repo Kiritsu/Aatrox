@@ -9,74 +9,69 @@ namespace Aatrox.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "guild_entity",
+                name: "guilds",
                 columns: table => new
                 {
                     snowflake_id = table.Column<decimal>(nullable: false),
                     created_at = table.Column<DateTimeOffset>(nullable: false),
-                    prefixes = table.Column<List<string>>(nullable: true)
+                    prefixes = table.Column<List<string>>(nullable: true),
+                    resolve_osu_urls = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_guild_entity", x => x.snowflake_id);
+                    table.PrimaryKey("PK_guilds", x => x.snowflake_id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "user_entity",
+                name: "users",
                 columns: table => new
                 {
                     snowflake_id = table.Column<decimal>(nullable: false),
                     created_at = table.Column<DateTimeOffset>(nullable: false),
                     language = table.Column<int>(nullable: false),
-                    Premium = table.Column<bool>(nullable: false)
+                    premium = table.Column<bool>(nullable: false),
+                    blacklisted = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_user_entity", x => x.snowflake_id);
+                    table.PrimaryKey("PK_users", x => x.snowflake_id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "league_user_entity",
+                name: "league_users",
                 columns: table => new
                 {
                     snowflake_id = table.Column<decimal>(nullable: false),
                     created_at = table.Column<DateTimeOffset>(nullable: false),
                     username = table.Column<string>(nullable: true),
-                    region = table.Column<string>(nullable: true),
-                    channels = table.Column<List<long>>(nullable: true),
-                    send_current_game_info = table.Column<bool>(nullable: false)
+                    region = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_league_user_entity", x => x.snowflake_id);
+                    table.PrimaryKey("PK_league_users", x => x.snowflake_id);
                     table.ForeignKey(
                         name: "fkey_league_user_entity_user_id",
                         column: x => x.snowflake_id,
-                        principalTable: "user_entity",
+                        principalTable: "users",
                         principalColumn: "snowflake_id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "osu_user_entity",
+                name: "osu_users",
                 columns: table => new
                 {
                     snowflake_id = table.Column<decimal>(nullable: false),
                     created_at = table.Column<DateTimeOffset>(nullable: false),
-                    username = table.Column<string>(nullable: true),
-                    channels = table.Column<List<long>>(nullable: true),
-                    send_recent_score = table.Column<bool>(nullable: false),
-                    send_new_best_score = table.Column<bool>(nullable: false),
-                    pp_min = table.Column<int>(nullable: false),
-                    country_rank_min = table.Column<int>(nullable: false)
+                    username = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_osu_user_entity", x => x.snowflake_id);
+                    table.PrimaryKey("PK_osu_users", x => x.snowflake_id);
                     table.ForeignKey(
                         name: "fkey_osu_user_entity_user_id",
                         column: x => x.snowflake_id,
-                        principalTable: "user_entity",
+                        principalTable: "users",
                         principalColumn: "snowflake_id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -85,16 +80,16 @@ namespace Aatrox.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "guild_entity");
+                name: "guilds");
 
             migrationBuilder.DropTable(
-                name: "league_user_entity");
+                name: "league_users");
 
             migrationBuilder.DropTable(
-                name: "osu_user_entity");
+                name: "osu_users");
 
             migrationBuilder.DropTable(
-                name: "user_entity");
+                name: "users");
         }
     }
 }

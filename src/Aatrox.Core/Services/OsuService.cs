@@ -63,7 +63,7 @@ namespace Aatrox.Core.Services
             var repo = db.RequestRepository<IGetOrAddRepository<GuildEntity>>();
             var guild = await repo.GetOrAddAsync(e.Message.Guild.Id);
 
-            if (!guild.AutoResolveOsuUrl)
+            if (!guild.ResolveOsuUrls)
             {
                 return;
             }
@@ -85,13 +85,13 @@ namespace Aatrox.Core.Services
             {
                 "fruits" => "catch",
                 "osu" => "standard",
-                _ => mode
+                _ => "standard"
             };
 
             var beatmapId = split[4];
 
             var beatmap = await Osu.GetBeatmapByIdAsync(long.Parse(beatmapId),
-                (GameMode)Enum.Parse(typeof(GameMode), mode ?? "standard", true), true);
+                (GameMode)Enum.Parse(typeof(GameMode), mode, true), true);
 
             ReadOnlyDictionary<float, PerformanceData> pps = null;
 
@@ -101,12 +101,12 @@ namespace Aatrox.Core.Services
                 return;
             }
 
-            var gc = e.Message.Channel as CachedGuildChannel;
+            var gc = (CachedGuildChannel)e.Message.Channel;
             var permission = gc.Guild.CurrentMember.GetPermissionsFor(gc);
 
             if (permission.Has(Permission.Administrator) || permission.Has(Permission.ManageMessages))
             {
-                await (e.Message as CachedUserMessage).ModifyAsync(x => x.Flags = MessageFlags.SuppressedEmbeds);
+                await ((CachedUserMessage) e.Message).ModifyAsync(x => x.Flags = MessageFlags.SuppressedEmbeds);
             }
 
             try

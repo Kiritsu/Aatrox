@@ -24,7 +24,7 @@ namespace Aatrox.Data.Repositories
                     Id = id,
                     Prefixes = new List<string>(),
                     CreatedAt = DateTimeOffset.UtcNow,
-                    AutoResolveOsuUrl = true
+                    ResolveOsuUrls = true
                 });
             }
 

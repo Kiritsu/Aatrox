@@ -22,18 +22,7 @@ namespace Aatrox.Core.Entities
 
         public string Username { get; }
 
-        public SkeletonUser(CachedUser user)
-        {
-            AvatarHash = user.AvatarHash;
-            AvatarUrl = user.GetAvatarUrl();
-            CreatedAt = user.Id.CreatedAt;
-            Discriminator = user.Discriminator;
-            Id = user.Id;
-            IsBot = user.IsBot;
-            Username = user.Name;
-        }
-
-        public SkeletonUser(RestUser user)
+        public SkeletonUser(IUser user)
         {
             AvatarHash = user.AvatarHash;
             AvatarUrl = user.GetAvatarUrl();

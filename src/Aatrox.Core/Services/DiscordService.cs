@@ -45,10 +45,10 @@ namespace Aatrox.Core.Services
             CommandExecutionFailed += OnCommandExecutionFailed;
             Logger.MessageLogged += OnMessageLogged;
 
-            RemoveTypeParser(Disqord.Bot.Parsers.CachedUserParser.Instance);
+            RemoveTypeParser(Disqord.Bot.Parsers.CachedUserTypeParser.Instance);
             AddTypeParser(CachedUserParser.Instance);
 
-            RemoveTypeParser(Disqord.Bot.Parsers.CachedMemberParser.Instance);
+            RemoveTypeParser(Disqord.Bot.Parsers.CachedMemberTypeParser.Instance);
             AddTypeParser(CachedMemberParser.Instance);
 
             AddTypeParser(CachedGuildParser.Instance);
@@ -142,7 +142,7 @@ namespace Aatrox.Core.Services
                     str.AppendLine("The following check(s) failed:");
                     foreach (var (check, error) in err.FailedChecks)
                     {
-                        str.AppendLine($"[`{(check as AatroxCheckBaseAttribute)?.Name ?? check.GetType().Name}`]: `{error}`");
+                        str.AppendLine($"[`{(check as AatroxCheckAttribute)?.Name ?? check.GetType().Name}`]: `{error}`");
                     }
                     break;
                 case TypeParseFailedResult err:
@@ -191,7 +191,7 @@ namespace Aatrox.Core.Services
             embed.WithFooter($"Type '{ctx.Prefix}help {ctx.Command?.FullAliases[0] ?? ctx.Command?.FullAliases[0] ?? ""}' for more information.");
 
             embed.AddField("__Command/Module__", ctx.Command?.Name ?? ctx.Command?.Module?.Name ?? "Unknown command...", true);
-            embed.AddField("__Author__", ctx.User.FormatUser(), true);
+            embed.AddField("__Author__", ctx.User.FullName(), true);
             embed.AddField("__Error(s)__", str.ToString());
 
             _logger.Warn($"{ctx.User.Id} - {ctx.Guild.Id} ::> Command errored: {ctx.Command?.Name ?? "-unknown command-"}");
@@ -239,7 +239,7 @@ namespace Aatrox.Core.Services
             };
 
             embed.AddField("__Command__", e.Result.Command.Name, true);
-            embed.AddField("__Author__", ctx.User.FormatUser(), true);
+            embed.AddField("__Author__", ctx.User.FullName(), true);
             embed.AddField("__Error(s)__", str.ToString());
             embed.WithFooter($"Type '{ctx.Prefix}help {ctx.Command.FullAliases[0].ToLowerInvariant()}' for more information.");
 
@@ -255,7 +255,7 @@ namespace Aatrox.Core.Services
             InMemoryStaticConfiguration.God = false;
 
             await e.Client.SetPresenceAsync(UserStatus.DoNotDisturb,
-                new LocalActivity("murmurings", ActivityType.Listening));
+                new LocalActivity("you feeding the ennemies", ActivityType.Watching));
         }
 
         private void OnMessageLogged(object sender, MessageLoggedEventArgs e)

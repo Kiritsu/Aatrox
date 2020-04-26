@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aatrox.Data.Entities
 {
-    [Table("user_entity")]
+    [Table("users")]
     public sealed class UserEntity : Entity
     {
         [Column("language")]

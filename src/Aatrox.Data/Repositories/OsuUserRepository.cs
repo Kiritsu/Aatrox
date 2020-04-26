@@ -23,12 +23,7 @@ namespace Aatrox.Data.Repositories
                 {
                     Id = id,
                     CreatedAt = DateTimeOffset.UtcNow,
-                    Username = "",
-                    Channels = new List<ulong>(),
-                    CountryRankMin = 0,
-                    PpMin = 0,
-                    SendNewBestScore = false,
-                    SendRecentScore = false
+                    Username = ""
                 });
             }
 

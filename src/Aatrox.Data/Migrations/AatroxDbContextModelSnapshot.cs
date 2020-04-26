@@ -17,7 +17,7 @@ namespace Aatrox.Data.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "3.0.0")
+                .HasAnnotation("ProductVersion", "3.1.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("Aatrox.Data.Entities.GuildEntity", b =>
@@ -25,10 +25,6 @@ namespace Aatrox.Data.Migrations
                     b.Property<decimal>("Id")
                         .HasColumnName("snowflake_id")
                         .HasColumnType("numeric(20,0)");
-
-                    b.Property<bool>("AutoResolveOsuUrl")
-                        .HasColumnName("auto_resolve_osu_url")
-                        .HasColumnType("boolean");
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnName("created_at")
@@ -38,9 +34,13 @@ namespace Aatrox.Data.Migrations
                         .HasColumnName("prefixes")
                         .HasColumnType("text[]");
 
+                    b.Property<bool>("ResolveOsuUrls")
+                        .HasColumnName("resolve_osu_urls")
+                        .HasColumnType("boolean");
+
                     b.HasKey("Id");
 
-                    b.ToTable("guild_entity");
+                    b.ToTable("guilds");
                 });
 
             modelBuilder.Entity("Aatrox.Data.Entities.LeagueUserEntity", b =>
@@ -49,17 +49,9 @@ namespace Aatrox.Data.Migrations
                         .HasColumnName("snowflake_id")
                         .HasColumnType("numeric(20,0)");
 
-                    b.Property<List<long>>("Channels")
-                        .HasColumnName("channels")
-                        .HasColumnType("bigint[]");
-
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnName("created_at")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("CurrentGameInfo")
-                        .HasColumnName("send_current_game_info")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("Region")
                         .HasColumnName("region")
@@ -71,7 +63,7 @@ namespace Aatrox.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("league_user_entity");
+                    b.ToTable("league_users");
                 });
 
             modelBuilder.Entity("Aatrox.Data.Entities.OsuUserEntity", b =>
@@ -80,29 +72,9 @@ namespace Aatrox.Data.Migrations
                         .HasColumnName("snowflake_id")
                         .HasColumnType("numeric(20,0)");
 
-                    b.Property<List<long>>("Channels")
-                        .HasColumnName("channels")
-                        .HasColumnType("bigint[]");
-
-                    b.Property<int>("CountryRankMin")
-                        .HasColumnName("country_rank_min")
-                        .HasColumnType("integer");
-
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnName("created_at")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("PpMin")
-                        .HasColumnName("pp_min")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("SendNewBestScore")
-                        .HasColumnName("send_new_best_score")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("SendRecentScore")
-                        .HasColumnName("send_recent_score")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("Username")
                         .HasColumnName("username")
@@ -110,7 +82,7 @@ namespace Aatrox.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("osu_user_entity");
+                    b.ToTable("osu_users");
                 });
 
             modelBuilder.Entity("Aatrox.Data.Entities.UserEntity", b =>
@@ -137,7 +109,7 @@ namespace Aatrox.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("user_entity");
+                    b.ToTable("users");
                 });
 
             modelBuilder.Entity("Aatrox.Data.Entities.LeagueUserEntity", b =>

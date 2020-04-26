@@ -24,7 +24,7 @@ namespace Aatrox.Modules
             _configuration = configuration.GetConfiguration();
         }
 
-        private Func<Parameter, string> GetUsage(Command command)
+        private static Func<Parameter, string> GetUsage(Command command)
         {
             if (command.CustomArgumentParserType == typeof(ComplexCommandsArgumentParser))
             {
@@ -146,7 +146,7 @@ namespace Aatrox.Modules
                     embed.AddField("Commands", string.Join(", ", matchingModule.Commands.DistinctBy(x => x.Name).Select(x => $"`{x.Name}`")));
                 }
 
-                var moduleChecks = CommandUtilities.EnumerateAllChecks(matchingModule).Cast<AatroxCheckBaseAttribute>().ToArray();
+                var moduleChecks = CommandUtilities.EnumerateAllChecks(matchingModule).Cast<AatroxCheckAttribute>().ToArray();
                 if (moduleChecks.Length > 0)
                 {
                     embed.AddField("Requirements", string.Join("\n", moduleChecks.Select(x => $"`- {x.Name}{x.Details}`")));
@@ -177,7 +177,7 @@ namespace Aatrox.Modules
 
             var defaultCmd = matchingCommands.First().Command;
 
-            var checks = CommandUtilities.EnumerateAllChecks(defaultCmd.Module).Cast<AatroxCheckBaseAttribute>().ToArray();
+            var checks = CommandUtilities.EnumerateAllChecks(defaultCmd.Module).Cast<AatroxCheckAttribute>().ToArray();
             if (checks.Length > 0)
             {
                 embed.AddField("Module Requirements", string.Join("\n", checks.Select(x => $"- `{x.Name}{x.Details}`")));
@@ -185,7 +185,7 @@ namespace Aatrox.Modules
 
             if (defaultCmd.Checks.Count > 0)
             {
-                embed.AddField("Command Requirements", string.Join("\n", defaultCmd.Checks.Cast<AatroxCheckBaseAttribute>().Select(x => $"- `{x.Name}{x.Details}`")));
+                embed.AddField("Command Requirements", string.Join("\n", defaultCmd.Checks.Cast<AatroxCheckAttribute>().Select(x => $"- `{x.Name}{x.Details}`")));
             }
 
             return RespondAsync(embed: embed.Build());

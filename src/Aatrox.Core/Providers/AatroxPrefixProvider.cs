@@ -22,7 +22,7 @@ namespace Aatrox.Core.Providers
 
         public async ValueTask<IEnumerable<IPrefix>> GetPrefixesAsync(CachedUserMessage message)
         {
-            var strPrefixes = new List<string>()
+            var strPrefixes = new List<string>
             {
                 $"<@{message.Guild.CurrentMember.Id}> ",
                 $"<@!{message.Guild.CurrentMember.Id}> ",
@@ -42,22 +42,22 @@ namespace Aatrox.Core.Providers
 
     public class AatroxPrefix : IPrefix
     {
-        public readonly string _prefix;
+        public readonly string Prefix;
 
         public AatroxPrefix(string prefix)
         {
-            _prefix = prefix;
+            Prefix = prefix;
         }
 
         public bool TryFind(CachedUserMessage message, out string output)
         {
-            return CommandUtilities.HasPrefix(message.Content, _prefix,
+            return CommandUtilities.HasPrefix(message.Content, Prefix,
                 StringComparison.OrdinalIgnoreCase, out output);
         }
 
         public override string ToString()
         {
-            return _prefix;
+            return Prefix;
         }
     }
 }
