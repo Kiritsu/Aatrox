@@ -1,0 +1,3 @@
+[submodule "libs/RiotSharp"]
+	path = libs/RiotSharp
+	url = https://github.com/BenFradet/RiotSharp
