@@ -9,6 +9,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aatrox.Data", "src\Aatrox.D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aatrox.Core", "src\Aatrox.Core\Aatrox.Core.csproj", "{8298FF0D-7CE7-4F0E-8166-3C81ECC71B59}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libs", "libs", "{CFF846AE-FEE6-4D2B-A85D-9BAE92555DC6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiotSharp", "libs\RiotSharp\RiotSharp\RiotSharp.csproj", "{E786953F-70FE-4D9B-B462-006B22E1D82D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiotSharp.AspNetCore", "libs\RiotSharp\RiotSharp.AspNetCore\RiotSharp.AspNetCore.csproj", "{D4887015-C6C9-4DF1-A362-3AD8E42296EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,11 +33,23 @@ Global
 		{8298FF0D-7CE7-4F0E-8166-3C81ECC71B59}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8298FF0D-7CE7-4F0E-8166-3C81ECC71B59}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8298FF0D-7CE7-4F0E-8166-3C81ECC71B59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E786953F-70FE-4D9B-B462-006B22E1D82D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E786953F-70FE-4D9B-B462-006B22E1D82D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E786953F-70FE-4D9B-B462-006B22E1D82D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E786953F-70FE-4D9B-B462-006B22E1D82D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4887015-C6C9-4DF1-A362-3AD8E42296EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4887015-C6C9-4DF1-A362-3AD8E42296EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4887015-C6C9-4DF1-A362-3AD8E42296EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4887015-C6C9-4DF1-A362-3AD8E42296EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EFD09C91-3B86-4BB5-ABCD-4E8DD454F224}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E786953F-70FE-4D9B-B462-006B22E1D82D} = {CFF846AE-FEE6-4D2B-A85D-9BAE92555DC6}
+		{D4887015-C6C9-4DF1-A362-3AD8E42296EE} = {CFF846AE-FEE6-4D2B-A85D-9BAE92555DC6}
 	EndGlobalSection
 EndGlobal
