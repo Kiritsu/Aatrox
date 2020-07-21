@@ -20,9 +20,9 @@ namespace Aatrox.Modules
                 DbContext.Guild.ResolveOsuUrls = !DbContext.Guild.ResolveOsuUrls;
                 await DbContext.UpdateGuildAsync();
                 
-                await RespondEmbedLocalizedAsync(DbContext.Guild.ResolveOsuUrls 
-                    ? "osu_url_auto_resolve_enabled" 
-                    : "osu_url_auto_resolve_disabled");
+                await RespondEmbedAsync(DbContext.Guild.ResolveOsuUrls 
+                    ? "URL auto-resolve has been enabled." 
+                    : "URL auto-resolve has been disabled.");
             }
         }
     }

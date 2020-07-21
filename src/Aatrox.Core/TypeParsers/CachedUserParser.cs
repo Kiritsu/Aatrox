@@ -38,7 +38,7 @@ namespace Aatrox.Core.TypeParsers
             users.AddRange(ctx.Bot.Guilds.SelectMany(x => x.Value.Members.Values));
             users = users.DistinctBy(x => x.Id).ToList();
 
-            CachedUser user = null;
+            CachedUser? user = null;
             if ((value.Length > 3 && value[0] == '<' && value[1] == '@' && value[^1] == '>' && ulong.TryParse(value[2] == '!' ? value[3..^1] : value[2..^1], out var id))
                 || ulong.TryParse(value, out id))
             {

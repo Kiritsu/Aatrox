@@ -55,10 +55,10 @@ namespace Aatrox.Modules
             {
                 Color = _configuration.DefaultEmbedColor,
                 Title = "Help",
-                Description = MultiLanguage.GetLocalization("help_description", DbContext.User.Language, Context.Prefix, string.Join(", ", prefixes)),
+                Description = $"This embed contains a list of every available modules. If you want to see every command of a module, use `{Context.Prefix}help <module>`. Prefixes for this guild are: {string.Join(", ", prefixes)}.",
                 Footer = new LocalEmbedFooterBuilder
                 {
-                    Text = MultiLanguage.GetLocalization("help_footer", DbContext.User.Language, modules.Length, commands.Length)
+                    Text = $"{modules.Length} modules and {commands.Length} commands available in this context."
                 }
             };
 
@@ -90,32 +90,22 @@ namespace Aatrox.Modules
             LocalEmbedBuilder embed;
             if (matchingCommands.Count == 0) //Could be a module.
             {
-                var matchingModule = _commands.TopLevelModules.FirstOrDefault(x => x.Name.Equals(command, StringComparison.OrdinalIgnoreCase));
-                if (matchingModule is null)
-                {
-                    matchingModule = _commands.TopLevelModules.FirstOrDefault(x => x.Name.Equals(command.Levenshtein(_commands), StringComparison.OrdinalIgnoreCase));
-                }
+                var matchingModule = _commands.TopLevelModules.FirstOrDefault(x => x.Name.Equals(command, StringComparison.OrdinalIgnoreCase)) ??
+                                     _commands.TopLevelModules.FirstOrDefault(x => x.Name.Equals(command.Levenshtein(_commands), StringComparison.OrdinalIgnoreCase));
 
                 var modules = _commands.GetAllModules();
-                if (matchingModule is null) //Look for nested modules
-                {
-                    matchingModule = modules.FirstOrDefault(x => x.FullAliases.Any(y => y.Equals(command, StringComparison.OrdinalIgnoreCase)));
-                }
+                
+                //Look for nested modules
+                matchingModule ??= modules.FirstOrDefault(x => x.FullAliases.Any(y => y.Equals(command, StringComparison.OrdinalIgnoreCase)));
+                
+                //Look for nested modules with levenshtein
+                matchingModule ??= modules.FirstOrDefault(x => x.FullAliases.Any(y => y.Equals(command.Levenshtein(modules.Select(z => z.FullAliases.FirstOrDefault()).ToList()), StringComparison.OrdinalIgnoreCase)));
+                
+                //Look for submodule but without complete module path
+                matchingModule ??= modules.FirstOrDefault(x => x.Name.Equals(command, StringComparison.OrdinalIgnoreCase));
 
-                if (matchingModule is null) //Look for nested modules with levenshtein
-                {
-                    matchingModule = modules.FirstOrDefault(x => x.FullAliases.Any(y => y.Equals(command.Levenshtein(modules.Select(z => z.FullAliases.FirstOrDefault()).ToList()), StringComparison.OrdinalIgnoreCase)));
-                }
-
-                if (matchingModule is null) //Look for submodule but without complete module path
-                {
-                    matchingModule = modules.FirstOrDefault(x => x.Name.Equals(command, StringComparison.OrdinalIgnoreCase));
-                }
-
-                if (matchingModule is null) //Look for submodule but without complete module path with levenshtein
-                {
-                    matchingModule = modules.FirstOrDefault(x => x.Name.Equals(command.Levenshtein(modules.Select(z => z.Name).ToList()), StringComparison.OrdinalIgnoreCase));
-                }
+                //Look for submodule but without complete module path with levenshtein
+                matchingModule ??= modules.FirstOrDefault(x => x.Name.Equals(command.Levenshtein(modules.Select(z => z.Name).ToList()), StringComparison.OrdinalIgnoreCase));
 
                 if (matchingModule is null) //Remove last input
                 {
@@ -129,10 +119,10 @@ namespace Aatrox.Modules
                 {
                     Color = _configuration.DefaultEmbedColor,
                     Title = "Help",
-                    Description = MultiLanguage.GetLocalization("help_module_description"),
+                    Description = "This embed contains the list of every command in this module.",
                     Footer = new LocalEmbedFooterBuilder
                     {
-                        Text = MultiLanguage.GetLocalization("help_module_footer", DbContext.User.Language, matchingModule.Commands.Count)
+                        Text = $"{matchingModule.Commands.Count} commands available in this context."
                     }
                 };
 

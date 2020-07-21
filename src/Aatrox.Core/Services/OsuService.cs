@@ -85,6 +85,7 @@ namespace Aatrox.Core.Services
             {
                 "fruits" => "catch",
                 "osu" => "standard",
+                "taiko" => "taiko",
                 _ => "standard"
             };
 
@@ -93,7 +94,7 @@ namespace Aatrox.Core.Services
             var beatmap = await Osu.GetBeatmapByIdAsync(long.Parse(beatmapId),
                 (GameMode)Enum.Parse(typeof(GameMode), mode, true), true);
 
-            ReadOnlyDictionary<float, PerformanceData> pps = null;
+            ReadOnlyDictionary<float, PerformanceData>? pps = null;
 
             if (beatmap == null)
             {

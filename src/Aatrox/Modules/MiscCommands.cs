@@ -28,14 +28,15 @@ namespace Aatrox.Modules
         [Description("Displays a few information about the bot.")]
         public Task AboutAsync()
         {
-            var embed = EmbedHelper.New(Context, GetLocalization("about_description"));
+            var embed = EmbedHelper.New(Context, "Thank you for using Aatrox. Here's some information about the bot itself.");
             embed.AddField("Language", $"C# ({RuntimeInformation.FrameworkDescription})", true)
                  .AddField("Library", Markdown.Link($"Disqord v{Library.Version}", Library.RepositoryUrl), true)
                  .AddField("Bot Repository", Markdown.Link("Aatrox's GitHub", "https://github.com/Kiritsu/Aatrox"), true)
                  .AddField("Servers", Context.Bot.Guilds.Count, true)
                  .AddField("Channels", Context.Bot.Guilds.Values.SelectMany(x => x.Channels).Count(), true)
                  .AddField("Users", Context.Bot.Guilds.Values.SelectMany(x => x.Members.Values).DistinctBy(x => x.Id).Count(), true)
-                 .AddField("Invite", Markdown.Link("Click here to invite the bot.", GetLocalization("invite_url", Context.Aatrox.Id, 8)));
+                 .AddField("RAM", $"{GC.GetTotalMemory(true) / Math.Pow(1024, 2):F}MB")
+                 .AddField("Invite", Markdown.Link("Click here to invite the bot.", $"https://discordapp.com/oauth2/authorize?client_id={Context.Aatrox.Id}&scope=bot&permissions=8"));
             
             return RespondAsync(embed.Build());
         }
@@ -83,7 +84,7 @@ namespace Aatrox.Modules
         [Description("Shows the bot's invitation url.")]
         public Task InviteAsync()
         {
-            return RespondLocalizedAsync("invite", Context.Aatrox.Id, 8);
+            return RespondEmbedAsync(Markdown.Link("Click here to invite the bot.", $"https://discordapp.com/oauth2/authorize?client_id={Context.Aatrox.Id}&scope=bot&permissions=8"));
         }
 
         [Command("Presence")]
@@ -131,6 +132,40 @@ namespace Aatrox.Modules
             }
 
             return RespondAsync(embed.Build());
+        }
+        
+        [Command("GuildId", "IdOf")]
+        [Priority(1)]
+        [Description("Returns the current guild id.")]
+        public Task GuildIdAsync()
+        {
+            return RespondAsync($"Id of the current guild: {Context.Guild.Id}");
+        }
+
+        [Command("ChannelId", "IdOf")]
+        [Priority(2)]
+        [Description("Returns the given channel id.")]
+        public Task ChannelIdAsync([Remainder] CachedGuildChannel chn = null)
+        {
+            chn ??= (CachedGuildChannel)Context.Channel;
+            return RespondAsync($"Id of the channel {(chn is IMentionable m ? m.Mention : $"`{chn.Name}`")}: {chn.Id}");
+        }
+
+        [Command("UserId", "IdOf")]
+        [Priority(2)]
+        [Description("Returns the given user id.")]
+        public Task UserIdAsync([Remainder] CachedUser user = null)
+        {
+            user ??= Context.User;
+            return RespondAsync($"Id of the user `{user.FullName()}`: {user.Id}");
+        }
+
+        [Command("RoleId", "IdOf")]
+        [Priority(2)]
+        [Description("Returns the given role id.")]
+        public Task RoleIdAsync([Remainder] CachedRole role)
+        {
+            return RespondAsync($"Id of the role `{role.Name}`: `{role.Id}`");
         }
     }
 }

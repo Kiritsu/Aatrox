@@ -2,13 +2,10 @@
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
-using Aatrox.Core.Services;
-using Aatrox.Data.Enums;
 using Disqord;
 using Disqord.Bot;
 using Disqord.Events;
 using Disqord.Rest;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Aatrox.Core.Entities
 {
@@ -28,18 +25,15 @@ namespace Aatrox.Core.Entities
 
         public ImmutableArray<Page> Pages { get; }
 
-        public RestUserMessage Message { get; private set; }
+        public RestUserMessage Message { get; private set; } = null!;
 
         private int _cursor;
         private bool _stopped;
         private bool _extraEmojis;
 
         private readonly bool _hasPermission;
-        private readonly Lang _userLanguage;
 
         private TimeSpan _timeout = TimeSpan.FromMinutes(5);
-
-        private readonly InternationalizationService _multiLanguage;
 
         public Paginator(AatroxCommandContext ctx, ImmutableArray<Page> pages)
         {
@@ -48,13 +42,10 @@ namespace Aatrox.Core.Entities
             User = ctx.User;
             Pages = pages;
 
-            _multiLanguage = ctx.ServiceProvider.GetRequiredService<InternationalizationService>();
-
             _cursor = 0;
             _stopped = false;
             _hasPermission = ctx.Guild.CurrentMember.GetPermissionsFor((IGuildChannel)ctx.Channel).Has(Permission.ManageMessages)
                 || ctx.Guild.CurrentMember.GetPermissionsFor((IGuildChannel)ctx.Channel).Has(Permission.Administrator);
-            _userLanguage = ctx.DatabaseContext.User.Language;
         }
 
         public Task SendAsync(TimeSpan timeout, bool extraEmojis = true)
@@ -209,8 +200,8 @@ namespace Aatrox.Core.Entities
 
             Client.MessageReceived += MessageCreated;
 
-            var confirmMessage = await Channel.SendMessageAsync(_multiLanguage.GetLocalization(
-                    "paginator_identifier", _userLanguage, User.Mention, "Identifier", "Cancel", 30));
+            var confirmMessage = await Channel.SendMessageAsync(
+                $"{User.Mention} | Please provide a valid `Identifier`. Write `Cancel` to cancel. This will timeout after 30 seconds.");
 
             var trigger = tcs.Task;
             var delay = Task.Delay(TimeSpan.FromSeconds(30));
@@ -272,8 +263,8 @@ namespace Aatrox.Core.Entities
 
             Client.MessageReceived += MessageCreated;
 
-            var confirmMessage = await Channel.SendMessageAsync(_multiLanguage.GetLocalization(
-                "paginator_identifier", _userLanguage, User.Mention, "Page", "Cancel", 30));
+            var confirmMessage = await Channel.SendMessageAsync(
+                $"{User.Mention} | Please provide a valid `Page`. Write `Cancel` to cancel. This will timeout after 30 seconds.");
 
             var trigger = tcs.Task;
             var delay = Task.Delay(TimeSpan.FromSeconds(30));

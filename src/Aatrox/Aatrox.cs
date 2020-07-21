@@ -16,6 +16,12 @@ using OsuSharp;
 using Qmmands;
 using Disqord.Extensions.Interactivity;
 using Disqord.Bot.Sharding;
+using RiotSharp;
+using RiotSharp.Caching;
+using RiotSharp.Endpoints.Interfaces.Static;
+using RiotSharp.Endpoints.StaticDataEndpoint;
+using RiotSharp.Http;
+using RiotSharp.Interfaces;
 
 namespace Aatrox
 {
@@ -23,17 +29,14 @@ namespace Aatrox
     {
         private readonly IServiceProvider _services;
         private readonly OsuService _osuService;
-        private readonly InternationalizationService _multiLanguage;
         private readonly DiscordService _discordService;
 
         private LogService _dbLogger;
 
-        public Aatrox(IServiceProvider services, OsuService osuService,
-            InternationalizationService multiLanguage, DiscordService discordService)
+        public Aatrox(IServiceProvider services, OsuService osuService, DiscordService discordService)
         {
             _services = services;
             _osuService = osuService;
-            _multiLanguage = multiLanguage;
             _discordService = discordService;
         }
 
@@ -45,7 +48,7 @@ namespace Aatrox
             {
                 AatroxDbContext.DatabaseUpdated += DatabaseUpdated;
                 await using var db = _services.GetRequiredService<AatroxDbContext>();
-                db.Database.Migrate();
+                await db.Database.MigrateAsync();
             }
             catch (Exception ex)
             {
@@ -54,11 +57,10 @@ namespace Aatrox
             }
 
             await _osuService.SetupAsync();
-            await _multiLanguage.SetupAsync();
 
             _discordService.AddArgumentParser(ComplexCommandsArgumentParser.Instance);
 
-            await _discordService.SetupAsync(Assembly.GetEntryAssembly());
+            await _discordService.SetupAsync(Assembly.GetExecutingAssembly());
             await _discordService.RunAsync();
         }
 
@@ -98,7 +100,6 @@ namespace Aatrox
                 })
                 .AddSingleton<AatroxPrefixProvider>()
                 .AddSingleton<DiscordService>()
-                .AddSingleton<InternationalizationService>()
                 .AddSingleton(x =>
                 {
                     var config = x.GetRequiredService<AatroxConfigurationProvider>().GetConfiguration();
@@ -111,6 +112,22 @@ namespace Aatrox
                 })
                 .AddSingleton<OsuService>()
                 .AddSingleton<InteractivityExtension>()
+                .AddSingleton<ICache, FileCache>(x 
+                    => new FileCache(new Uri("./riot-cache", UriKind.Relative), true))
+                .AddSingleton<IRiotApi, RiotApi>(x =>
+                {
+                    var config = x.GetRequiredService<AatroxConfigurationProvider>().GetConfiguration();
+
+                    return RiotApi.GetInstance(
+                        config.RiotToken, 500, 30000, x.GetRequiredService<ICache>());
+                })
+                .AddSingleton<IStaticDataEndpoints, StaticDataEndpoints>(x =>
+                {
+                    var config = x.GetRequiredService<AatroxConfigurationProvider>().GetConfiguration();
+
+                    return new StaticDataEndpoints(
+                        new Requester(config.RiotToken), x.GetRequiredService<ICache>());
+                })
                 .BuildServiceProvider();
         }
 

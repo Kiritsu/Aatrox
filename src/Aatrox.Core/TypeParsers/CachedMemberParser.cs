@@ -24,7 +24,7 @@ namespace Aatrox.Core.TypeParsers
             }
 
             var members = ctx.Guild.Members.Values.ToList();
-            CachedMember member = null;
+            CachedMember? member = null;
 
             if ((value.Length > 3 && value[0] == '<' && value[1] == '@' && value[^1] == '>' && ulong.TryParse(value[2] == '!' ? value[3..^1] : value[2..^1], out var id))
                 || ulong.TryParse(value, out id))

@@ -19,7 +19,7 @@ namespace Aatrox.Modules
             public Task ListAsync()
             {
                 return DbContext.Guild.Prefixes.Count <= 0
-                    ? RespondEmbedLocalizedAsync("no_custom_prefix")
+                    ? RespondEmbedAsync("No custom prefix for this guild yet.")
                     : RespondEmbedAsync(string.Join(", ", DbContext.Guild.Prefixes.Select(x => $"`{x}`")));
             }
 
@@ -30,13 +30,13 @@ namespace Aatrox.Modules
             {
                 if (DbContext.Guild.Prefixes.Select(x => x.ToLowerInvariant()).Contains(prefix.ToLowerInvariant()))
                 {
-                    await RespondEmbedLocalizedAsync("prefix_already_added");
+                    await RespondEmbedAsync($"The prefix {prefix} already exist.");
                     return;
                 }
 
                 DbContext.Guild.Prefixes.Add(prefix);
                 await DbContext.UpdateGuildAsync();
-                await RespondEmbedLocalizedAsync("prefix_added");
+                await RespondEmbedAsync($"The prefix {prefix} has been added.");
             }
 
             [Command("Remove", "Delete")]
@@ -46,13 +46,13 @@ namespace Aatrox.Modules
             {
                 if (!DbContext.Guild.Prefixes.Select(x => x.ToLowerInvariant()).Contains(prefix.ToLowerInvariant()))
                 {
-                    await RespondEmbedLocalizedAsync("unknown_prefix");
+                    await RespondEmbedAsync($"The prefix {prefix} isn't in the prefix list.");
                     return;
                 }
 
                 DbContext.Guild.Prefixes.RemoveAll(x => x.Equals(prefix, StringComparison.OrdinalIgnoreCase));
                 await DbContext.UpdateGuildAsync();
-                await RespondEmbedLocalizedAsync("prefix_removed");
+                await RespondEmbedAsync($"The prefix {prefix} has been removed.");
             }
         }
     }

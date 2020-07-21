@@ -11,29 +11,7 @@ namespace Aatrox.Core.Entities
     public class AatroxModuleBase : DiscordModuleBase<AatroxCommandContext>
     {
         protected DatabaseCommandContext DbContext => Context.DatabaseContext;
-
-        protected InternationalizationService MultiLanguage => Context.MultiLanguage;
-
-        protected string GetLocalization(string key, params object[] parameters)
-        {
-            return MultiLanguage.GetLocalization(key, DbContext.User.Language, parameters);
-        }
-
-        protected Task<RestUserMessage> RespondLocalizedAsync(string key, params object[] parameters)
-        {
-            var localization = MultiLanguage.GetLocalization(key, DbContext.User.Language, parameters);
-
-            return Context.Channel.SendMessageAsync(localization);
-        }
-
-        protected Task<RestUserMessage> RespondEmbedLocalizedAsync(string key, params object[] parameters)
-        {
-            var localization = MultiLanguage.GetLocalization(key, DbContext.User.Language, parameters);
-            var embed = EmbedHelper.New(Context, localization);
-
-            return Context.Channel.SendMessageAsync(embed: embed.Build());
-        }
-
+        
         protected Task<RestUserMessage> RespondAsync(string message)
         {
             return Context.Channel.SendMessageAsync(message);

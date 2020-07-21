@@ -18,12 +18,9 @@ namespace Aatrox.Core.Checks
                 return CheckResult.Unsuccessful("The argument was not a CachedMember");
             }
 
-            if (mbr.Id == InMemoryStaticConfiguration.OwnerId && InMemoryStaticConfiguration.God)
-            {
-                return CheckResult.Successful;
-            }
-
-            return ctx.Member.Hierarchy > mbr.Hierarchy && ctx.Guild.CurrentMember.Hierarchy > mbr.Hierarchy
+            return (ctx.Member.Hierarchy > mbr.Hierarchy 
+                    || mbr.Id == InMemoryStaticConfiguration.OwnerId && InMemoryStaticConfiguration.God) 
+                   && ctx.Guild.CurrentMember.Hierarchy > mbr.Hierarchy
                 ? CheckResult.Successful
                 : CheckResult.Unsuccessful($"Sorry. {mbr.FullName()} is protected.");
         }

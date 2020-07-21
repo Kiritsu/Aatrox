@@ -22,29 +22,30 @@ namespace Aatrox.Modules
         [OverrideArgumentParser(typeof(ComplexCommandsArgumentParser))]
         [Description("Gets the amount of PP for a specified beatmap with accuracy and used modes.")]
         public async Task GetPpAsync(
-            [Description("Id of the beatmap.")] long? beatmapId = null,
+            [Description("Id of the beatmap.")] long beatmapId = -1,
             [Description("Accuracy of the play.")] float accuracy = 100.0f,
             [OverrideTypeParser(typeof(EnumModeTypeParser))] [Description("Modes of the play.")] Mode modes = Mode.None,
-            [Description("Combo of the play.")] int? combo = null)
+            [Description("Combo of the play.")] int combo = -1)
         {
-            if (_osuService.LastBeatmapPerChannel.TryGetValue(Context.Channel.Id, out var bmId) && !beatmapId.HasValue)
+            if (_osuService.LastBeatmapPerChannel.TryGetValue(Context.Channel.Id, out var bmId) && beatmapId == -1)
             {
                 beatmapId = bmId;
             }
-            else if (beatmapId.HasValue)
+            else if (beatmapId != -1)
             {
-                _osuService.AddOrUpdateValue(Context.Channel.Id, beatmapId.Value);
+                _osuService.AddOrUpdateValue(Context.Channel.Id, beatmapId);
             }
 
-            if (!beatmapId.HasValue)
+            if (beatmapId == -1)
             {
-                await RespondEmbedLocalizedAsync("osu_unknown_beatmap");
+                await RespondEmbedAsync("Unknown beatmap.");
                 return;
             }
 
-            var ppData = await OppaiClient.GetPPAsync(beatmapId.Value, modes, accuracy, combo);
-            await RespondEmbedLocalizedAsync("osu_pp_data", ppData.Pp, ppData.Mods.ToModeString(_osuService.Osu),
-                accuracy, ppData.Combo, ppData.MaxCombo, beatmapId.Value);
+            var ppData = await OppaiClient.GetPPAsync(beatmapId, modes, accuracy, combo);
+            await RespondEmbedAsync(string.Format(
+                "[This map](https://osu.ppy.sh/beatmaps/{5}) (`{1}` | `{2}%` | `{3}/{4} combos`) is worth: `{0}`pp", 
+                ppData.Pp, ppData.Mods.ToModeString(_osuService.Osu), accuracy, ppData.Combo, ppData.MaxCombo, beatmapId));
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using Disqord;
-using Disqord.Rest;
 
 namespace Aatrox.Core.Entities
 {

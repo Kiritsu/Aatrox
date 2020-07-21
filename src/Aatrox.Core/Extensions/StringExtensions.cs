@@ -7,7 +7,7 @@ namespace Aatrox.Core.Extensions
 {
     public static class StringExtensions
     {
-        public static string Levenshtein(this string original, ICommandService cmdsrvc)
+        public static string? Levenshtein(this string original, ICommandService cmdsrvc)
         {
             if (original.Length < 3)
             {
@@ -20,9 +20,9 @@ namespace Aatrox.Core.Extensions
             return original.Levenshtein(cmds);
         }
 
-        public static string Levenshtein(this string original, IReadOnlyList<string> references)
+        public static string? Levenshtein(this string original, IReadOnlyList<string> references)
         {
-            if (original.Length < 3)
+            if (original.Length < 4)
             {
                 return null;
             }
@@ -101,7 +101,7 @@ namespace Aatrox.Core.Extensions
             var marginError = min / (double)original.Length;
 
             //If the minimal distance was greater than 5 or the margin error > 50%, we don't want to tell bullshit.
-            return min > 5 || marginError > 0.5 ? null : references[index];
+            return min > 5 || marginError > 0.41 ? null : references[index];
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Aatrox.Core.Services
             return new LogService(name);
         }
 
-        public void Log(string level, string message, Exception e = null)
+        public void Log(string level, string message, Exception? e = null)
         {
             switch (level)
             {
@@ -52,7 +52,7 @@ namespace Aatrox.Core.Services
             }
         }
 
-        public void Log(LogLevel level, string message, Exception e = null)
+        public void Log(LogLevel level, string message, Exception? e = null)
         {
             switch (level.Name)
             {
@@ -100,7 +100,7 @@ namespace Aatrox.Core.Services
             _logger.Debug(message);
         }
 
-        public void Error(string message, Exception ex)
+        public void Error(string message, Exception? ex)
         {
             if (ex is null)
             {

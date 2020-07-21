@@ -9,6 +9,7 @@ namespace Aatrox.Core.Configurations
 
         public string OsuToken { get; set; }
         public string DiscordToken { get; set; }
+        public string RiotToken { get; set; }
 
         public Color DefaultEmbedColor = Color.Goldenrod;
     }

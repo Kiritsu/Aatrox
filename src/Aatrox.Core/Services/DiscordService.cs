@@ -50,7 +50,7 @@ namespace Aatrox.Core.Services
 
             RemoveTypeParser(Disqord.Bot.Parsers.CachedMemberTypeParser.Instance);
             AddTypeParser(CachedMemberParser.Instance);
-
+            
             AddTypeParser(CachedGuildParser.Instance);
             AddTypeParser(SkeletonUserParser.Instance);
             AddTypeParser(TimeSpanParser.Instance);
@@ -97,15 +97,17 @@ namespace Aatrox.Core.Services
 
             if (result is CommandNotFoundResult)
             {
-                string cmdName;
-                var toLev = "";
+                string? cmdName;
                 var index = 0;
-                var split = ctx.Message.Content.Substring(ctx.Prefix.ToString().Length)
+                var split = ctx.Message.Content.Substring(ctx.Prefix.ToString()!.Length)
                     .Split(Separator, StringSplitOptions.RemoveEmptyEntries);
 
+                var maxIndex = split.Length;
                 do
                 {
-                    toLev += (index == 0 ? "" : Separator) + split[index];
+                    string toLev = (index == 0 ? "" : Separator) + string.Join(Separator, split.Take(maxIndex));
+                    maxIndex--;
+                    //toLev += (index == 0 ? "" : Separator) + split[index];
 
                     cmdName = toLev.Levenshtein(this);
                     index++;
@@ -116,10 +118,12 @@ namespace Aatrox.Core.Services
                     return;
                 }
 
-                string cmdParams = null;
-                while (index < split.Length)
+                maxIndex++;
+                
+                string? cmdParams = null;
+                while (maxIndex < split.Length)
                 {
-                    cmdParams += " " + split[index++];
+                    cmdParams += " " + split[maxIndex++];
                 }
 
                 var tryResult = await ExecuteAsync(cmdName + cmdParams, ctx);
@@ -155,7 +159,7 @@ namespace Aatrox.Core.Services
                     str.AppendLine($"I can't find any valid overload for the command `{ctx.Command.Name}`.");
                     foreach (var overload in err.FailedOverloads)
                     {
-                        str.AppendLine($" -> `{overload.Value.Reason}`");
+                        str.AppendLine($"[`{overload.Key.Name}`] -> `{overload.Value.Reason}`");
                     }
                     break;
                 case ParameterChecksFailedResult err:
@@ -223,6 +227,9 @@ namespace Aatrox.Core.Services
                     str.AppendLine($"Are you sure you didn't fail when typing the command? Please do `{ctx.Prefix}help {e.Result.Command.FullAliases[0]}`");
                     break;
                 default:
+                    str.AppendLine($"{e.Result.Exception.GetType()} occured.");
+                    str.AppendLine($"{e.Result.Exception.Message}");
+                    str.AppendLine($"{e.Result.Exception.StackTrace}");
                     _logger.Error($"{e.Result.Exception.GetType()} occured.", e.Result.Exception);
                     break;
             }

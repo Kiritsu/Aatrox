@@ -48,44 +48,61 @@ namespace Aatrox.Modules
         [Description("Removes the last 'count' messages with the specified type of clean.")]
         public async Task CleanAsync(
             [Description("Amount of messages to remove")] int count, 
-            [Description("Type of message. Bot File or Embed.")] CleanMessageType type)
+            [Description("Type of message. Bot File or Embed.")] params CleanMessageType[] types)
         {
             var messages = await Context.Channel.GetMessagesAsync(count);
 
-            switch (type)
-            {
-                case CleanMessageType.Bot:
-                    await PurgeAsync(messages, count, x => x.Author.IsBot);
-                    break;
-                case CleanMessageType.File:
-                    await PurgeAsync(messages, count, x => (x as RestUserMessage)?.Attachments.Count > 0);
-                    break;
-                case CleanMessageType.Embed:
-                    await PurgeAsync(messages, count, x => (x as RestUserMessage)?.Embeds.Count > 0);
-                    break;
-                default:
-                    await PurgeAsync(messages, count);
-                    break;
-            }
+            var predicates = new List<Func<RestMessage, bool>>();
+            foreach (var type in types)
+                switch (type)
+                {
+                    case CleanMessageType.Bot:
+                        predicates.Add(x => x.Author.IsBot);
+                        break;
+                    case CleanMessageType.File:
+                        predicates.Add(x => (x as RestUserMessage)?.Attachments.Count > 0);
+                        break;
+                    case CleanMessageType.Embed:
+                        predicates.Add(x => (x as RestUserMessage)?.Embeds.Count > 0);
+                        break;
+                    case CleanMessageType.NonPinned:
+                        predicates.Add(x => !(x as RestUserMessage)?.IsPinned ?? true);
+                        break;
+                    case CleanMessageType.Pinned:
+                        predicates.Add(x => (x as RestUserMessage)?.IsPinned ?? false);
+                        break;
+                    default:
+                        await PurgeAsync(messages, count);
+                        break;
+                }
+
+            await PurgeAsync(messages, count, predicates);
         }
 
-        public async Task PurgeAsync(IEnumerable<RestMessage> messages, int baseAmount, Func<RestMessage, bool> predicate = null)
+        public Task PurgeAsync(IEnumerable<RestMessage> messages, int baseAmount,
+            Func<RestMessage, bool> predicate = null)
+        {
+            return PurgeAsync(messages, baseAmount,
+                predicate is null ? ArraySegment<Func<RestMessage, bool>>.Empty : new[] {predicate});
+        }
+        
+        public async Task PurgeAsync(IEnumerable<RestMessage> messages, int baseAmount, 
+            IEnumerable<Func<RestMessage, bool>> predicates)
         {
             messages = messages.Where(x => DateTime.UtcNow - x.Id.CreatedAt < TwoWeeks);
-            if (predicate != null)
-            {
-                messages = messages.Where(predicate);
-            }
+            messages = predicates.Aggregate(messages, 
+                (current, predicate) => current.Where(predicate));
 
-            var count = messages.Count();
+            var restMessages = messages.ToList();
+            var count = restMessages.Count;
             if (count <= 0)
             {
-                await RespondLocalizedAsync("clean_no_messages");
+                await RespondEmbedAsync("No message have been removed.");
                 return;
             }
 
-            await ((CachedTextChannel) Context.Channel).DeleteMessagesAsync(messages.Select(x => x.Id));
-            await RespondLocalizedAsync("clean_done", count, baseAmount);
+            await ((CachedTextChannel) Context.Channel).DeleteMessagesAsync(restMessages.Select(x => x.Id));
+            await RespondEmbedAsync($"{count} messages over {baseAmount} have been removed.");
         }
 
         public enum CleanMessageType
@@ -93,7 +110,9 @@ namespace Aatrox.Modules
             Bot,
             File,
             Embed,
-            All
+            All,
+            Pinned,
+            NonPinned
         }
     }
 }

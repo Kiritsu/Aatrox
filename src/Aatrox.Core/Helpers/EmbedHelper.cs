@@ -14,7 +14,7 @@ namespace Aatrox.Core.Helpers
                 Footer = new LocalEmbedFooterBuilder
                 {
                     Text = $"Executed by {ctx.Member.Name}#{ctx.Member.Discriminator}",
-                    IconUrl = ctx.Aatrox.GetAvatarUrl()
+                    IconUrl = ctx.User.GetAvatarUrl()
                 },
                 Color = Color.Goldenrod
             };
@@ -29,7 +29,7 @@ namespace Aatrox.Core.Helpers
                 Footer = new LocalEmbedFooterBuilder
                 {
                     Text = $"Executed by {ctx.Member.Name}#{ctx.Member.Discriminator}",
-                    IconUrl = ctx.Aatrox.GetAvatarUrl()
+                    IconUrl = ctx.User.GetAvatarUrl()
                 },
                 Color = Color.Goldenrod
             };
