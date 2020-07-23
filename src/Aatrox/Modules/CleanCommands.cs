@@ -52,47 +52,43 @@ namespace Aatrox.Modules
         {
             var messages = await Context.Channel.GetMessagesAsync(count);
 
-            var predicates = new List<Func<RestMessage, bool>>();
+            Func<RestMessage, bool> predicate = x => true;
             foreach (var type in types)
                 switch (type)
                 {
                     case CleanMessageType.Bot:
-                        predicates.Add(x => x.Author.IsBot);
+                        predicate += x => x.Author.IsBot;
                         break;
                     case CleanMessageType.File:
-                        predicates.Add(x => (x as RestUserMessage)?.Attachments.Count > 0);
+                        predicate += x => (x as RestUserMessage)?.Attachments.Count > 0;
                         break;
                     case CleanMessageType.Embed:
-                        predicates.Add(x => (x as RestUserMessage)?.Embeds.Count > 0);
+                        predicate += x => (x as RestUserMessage)?.Embeds.Count > 0;
                         break;
                     case CleanMessageType.NonPinned:
-                        predicates.Add(x => !(x as RestUserMessage)?.IsPinned ?? true);
+                        predicate += x => !(x as RestUserMessage)?.IsPinned ?? true;
                         break;
                     case CleanMessageType.Pinned:
-                        predicates.Add(x => (x as RestUserMessage)?.IsPinned ?? false);
+                        predicate += x => (x as RestUserMessage)?.IsPinned ?? false;
                         break;
                     default:
                         await PurgeAsync(messages, count);
                         break;
                 }
 
-            await PurgeAsync(messages, count, predicates);
+            await PurgeAsync(messages, count, predicate);
         }
 
-        public Task PurgeAsync(IEnumerable<RestMessage> messages, int baseAmount,
+        public async Task PurgeAsync(IEnumerable<RestMessage> messages, int baseAmount, 
             Func<RestMessage, bool> predicate = null)
         {
-            return PurgeAsync(messages, baseAmount,
-                predicate is null ? ArraySegment<Func<RestMessage, bool>>.Empty : new[] {predicate});
-        }
-        
-        public async Task PurgeAsync(IEnumerable<RestMessage> messages, int baseAmount, 
-            IEnumerable<Func<RestMessage, bool>> predicates)
-        {
             messages = messages.Where(x => DateTime.UtcNow - x.Id.CreatedAt < TwoWeeks);
-            messages = predicates.Aggregate(messages, 
-                (current, predicate) => current.Where(predicate));
 
+            if (predicate != null)
+            {
+                messages = messages.Where(predicate);
+            }
+            
             var restMessages = messages.ToList();
             var count = restMessages.Count;
             if (count <= 0)

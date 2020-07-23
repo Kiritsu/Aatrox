@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using Aatrox.Core.Entities;
@@ -50,9 +52,14 @@ namespace Aatrox.Modules
                 return;
             }
 
-            var versions = await _staticEndpoints.Versions.GetAllAsync();
-            
             var summoner = await _riot.Summoner.GetSummonerByNameAsync(region, summonerName);
+            if (summoner is null)
+            {
+                await RespondEmbedAsync("Unknown summoner. Try another region.");
+                return;
+            }
+
+            var versions = await _staticEndpoints.Versions.GetAllAsync();
             var embed = EmbedHelper.New(Context, $"`{summoner.Name}` summoner's profile.");
             embed.ThumbnailUrl =
                 $"http://ddragon.leagueoflegends.com/cdn/{versions.First()}/img/profileicon/{summoner.ProfileIconId}.png";
@@ -78,6 +85,59 @@ namespace Aatrox.Modules
             }
 
             await RespondAsync(embed.Build());
+        }
+
+        [Command("Masteries")]
+        public async Task MasteriesAsync(Region region, [Remainder] string summonerName)
+        {
+            summonerName ??= DbContext.User.LeagueProfile.Username;
+
+            if (string.IsNullOrWhiteSpace(summonerName))
+            {
+                await RespondEmbedAsync("You need to specify a nickname or set yours up.");
+                return;
+            }
+            
+            var summoner = await _riot.Summoner.GetSummonerByNameAsync(region, summonerName);
+            if (summoner is null)
+            {
+                await RespondEmbedAsync("Unknown summoner. Try another region.");
+                return;
+            }
+            
+            var versions = await _staticEndpoints.Versions.GetAllAsync();
+            var champions = await _staticEndpoints.Champions.GetAllAsync(versions.First());
+            var masteries = await _riot.ChampionMastery.GetChampionMasteriesAsync(region, summoner.Id);
+            
+            var maxPage = masteries.Count;
+            var currentPage = 1;
+            var pages = new List<Page>();
+            foreach (var mastery in masteries)
+            {
+                var page = new Page {Identifier = champions.Keys[(int) mastery.ChampionId]};
+
+                var embed = new LocalEmbedBuilder
+                {
+                    Color = Color.Goldenrod,
+                    Description = $"Mastery for champion {page.Identifier}",
+                    ThumbnailUrl =
+                        $"http://ddragon.leagueoflegends.com/cdn/{versions.First()}/img/champion/{page.Identifier}.png"
+                };
+                embed.WithFooter($"{summonerName} | Paginator - Page {currentPage}/{maxPage}");
+
+                embed.AddField("Level", mastery.ChampionLevel, true);
+                embed.AddField("Points", mastery.ChampionPoints.ToString("N0"), true);
+                embed.AddField("Chest", $"{(!mastery.ChestGranted ? "Not" : "")} granted", true);
+                embed.AddField("Last play time", mastery.LastPlayTime.ToString("G"), true);
+
+                page.Embed = embed.Build();
+
+                currentPage++;
+                
+                pages.Add(page);
+            }
+
+            await PaginateAsync(pages.ToImmutableArray());
         }
     }
 }

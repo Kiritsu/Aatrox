@@ -13,6 +13,7 @@ using Aatrox.Data;
 using Aatrox.Data.Repositories;
 using Disqord;
 using Disqord.Bot;
+using Disqord.Bot.Parsers;
 using Disqord.Bot.Prefixes;
 using Disqord.Bot.Sharding;
 using Disqord.Events;
@@ -45,13 +46,21 @@ namespace Aatrox.Core.Services
             CommandExecutionFailed += OnCommandExecutionFailed;
             Logger.MessageLogged += OnMessageLogged;
 
-            RemoveTypeParser(Disqord.Bot.Parsers.CachedUserTypeParser.Instance);
-            AddTypeParser(CachedUserParser.Instance);
-
-            RemoveTypeParser(Disqord.Bot.Parsers.CachedMemberTypeParser.Instance);
-            AddTypeParser(CachedMemberParser.Instance);
+            RemoveTypeParser(GetSpecificTypeParser<CachedRole, CachedRoleTypeParser>());
+            RemoveTypeParser(GetSpecificTypeParser<CachedMember, CachedMemberTypeParser>());
+            RemoveTypeParser(GetSpecificTypeParser<CachedUser, CachedUserTypeParser>());
+            RemoveTypeParser(GetSpecificTypeParser<CachedGuildChannel, CachedGuildChannelTypeParser<CachedGuildChannel>>());
+            RemoveTypeParser(GetSpecificTypeParser<CachedTextChannel, CachedGuildChannelTypeParser<CachedTextChannel>>());
+            RemoveTypeParser(GetSpecificTypeParser<CachedVoiceChannel, CachedGuildChannelTypeParser<CachedVoiceChannel>>());
+            RemoveTypeParser(GetSpecificTypeParser<CachedCategoryChannel, CachedGuildChannelTypeParser<CachedCategoryChannel>>());
+            AddTypeParser(new CachedRoleTypeParser(StringComparison.OrdinalIgnoreCase));
+            AddTypeParser(new CachedMemberTypeParser(StringComparison.OrdinalIgnoreCase));
+            AddTypeParser(new CachedUserTypeParser(StringComparison.OrdinalIgnoreCase));
+            AddTypeParser(new CachedGuildChannelTypeParser<CachedGuildChannel>(StringComparison.OrdinalIgnoreCase));
+            AddTypeParser(new CachedGuildChannelTypeParser<CachedTextChannel>(StringComparison.OrdinalIgnoreCase));
+            AddTypeParser(new CachedGuildChannelTypeParser<CachedVoiceChannel>(StringComparison.OrdinalIgnoreCase));
+            AddTypeParser(new CachedGuildChannelTypeParser<CachedCategoryChannel>(StringComparison.OrdinalIgnoreCase));
             
-            AddTypeParser(CachedGuildParser.Instance);
             AddTypeParser(SkeletonUserParser.Instance);
             AddTypeParser(TimeSpanParser.Instance);
             AddTypeParser(UriTypeParser.Instance);

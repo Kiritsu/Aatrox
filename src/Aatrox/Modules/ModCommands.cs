@@ -11,7 +11,7 @@ namespace Aatrox.Modules
     [Name("Moderation")]
     public class ModCommands : AatroxModuleBase
     {
-        [Command("Kick")]
+        [Command("Kick", "Voteofftheisland")]
         [RequireBotPermissions(Permission.KickMembers)]
         [RequireUserPermissions(Permission.KickMembers)]
         [Description("Kick the specified user from the guild.")]

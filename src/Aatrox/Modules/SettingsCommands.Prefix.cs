@@ -8,7 +8,8 @@ using Qmmands;
 
 namespace Aatrox.Modules
 {
-    public sealed partial class SettingsCommands
+    [Name("Settings")]
+    public sealed partial class SettingsCommands : AatroxModuleBase
     {
         [Name("Prefix"), Group("Prefix")]
         [RequireUserPermissions(Permission.ManageMessages)]

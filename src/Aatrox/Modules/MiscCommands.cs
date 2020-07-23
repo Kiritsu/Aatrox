@@ -24,6 +24,17 @@ namespace Aatrox.Modules
             _configuration = config.GetConfiguration();
         }
 
+        [Command("Avatar")]
+        [Description("Shows the avatar of the user.")]
+        public async Task AvatarAsync(SkeletonUser user = null)
+        {
+            user ??= new SkeletonUser(Context.User);
+
+            var embed = new LocalEmbedBuilder {Color = Color.Goldenrod, ImageUrl = user.AvatarUrl}
+                .WithAuthor($"{user.FullName} | {user.Id}");
+            await RespondAsync(embed.Build());
+        }
+
         [Command("About")]
         [Description("Displays a few information about the bot.")]
         public Task AboutAsync()

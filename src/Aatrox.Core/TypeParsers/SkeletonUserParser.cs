@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Aatrox.Core.Entities;
+using Disqord;
+using Disqord.Bot.Parsers;
 using Qmmands;
 
 namespace Aatrox.Core.TypeParsers
@@ -17,13 +19,13 @@ namespace Aatrox.Core.TypeParsers
 
             if (!ulong.TryParse(value, out var id))
             {
-                var result = await CachedUserParser.Instance.ParseAsync(parameter, value, context);
+                var result = await context.Command.Service.GetSpecificTypeParser<CachedUser, CachedUserTypeParser>().ParseAsync(parameter, value, context);
                 if (result.IsSuccessful)
                 {
                     return new TypeParserResult<SkeletonUser>(new SkeletonUser(result.Value));
                 }
 
-                var memberResult = await CachedMemberParser.Instance.ParseAsync(parameter, value, context);
+                var memberResult = await context.Command.Service.GetSpecificTypeParser<CachedMember, CachedMemberTypeParser>().ParseAsync(parameter, value, context);
                 if (memberResult.IsSuccessful)
                 {
                     return new TypeParserResult<SkeletonUser>(new SkeletonUser(memberResult.Value));
